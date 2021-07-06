@@ -1,50 +1,68 @@
 ## Introduction
 
-This a real time rendering of the Sponza demo scene, written in Go (Golang) and GLSL. Details:
+This is real time rendering of the Sponza demo scene, written in Go (Golang) and GLSL. Details:
 
 1. Ubuntu, GLFW3, OpenGL, GLTF 2.0, Golang, MIT license.
 
 2. Forward directional light(s), shadow mapping (PCF 3x3), basic PBR (no baking, no ambient term), and above all, fully 3D ray marched volumetric lighting!
 
-Why yet another rendering framework/engine/code? Consider this as a study of computer graphics and a preliminary test of how good Go could be in the real time 3D rendering of realistic semi-open scenes of modest complexity. It is also just good to have some "less is more" code to be able to test some computer graphics ideas and learn what works and what does not this way.
+Why yet another rendering framework/engine/code? Consider this as a study of Go in 3D.
 
-Lately I have been checking around some forty engines with C++ codes, most of them are excessively complex Windows-centric or multiplatform editor-driven codes pushing the GPU limits. As an average programmer I seek for a light-weight graphics middleware whose rendering pipeline I could extend and modify the way INSIDE-2016 rendered water and its amazing environments in their customized Unity pipeline, or RDR2-2018 has built their volumetrics and skyscapes.
+I have been checking around 40 engines with C++ codes, most of them are excessively complex Windows-centric or multiplatform editor-driven codes pushing the GPU limits. As an average programmer I seek for a light-weight graphics middleware whose rendering pipeline I could extend and modify the way INSIDE-2016 rendered water and its amazing environments in their customized Unity pipeline, or RDR2-2018 has built their volumetrics and skyscapes.
 
-I have also tried a few WebGL engines, in particular regl and Babylon.js, and also peeked briefly into webglstudio.js, but I could not find examples complete enough that would expose clearly the rendering pipeline common to the rendering of scenes in games. regl would be interesting no doubt to study, whether and how it really improves WebGL (or even OpenGL), but those extra layers on top of graphics APIs are thicker and harder to use than the authors think and they are good if you want to study WebGL or OpenGL per se, for which I do not have much time. 
-
-At the time, Babylon.js had a very limited volumetric lighting and its editor was undergoing some major changes, and I learned the hard way that building a scene in code is not productive; also TypeScript vs ES6 vs Js module schizophrenia, missing TypeScript type definition files; webglstudio.js had an amazing youtube video of the Sponza scene rendered with animations and object picking, and none of the code to set this all up:
+I have also tried a few WebGL engines, in particular regl and Babylon.js, and also peeked briefly into webglstudio.js, but I could not find examples complete enough that would expose clearly the rendering pipeline common to the rendering of scenes in 3D games, e.g.
 
 https://github.com/jagenjo/litescene.js/issues/16
 
-On a positive side, there is a well-thought out code which splits into webglstudio.js, litescene.js and litegl.js, which is very attractive by itself, and in the other end, no code for the major demo scene. It probably takes a lot of time to reach Blender/Unreal/Unity/Godot/Babylon.js size communities, but a working demo code exposure could go a long way. In addition, we now have some kind of disruption with WebGL vs WebGPU akin to OpenGL vs Vulkan. OpenGL is probably not going to disappear any time soon, but WebGL, who knows. It will be interesting to revisit these engines after a while.
+Ubuntu as a platform for 3D graphics is still weak despite its superb stability, the success of Blender, and the emergence of Linux ports by the giants. A lesson learned from Unreal: I went through all the hassle of compiling it on Ubuntu and the editor still crashes in the year 2021. There has also appeared a less humongous commercial yet friendly Flax, but C# graphics codes on Ubuntu do not instill confidence in me. 
 
-Coming back to Ubuntu and OpenGL: Ubuntu as a platform for 3D graphics is still weak despite its superb stability, the success of Blender, and the emergence of Linux ports by the giants. A lesson learned from Unreal: I went through all the hassle of compiling it on Ubuntu and the editor still crashes in the year 2021. There has also appeared a less humongous commercial yet friendly Flax, but C# graphics codes on Ubuntu do not instill confidence in me. 
-
-So consider this code as my small contribution to the 3D graphics community working with Ubuntu. This is the work in progress. Scroll down to Credits where I also shed some light into the history of this code and share my broader experience with computer graphics frameworks.
+So consider this code as my small contribution to the 3D graphics community working on Ubuntu. This is the work in progress. Scroll down to Credits where I also shed some light into the history of this code and share my broader experience with computer graphics frameworks.
 
 ## Setup
 
 1. Install Go, set up $GOPATH.
 
-2. Download Sponza from github, apply scale in Blender, re-export to GLTF 2.0.
+2. Download Sponza from github to "Sponza_GLTF": 
+```console
+sudo apt install subversion
+svn export https://github.com/KhronosGroup/glTF-Sample-Models.git/trunk/2.0/Sponza/glTF Sponza_GLTF
+```
+3. Run Blender, delete the cube, import GLTF 2.0, select "Sponza_GLTF". If you press "n" or open the transform panel, "Dimensions" will show these values:
+```console
+X = 29.8 m.
+Y = 18.3 m.
+Z = 12.4 m.
+```
+Above "Dimensions" you will see "Scale" values, all of which will be 0.008, which is not right. Select the Sponza building in the Object mode, press ctrl+A and apply the scale. The transform panel's "Scale" values should now become 1.0. The transform panel is toggled by pressing "n".
 
-2. git clone this repo, cd into it.
+Export now the scene into GLTF 2.0, select "Format" as "GLTF Separate (.gltf + .bin + textures), overwrite the files.
 
-3. go build
+4. Clone this repo:
+```console
+git clone https://github.com/aabbtree77/twinpeekz.git
+cd twinpeekz
+```
+5. Open scene.go and change the Sponza path to the one you reexported to in Blender. In my case it is 
+```console
+folderPath := "/home/tokyo/sponzaGLTFRescNoLights/"
+```
+For you it will be, say "/home/username/Sponza_GLTF"
 
-4. ./twinpeekz
+6. Compile and run:
+```console
+go build
+./twinpeekz
+```
 
-I will add some further details here in due time.
-
-## Code Organization and Render Time
+## Code Organization
 
 It splits into roughly four parts:
 
-1. main.go, camera.go - mostly GLFW stuff, window, mouse, keyboard management. Initial camera position in makeCam() (camera.go). AWSDEC  and arrow keys to move in 3D, holding+LMB changes camera view direction. Scrolling zooms in and out, F11 toggles full screen. Window resizes change certain frame buffers, but the shadow map resolution remains the same.
+1. **main.go**, **camera.go** - mostly GLFW stuff, window, mouse, keyboard management. Initial camera position in makeCam() (camera.go). AWSDEC  and arrow keys to move in 3D, holding+LMB changes camera view direction. Scrolling zooms in and out, F11 toggles full screen. Window resizes change certain frame buffers, but the shadow map resolution remains the same.
 
-2. scene.go - GLTF loading and some GPU buffer preparation. Each model must have .gltf, .bin and its texture image files in the same folder, tested mostly on an enhanced Sponza scene. There is no missing data filling and excessive checking, if the model does not have all the data it needs to have then it is simply not loaded or some error might occur. You know what is in your GLTF file and adjust scene.go to use the data you need.
+2. **scene.go** - GLTF loading and some GPU buffer preparation. Each model must have .gltf, .bin and its texture image files in the same folder, tested mostly on an enhanced Sponza scene. There is no missing data filling and excessive checking, if the model does not have all the data it needs to have then it is simply not loaded or some error might occur. You know what is in your GLTF file and adjust scene.go to use the data you need.
 
-3. rendering.go, shader.go - the rendering pipeline follows the C++ code of Tomas Öhberg (no license there):
+3. **rendering.go**, **shader.go** - the rendering pipeline follows the C++ code of Tomas Öhberg (no license there):
 
 shadow mapping -> hdr (PBR) -> volumetrics -> postprocessing.
 
@@ -67,11 +85,11 @@ Some camera-related math functions are relegated to the external dependency, i.e
 
 4. Shaders:
 
-hdr_frag.glsl - this is the PBR code which I took from Angel Ortiz (MIT licensed), I removed light baking and the abient light contribution term.
+**hdr_frag.glsl** - this is the PBR code which I took from Angel Ortiz (MIT licensed), I removed light baking and the abient light contribution term.
 
-vol_frag.glsl - implements two approaches, the one by Andre Pestana (ray marches over visibility * phase func) and by Jake Ryan (marches just over visibility and postprocesses it into a color), see the links in those files. 
+**vol_frag.glsl** - implements two approaches, the one by Andre Pestana (ray marches over visibility * phase func) and by Jake Ryan (marches just over visibility and postprocesses it into a color), see the links in those files. 
 
-postpr_frag.glsl - simply adds the hdr and volumetric colors and postprocesses them in some standard ways. There is an option to clamp a bit the 
+**postpr_frag.glsl** - simply adds the hdr and volumetric colors and postprocesses them in some standard ways. There is an option to clamp a bit the 
 volumetric part to emphasize "god rays", but this also saturates colors, and one can also strengthen rays by adjusting Beer-related parameters in vol_frag.glsl,
 or treating color as radiance in Pestana's method (simply multiplying light.color by some intensity value).
 
@@ -121,13 +139,13 @@ However, I was severely disappointed by its characteristics and timing, see the 
 </tr>
 </table>
 
-Shadow map resolution is 4096 in all the cases. You can see that a bare PCF 3x3 can be even better as PCSS destroys shadow sharpness and its realism.
-Look into the shadow stripe on the left side, on the wall. It comes from the real bar-like mesh attached to the wall in the central part of Sponza which is not visible in the image. Notice how even ideal PCSS, which takes ages to compute (whole 75ms. hehe), totally blurs away that stripe.
+Shadow map resolution is 4096 in all the cases. The bare PCF 3x3 can be even better as PCSS makes certain shadows vanish.
+Look into the shadow stripe on the left side, on the wall. It comes from the real bar-like mesh attached to the wall in the central part of Sponza which is not visible in the image. Notice how even ideal PCSS, which takes ages to compute (whole 75ms.), totally blurs away that shadow stripe.
 
-Smaller internal blocker search and PCSS PCF values (which already take 3-4 extra ms.) produce artifacts which barely improve a raw shadow map with PCF 3x3.
-So PCSS is a no go for me. It is probably a tool for some baking/prerendering that might give a smooth visual feel to the scene esp. when rendered at smaller shadow map resolutions, but it is better to simply increase the shadow map resolution as the shadow stage takes roughly only 1ms. for 4K on my GTX 760, albeit for a single light.
+Smaller internal blocker search and PCSS PCF values (which already take 3-4 extra ms.) produce artifacts which barely improve a raw shadow mapping with PCF 3x3.
+So PCSS is a no go for me. It is probably a tool for some baking/prerendering that might give a smooth visual feel to the scene, or rendering at smaller shadow map resolutions followed by some filters, but it is better to simply increase the shadow map resolution as this stage takes roughly only 1ms. for 4K on my GTX 760, albeit for a single light.
 
-I was thinking of trying VSM, ESM as faster smooth shadow alternatives, but I deeply suspect many already went that way and did not find peace. So instead of trying every soft shadow technique one should probably just bite the bullet and go with an industry standard CSM, but that I do not want, at least for now. The code leaks from shaders to higher levels with all sorts of frustum computations and cascade stabilization and AA to avoid various "shimmering" effects. Considering all this baggage, the basic shadow mapping with PCF 3x3 at higher resolution such as 4K seems to be OK, until better, ray tracing times... Shadows are a big unsolved graphics problem if you are pedantic enough.
+I was thinking of trying VSM, ESM as faster smooth shadow alternatives, but I deeply suspect many already went that way and did not find peace. So instead of trying every soft shadow technique one should probably just bite the bullet and go with an industry standard CSM, but that I do not want, at least for now. The code leaks from shaders to higher levels with all sorts of frustum computations and cascade stabilization and AA to avoid various "frame shimmering" effects. Considering all this baggage, the basic shadow mapping with PCF 3x3 at higher resolution such as 4K seems to be OK, until better, ray tracing times... Shadows are a big unsolved 3D graphics problem if you are pedantic enough.
 
 ## Rendering Discussion II: PBR
 
@@ -155,7 +173,7 @@ Let us see some little PBR in action.
 Despite an overexposure of colors due to the light rays, you can see the specular/metallic reflections from the vases and the curtains, while these are less visible in the pseudo-PBR rendering (Tomas Öhberg code) even in the low volumetric exposure. These highlights also move as the camera view changes, enhancing 
 the 3D experience in the both cases. The pseudo-PBR also emphasizes the edges of the curtain better.
 
-What is a pseudo PBR. It is a shortcut I use for Tomas Öhberg's code. It has its own simplistic physics that includes specular highlights, but it does not use
+What is a pseudo PBR? It is a shortcut I use for Tomas Öhberg's code. It has its own simplistic physics that includes specular highlights, but it does not use
 the metallic roughness textures, only the base color which is also called "diffuse color".
 
 Let us evaluate some more images.
@@ -193,10 +211,10 @@ Let us evaluate some more images.
 </tr>
 </table>
 
-With a similar light intensity, the pseudo-PBR is less playful, and the material is more dry and digital, but with a lot more light it exhibits some highlight generation. That proper light intensity region however is very narrow as with more light the shadow-light diffuse effects begin to dominate specular/metallic reflections which become barely visible, while in low light intensity settings the material has no highlights. Pseudo-PBR highlights are also bigger and more blurry, the surfaces do not have that thin glass layer that plays nicely with light.
+With a similar light intensity, pseudo-PBR is less playful, and the material is more dry and digital, but with a lot more light it exhibits some highlight generation. That proper light intensity region however is very narrow as with more light the shadow-light diffuse effects begin to dominate specular/metallic reflections which become barely visible, while in low light intensity settings the material has no highlights. Pseudo-PBR highlights are also bigger and more blurry, the surfaces do not have that thin glass layer that plays nicely with light.
 
 On the other hand, somewhat brute shadows and mesh resolutions destroy the realism and mood if you start zooming or getting close to the objects.
-So it is a fine tool which must go hand in hand with some other improvements. At the moment, no IBL and no ambient terms, I consider this as an unnecessary code complexity. Ambience is achieved by simply adding baseColor weighted with some 0.01 factor and such, this is too crude, but I like things look a bit darker and do not mind underexposure and lack of detail in dark areas.
+So it is a fine tool which must go hand in hand with some other improvements. At the moment, no IBL and no ambient terms, I consider this as an unnecessary code complexity. Ambience is achieved by simply adding the base color weighted with some 0.01 factor and such, this is too crude, but I like things look a bit darker and do not mind underexposure and lack of detail in dark areas.
 
 Some kind of a skybox is still a basic need to implement, but I would not like some 3ms. wasted on just a nicer background, anything samplerCube related is quite slow on GTX 760.
 
@@ -204,26 +222,26 @@ In addition to baking and ambience, a proper PBR would bring one more complicati
 
 For some future implementation, I will mention three references here:
 
-1. The C++ Assimp way, very common, for instance used by the Arcane engine (MIT licensed):
+1. C++ Assimp, e.g. used by Arcane (MIT licensed):
 
 https://github.com/Ershany/Arcane-Engine/blob/78c9e6931704a36875f325f0449ddb04c9335032/Arcane%20Engine%20Core/src/graphics/mesh/Model.cpp
 
 const aiScene *scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 
-Interesingly, CSM implementation intent is on Brady Jessup's Trello list since 2018, and which just shows there is no simple answer to the shadow problem. See perhaps the CSM implementation by Dihara Wijetunga which was used by the Skylicht engine too.
+Interesingly, CSM implementation intent is on Brady Jessup's Trello list since 2018, which just shows there is no simple answer to the shadow problem. See perhaps the CSM implementation by Dihara Wijetunga which was used by the Skylicht engine.
 
-2. Custom C++ implementation (typically in the use with GLTF):
+2. Custom C++ implementation
 
 https://github.com/Snowapril/gl_shaded_gltfscene/blob/5c6c766b4bf6efe7096184339173495606fc4d7c/Sources/Core/GLTFScene.cpp
 
-which references the actual algorithm:
+references the actual algorithm:
 
 //! Implementation in "Foundations of Game Engine Development : Volume2 Rendering"
 
-3. Shader based, my favorite most likely, exemplified by Lugdunum (MIT-licensed):
+3. Shader-based, my favorite most likely, exemplified by Lugdunum (MIT-licensed):
 
 https://github.com/Lugdunum3D/Lugdunum/blob/b6d6907d034fdba1ffc278b96598eba1d860f0d4/resources/shaders/forward/shader.frag
-
+```console
 # if IN_TANGENT
     const vec3 tangent = normalize(inTangent.xyz);
     const vec3 bitangent = normalize(cross(inNormalWorldSpace, tangent) * inTangent.w);
@@ -238,14 +256,14 @@ https://github.com/Lugdunum3D/Lugdunum/blob/b6d6907d034fdba1ffc278b96598eba1d860
     # endif
 
     const mat3 tbn = mat3(tangent, bitangent, inNormalWorldSpace);
-
+```
 Here dFdx, dFdy are standard OpenGL functions, "return the partial derivative of an argument with respect to x or y".
 
 Another potentially useful reference for this method is this MIT-licensed code:
 
 https://github.com/kosowski/SimplePBR/blob/master/data/shaders/pbr/simplepbr.frag
 
-It actually uses the Java-based Processing framework where the uniforms are set up, the function "computeTangentFrame" is in this fragment shader.
+It actually uses the Java-based Processing framework where the uniforms are set up, the function is "computeTangentFrame".
 
 ## Rendering Discussion III: Volumetric Light
 
@@ -275,10 +293,11 @@ The timings are provided for each rendering stage separately, supplied with the 
 Golang is great at the level of main.go, no need to use unsafe pointers to pass user 
 data with GLFW callbacks, just pass a struct/object method using an object as an implicit first argument (as in UFCS).
 
-Golang's GC is not such a big problem, at least not for this scene, but 2-3x slow down on raw loops compared to C/C++/Nim is not attractive.
+Golang's GC is not such a big problem, at least not for this scene, but 2-3x universal slow-down on raw loops compared 
+to C/C++/Nim is not attractive.
 
 Here is the log of Golang's GC:
-
+```console
 gc 3 @7.479s 0%: 0.051+24+0.004 ms clock, 0.41+0.47/0.22/0.14+0.036 ms cpu, 17->17->0 MB, 18 MB goal, 8 P
 gc 4 @15.446s 0%: 0.042+0.73+0.047 ms clock, 0.34+0.18/0.60/0+0.38 ms cpu, 4->4->0 MB, 5 MB goal, 8 P
 gc 5 @23.529s 0%: 0.038+0.39+0.009 ms clock, 0.30+0.15/0.47/0.35+0.079 ms cpu, 4->4->0 MB, 5 MB goal, 8 P
@@ -323,13 +342,13 @@ gc 43 @329.409s 0%: 0.042+0.51+0.072 ms clock, 0.34+0.18/0.57/0.66+0.57 ms cpu, 
 gc 44 @337.425s 0%: 0.046+0.42+0.006 ms clock, 0.37+0.14/0.49/0.60+0.054 ms cpu, 4->4->0 MB, 5 MB goal, 8 P
 gc 45 @345.492s 0%: 0.037+14+0.007 ms clock, 0.30+0.41/0.31/0.29+0.057 ms cpu, 4->4->0 MB, 5 MB goal, 8 P
 gc 46 @353.542s 0%: 0.045+15+0.006 ms clock, 0.36+0.25/0.58/0.27+0.051 ms cpu, 4->4->0 MB, 5 MB goal, 8 P
-
+```
 You can see that the default GC setup does not consume more than 1ms. and it gets invoked every 8s. or so. However, a spike wasting whole 24ms. may occur once a minute or so. Dropping a frame or two per minute does not break any smooth 3D experience, but with heavier codes 
 taking place in Go its GC could become a problem or would need a special focus and experiments.
 
 Pointers are troublesome, and we get them without the ability to control stack vs heap 
 allocations. They also overlap with some other purposes: a mutable function argument qualifier, or a test if the structure field exists after loading 
-a struct from json, by checking for the nil value if the structure element has been defined as a pointer.
+a struct from *.json, by checking for the nil value if the structure element has been defined as a pointer.
 
 Also $GOPATH, variable capitalization to mark visibility, unused variable errors, these are annoying.
 
@@ -338,19 +357,19 @@ I also use these math functions as the external dependency:
 https://github.com/g3n/engine/blob/master/math32/math.go
 
 If you look into the code such as
-
+```console
 func Atan(v float32) float32 {
 	return float32(math.Atan(float64(v)))
 }
-
-you might think how terrible Golang is as this calls for generics. It is actually on the contrary! This is fairly readable, does not slow down compilation, does not spit out crazy C++ Boost or Adobe GIL template errors... Though they say Go is getting generic types by the end of this year, finally. However, this is totally not a problem. The problem is pointers:
+```
+you might think how terrible Go is as this calls for generic types. It is actually on the contrary! This is fairly readable, does not slow down the compilation, does not spit out crazy C++ template errors. Though it seems that Go is getting generic types by the end of this year, finally. However, this is totally not an issue. The real problem is pointers:
 
 https://github.com/g3n/engine/issues/163
 
-and such issues are endless, a billion dollar mistake is still there despite the GC. Besides, $GOPATH should not have been there, but this comes from a different use model initially at Google, they say. Still node.js way of cloning everything locally into the code folder is so much better, but this was not the approach taken.
+and such issues are endless. Besides, $GOPATH should not have been there, but this comes from a different use model initially at Google, they say. The node.js way of cloning everything locally into the code folder is so much better, but this was not the approach taken.
 
 Still, consider this: Golang is roughly ten years old, GC, no compile time gymnastics, at least not yet, very minimal OO, a single compiler mostly, 
-no multiple standards, no make-cmake-header-only crapola, some very conservative people behind it. And already 40K+ Golang issues on github.
+no multiple standards, no make-cmake-header-only crapola. And already 40K+ Golang issues on github.
 Imagine how gigantic this number is for C++!
 
 I use go-vim, and mostly just :GoDef and ctrl+O to get back, sometimes :GoRename. My GLTF code was written just by looking at Quim Muntal's GLTF loading library this way, see the last section for more details.
@@ -361,23 +380,25 @@ The amazing part is that OpenGL works, given that it is an API implemented by a 
 
 I was hunting down one bug for days which was rendering a black screen without a crash. The problem turned out to be gl.BufferData function storing mesh index array on a GPU. I was using
 type uint whose analogue in C++ takes 4 bytes of memory, but in Go it's 8! Switching to uint32 simply solved the problem, but to actually locate 
-that I had to use renderdoc and I had a working C++ alternative code by Tomas Öhberg so I could compare the raw data differences in the both cases by loading a simple 3D cube.
+that I had to use RenderDoc. Luckily, I had a working C++ alternative code by Tomas Öhberg, so I could compare the raw data differences in the both cases by loading a simple 3D cube.
 
 An unused variable warning is actually an error and looks like this:
-
-"2021/07/02 11:59:36 Could not find uniform:  metalRoughMap"
- 
+```console
+2021/07/02 11:59:36 Could not find uniform:  metalRoughMap
+```
 Instead of the variable location in code we get the day of the month.
 
-The hard part, and something to avoid, is writing some bigger pieces of code that cannot be checked immediately. There are also quite a few tricky places, for instance reading the fragment's world position from the depth buffer of the hdr stage in the volumetric ligthing shader.
+Tricky: Reading fragment's world position from the depth buffer of the hdr stage in the volumetric ligthing shader.
 
-## TD:
+## To Do:
 
-Automatic mesh scale and more scenes, tighter frustum, fix the rusty chain bug which is likely Sponza primitive No. 12.
+Automatic mesh scale and more scenes, tighter frustum, fix the rusty chain bug which is likely Sponza primitive No. 12 which has no 
+MetallicRoughnessTexture in Sponza.gltf. I simply do not load the whole primitive in this case as the code does not have a fall down 
+option to use PBR without such textures, whereas it should just load the base color and use it.
 
 ## Credits, Rendering Frameworks I Have Tried, Many Thanks To:
 
-1. Tomas Öhberg. Initially I was simply translating his marvelous C++ work written in the Autumn of 2017:
+1. **Tomas Öhberg**. Initially I was simply translating his marvelous C++ work written in the Autumn of 2017:
 
 https://gitlab.com/tomasoh/100_procent_more_volume
 
@@ -385,7 +406,7 @@ https://gitlab.com/tomasoh/100_procent_more_volume
 
 It is a reasonable POD-mostly clean C++ that completely implements the method of Balázs Tóth and Tamás Umenhoffer (EUROGRAPHICS 2009). The translation was not smooth due to the bug I mentioned above and some OpenGL issues with sending an array of light structs to the shaders.
 
-2. Baldur Karlsson (and Crytek?) for RenderDoc which helped me to locate wrong mesh buffer indexing in scene.go (uint vs uint32!).
+2. **Baldur Karlsson** (and Crytek?) for RenderDoc which helped me to locate wrong mesh buffer indexing in scene.go (uint vs uint32!).
 
 Eventually, a few problems became visible. The lack of license, 
 
@@ -393,21 +414,21 @@ https://gitlab.com/tomasoh/100_procent_more_volume/-/issues/1
 
 Some 3x slower than it should be shadow map stage and 3x slower volumetrics, caused mostly by the use of point lights and numerous distance-based functions. The rays were somewhat bleak and numerous scattering parameters barely changed anything visually. I was clamping the ray intensity artificially initially, and the code for that is still included in the postprocessing shader, though with the other two volumetric methods this problem is gone now. Parsing .obj files is no longer cutting it in view of GLTF 2.0, PBR...
 
-3. Andre Pestana for volumetrics and metallicRoughness:
+3. **Andre Pestana** for volumetrics and metallicRoughness:
 
 https://www.alexandre-pestana.com/volumetric-lights/
 
 https://www.alexandre-pestana.com/pbr-textures-sponza/
 
-4. Jake Ryan for volumetrics:
+4. **Jake Ryan** for volumetrics:
 
 https://github.com/JuanDiegoMontoya/GLest-Rendererer/blob/main/glRenderer/Resources/Shaders/volumetric.fs
 
-Both of these works do not have licenses, but this should not be a problem. Andre Pestana is also the one who added metallicRoughness textures to Sponza via Subtance Designer. There is still a small bug in my rendering of the Sponza scene, if you look into the chains holding certain iron "pots", they should be rusty, but instead they are wrapped in some "red silk" planes. The rust gets displayed correctly in Blender. What is going on there with this particulat mesh?
+Both of these works do not have licenses, but this should not be a problem. Andre Pestana is also the one who added metallicRoughness textures to Sponza via Subtance Designer.
 
-5. Dihara Wijetunga for PCSS which I initially incorporated in my Go-controlled shaders, but eventually dropped as it is a wrong tool for my needs. His dwSampleFramework (MIT-licensed) is also quite a candidate to dissect and rewrite in more productive languages. It has OpenGL and Vulkan codes going side by side, and some interesting extensions scattered in his github repos. It compiles on Ubuntu with a few errors which are not so hard to fix by googling (they come from VS2019), and his models are not included in some places and need Blender to say generate a plane or rescale some mesh).
+5. **Dihara Wijetunga** for PCSS which I initially incorporated in my Go-controlled shaders, but eventually dropped as it is a wrong tool for my needs. His dwSampleFramework (MIT-licensed) is also quite a candidate to dissect and rewrite in more productive languages. It has OpenGL and Vulkan codes going side by side, and some interesting extensions scattered in his github repos. It compiles on Ubuntu with an error which is not hard to fix by googling (it comes from VS2019 use), and his models are not included in some places and need Blender to say generate "plane.obj" or "rescale lucy.obj").
 
-6. Panagiotis Christopoulos Charitos, who helped me to solve the screen tearing issue which must be pretty common and good to know:
+6. **Panagiotis Christopoulos Charitos**, who helped me to solve the screen tearing issue which must be pretty common and good to know:
 
 https://github.com/godlikepanos/anki-3d-engine/issues/59
 
@@ -417,40 +438,37 @@ https://www.youtube.com/watch?v=uFDa4M4ZBPs
 
 Initially I was hoping to learn from any of these two engines, as they were both modern Vulkan-based and had volumetric lights I wanted above anything else. However, my excitement quickly evaporated as I could not get through the jungle of C++ and Vulkan code.
 
-7. See also further links in the code, and the list of "little people" without whom I would be perpetually stuck. For instance Finn Bear and Quim Muntal on this github issue
+7. **Finn Bear** and **Quim Muntal** on this github issue
 
 https://github.com/qmuntal/gltf/issues/26
 
-helped me to load the basic GLTF. Without their open correspondence I would not even be able to understand how to use the library. I then guessed the indexing pattern in some other places and relied on vim-go's :GoDef which allows to trace the GLTF structures. The problem is still there, that higher level layer to load everything into some structure is missing, but I understand why it is not there. The GLTF as such is some vast container and there can be so many features added or missing that it is perhaps better to leave it for a user to extract anything he or she wants. You know your GLTF, you write the code. The problem, however, is that nobody knows this all in the beginning, and Blender for instance manages to load everything, so a beginner expects any library to work this way, at some higher level.
+helped me to load the basic GLTF. Without their open correspondence I would not even be able to understand how to use the library. I then guessed the indexing pattern in some other places and relied on vim-go's :GoDef which allows to trace the GLTF structures. The problem is still there, that higher level layer to load everything into some structure is missing, but I understand why it is not there. The GLTF as such is some vast container and there can be so many features added or missing that it is perhaps better to leave it for a user to extract anything he or she wants. You know your GLTF, you write the code. The problem, however, is that nobody knows this all in the beginning, and Blender for instance manages to load everything, so a beginner expects any library to work this way.
 
-8. Maximilian Mader, for posing some modern C++ Windows-to-Ubuntu portability challenges:
+8. **Maximilian Mader**, for posing some modern C++ Windows-to-Ubuntu portability challenges:
 
 https://github.com/Max1412/Graphics2/issues/24
 
-This repo has no license, its main demo window is non-resizable, but it implements a full Wronski's SIGGRAPH 2014 Ubisoft approach to volumetrics, which I was hoping to be a great learning resource, but it turned out to be too complex for me, though it might be worth revisiting some day. Some quite advanced stuff is there: volumetric textures, compute shaders, C++17 with some meta programming, a simple max function is quite polymorphic there and was causing some template compilation error which was fixed by Maximilian Mader. It could be worth a blog why and how this difference happens. C++ wise, I am only in read-only, compile-only mode. 
+This repo has no license, its main demo window is non-resizable, but it implements a full Wronski's SIGGRAPH 2014 Ubisoft approach to volumetrics, which I was hoping to be a great learning resource, but it turned out to be too complex for me, though it might be worth revisiting some day. Some quite advanced stuff is there: Volumetric textures, compute shaders, C++17 with some meta programming, a simple max function is quite polymorphic there and was causing some template compilation error which was fixed by Maximilian Mader. It could be worth a blog why and how this difference happens. C++ wise, I am only in read-only, compile-only mode. 
 
 Then I encountered an OpenGL error and had the usual long blind dark alley walk which ended in a success without RenderDoc, but I do not know if RenderDoc would have helped me in this case. Again, why this was the problem on Ubuntu, but worked on Windows is beyond me, see the issue.
 
-This approach is heavier/slowier than one might think considering clusters and tiles in use, read the issue for some details and my further link to a specific Unity-related volumetrics discussion below. 
+This approach is heavier than one might think considering clusters and tiles in use, read the issue for some details and my further link to a specific Unity-related volumetrics discussion below. 
 
 BTW, there is also a similar WebGL 2.0 implementation of clustered volumetrics:
 
 https://github.com/rms13/WebGL2-Volumetric-Renderer
 
-The code also has no license. Clustered ray marched volumetric ligthing is also implemented in Armory3D (Zlib-licensed), Lumix (MIT-licensed), Flax (commercial, but friendly), and Anki3d (BSD), but these are big engines and extracting/isolating the necessary bits could be difficult.
-There was someone experimenting with a basic 3D ray marched volumetrics (undertaken in my Go-based code) also in the Urho3D community, but the code did not manage to get into the main repo, correct me if I am wrong.
+The code has no license too. Clustered ray marched volumetric ligthing is also implemented in Armory3D (Zlib-licensed), Lumix (MIT-licensed), Flax (commercial, but friendly), and Anki3d (BSD), but these are big engines and extracting/isolating the necessary bits could be difficult.
+There was someone experimenting with basic 3D ray marched volumetrics (undertaken in my Go-based code) also in the Urho3D community, but the code did not manage to get into the main repo, please correct me if I am wrong.
 
-9. This Unity forum discussion:
+9. **Michal Skalsky** and his Unity forum discussion:
 
-https://forum.unity.com/threads/true-volumetric-lights-now-open-source.390818/
-
-https://forum.unity.com/threads/true-volumetric-lights-now-open-source.390818/page-3
+https://github.com/SlightlyMad/VolumetricLights
 
 https://forum.unity.com/threads/true-volumetric-lights-now-open-source.390818/page-5
 
-An interesting reading with a lot of inspiring images and insights into the problems of the Unity community, despite everything Windows and non-OpenGLness. In order not to get lost in a big discussion, I will cite directly the most important and insightful bit of information here:
-
-
+An interesting reading with a lot of inspiring images and insights into the problems of the Unity community, despite everything being Windows-centered and non-OpenGL. In order not to get lost in a big discussion, I will cite directly the most important and insightful bit of information here:
+```console
 "
 Jun 16, 2016
 
@@ -474,9 +492,10 @@ Works with transparent object. 3d texture stores light information for every poi
 It is very simple to trade quality for performance. You simply change number of voxels. 3d texture filtering will take care of the rest.
 Whatever they do, I doubt it will work for everybody. There is so many different projects out there. I'm curious if they make it integral part of Unity or keep it as a separate asset.
 "
+```
 
-10. Daniel Salvadori, g3n and Gokoban projects. This shows how much one can do with a GC language in 3D, and even though I am not much of a gamer, Gokoban is an awesome little 3D puzzle game that so deserves to be better known. It is sort of a prototype or a vast simplification of Stephen's Sausage Roll so beloved by Jonathan Blow. It is too bad that the game requires some knowledge of how to set up 
-Go and paths and is thus not available for non-programmers. I helped solving this issue, which I keep as a memo whenever I need to install this game on Ubuntu:
+10. **Daniel Salvadori**, g3n and Gokoban projects. This shows how much one can do with a GC language in 3D, and even though I am not much of a gamer, Gokoban is an awesome little 3D puzzle game that so deserves to be better known. It is sort of a prototype or a vast simplification of Stephen's Sausage Roll so beloved by **Jonathan Blow**. It is too bad that the game requires some knowledge of how to set up 
+Go and $GOPATH and is thus not available for non-programmers. I helped solving this issue, which I keep as a memo whenever I need to install this game on Ubuntu:
 
 https://github.com/danaugrs/gokoban/issues/14
 
