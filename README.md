@@ -263,7 +263,7 @@ Another potentially useful reference for this method is this MIT-licensed code:
 
 https://github.com/kosowski/SimplePBR/blob/master/data/shaders/pbr/simplepbr.frag
 
-It actually uses the Java-based Processing framework where the uniforms are set up, the function is "computeTangentFrame".
+It actually uses Java-based Processing framework where the uniforms are set up, the function is "computeTangentFrame".
 
 ## Rendering Discussion III: Volumetric Light
 
@@ -468,7 +468,7 @@ https://github.com/SlightlyMad/VolumetricLights
 https://forum.unity.com/threads/true-volumetric-lights-now-open-source.390818/page-5
 
 An interesting reading with a lot of inspiring images and insights into the problems of the Unity community, despite everything being Windows-centered and non-OpenGL. In order not to get lost in a big discussion, I will cite directly the most important and insightful bit of information here:
-```console
+*
 "
 Jun 16, 2016
 
@@ -478,21 +478,21 @@ It is supposedly the same technique as the one introduced in Assassin's Creed 4 
 
 Michal_:
 Classic" raymarching approach (this, Killzone etc.) - volumetric effect is computed and immediatelly stored in 2d texture that is later applied to the final image.
-You can render at native resolution and get best possible quality with crisp edges.
-Keeps quality even for distant lights
-Works with pretty much any shadow technique
-Doesn't support transparent objects out of the box
-Trading quality for performance is problematic. You can render at lower resolutions but you have to deal with all the "mixed resolution" rendering problems (halos, bleeding, etc.)
-Probably more expensive per light but can give you better quality
+- You can render at native resolution and get best possible quality with crisp edges.
+- Keeps quality even for distant lights
+- Works with pretty much any shadow technique
+- Doesn't support transparent objects out of the box
+- Trading quality for performance is problematic. You can render at lower resolutions but you have to deal with all the "mixed resolution" rendering problems (halos, bleeding, etc.)
+- Probably more expensive per light but can give you better quality
 Voxel based approach (Unity?, Assassin's Creed, Frostbite etc.) - volumetric effect is computed for "every" point in front of the camera. It is stored in 3d texture for future use.
-You must render at very low resolution to make it practical. No crisp edges or shadow details. For example, AC4 used 160x90x64 resolution. Roughly 1 000 000 voxels. It would require hundreds of millions of voxels to match the highest quality of the classic technique.
-Probably not very practical for long drawing distances because of the limited number of depth slices. The range for AC4 was only 100 meters.
-Shouldn't work very well with current Unity shadows. The shadows have high frequency information and the voxel resolution is very low. That should lead to under-sampling artifacts, aliasing, flickering etc. AC4 used blurred exponential shadows to remove high frequency signal. I'm curious what Unity will do here. Maybe just a temporal super-sampling?
-Works with transparent object. 3d texture stores light information for every point so you can easily apply this to transparent objects.
-It is very simple to trade quality for performance. You simply change number of voxels. 3d texture filtering will take care of the rest.
+- You must render at very low resolution to make it practical. No crisp edges or shadow details. For example, AC4 used 160x90x64 resolution. Roughly 1 000 000 voxels. It would require hundreds of millions of voxels to match the highest quality of the classic technique.
+- Probably not very practical for long drawing distances because of the limited number of depth slices. The range for AC4 was only 100 meters.
+- Shouldn't work very well with current Unity shadows. The shadows have high frequency information and the voxel resolution is very low. That should lead to under-sampling artifacts, aliasing, flickering etc. AC4 used blurred exponential shadows to remove high frequency signal. I'm curious what Unity will do here. Maybe just a temporal super-sampling?
+- Works with transparent object. 3d texture stores light information for every point so you can easily apply this to transparent objects.
+- It is very simple to trade quality for performance. You simply change number of voxels. 3d texture filtering will take care of the rest.
 Whatever they do, I doubt it will work for everybody. There is so many different projects out there. I'm curious if they make it integral part of Unity or keep it as a separate asset.
 "
-```
+*
 
 10. **Daniel Salvadori**, g3n and Gokoban projects. This shows how much one can do with a GC language in 3D, and even though I am not much of a gamer, Gokoban is an awesome little 3D puzzle game that so deserves to be better known. It is sort of a prototype or a vast simplification of Stephen's Sausage Roll so beloved by **Jonathan Blow**. It is too bad that the game requires some knowledge of how to set up 
 Go and $GOPATH and is thus not available for non-programmers. I helped solving this issue, which I keep as a memo whenever I need to install this game on Ubuntu:
