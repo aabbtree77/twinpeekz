@@ -5,7 +5,7 @@ Wear its darkness with an empty smile”<br>
 > “In real life, there is no algebra.” <br> &ndash; Audrey Horne, Twin Peaks, 1991
 
 > “Donna Hayward: "There's things you can't get in books." <br>
-Harold Smith: "There are things you can't get anywhere... but we dream they can be found in other people."”
+Harold Smith: "There are things you can't get anywhere... but we dream they can be found in other people." ”<br>
 &ndash; Twin Peaks, 1991
 
 ## Introduction
