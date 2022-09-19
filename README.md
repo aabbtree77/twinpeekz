@@ -1,6 +1,16 @@
+> “Extinguished by light, I turn on the night <br>
+Wear its darkness with an empty smile”<br>
+&ndash; Pink Floyd "Wearing The Inside Out", 1994
+
+> “In real life, there is no algebra.” <br> &ndash; Audrey Horne, Twin Peaks, 1991
+
+> “Donna Hayward: "There's things you can't get in books." <br>
+Harold Smith: "There are things you can't get anywhere... but we dream they can be found in other people."”
+&ndash; Twin Peaks, 1991
+
 ## Introduction
 
-This is real time rendering of the Sponza demo scene, written in Go (Golang) and GLSL. Details:
+This is a real time rendering of the Sponza demo scene, written in Go (Golang) and GLSL. Details:
 
 1. Ubuntu, GLFW3, OpenGL, GLTF 2.0, Golang, MIT license.
 
