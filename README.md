@@ -7,7 +7,7 @@ Wear its darkness with an empty smile”<br>
 
 <table align="center">
     <tr>
-    <th align="center">Volumetric Rendering of Sponza with Two Directional Lights: 12ms. of the OpenGL Pipeline. GTX 760, 4096x4096 Shadow Maps, 1920x1080 Screen Resolution</th>
+    <th align="center">Sponza under Two Suns</th>
     </tr>
     <tr>
     <td>
@@ -26,7 +26,7 @@ This is a real time rendering of the Sponza demo scene, written in Go (Golang) a
 
 Why yet another rendering framework/engine/code? In a narrow sense, consider this code as a study of volumetric lighting and Go/GC in 3D.
 
-More broadly, I have been following quite a few 3D engines, and the aim here is to expose/emphasize a realistic rendering pipeline evolving towards "low complexity, high fidelity", in OpenGL. Most of the 3D engines are excessively complex unreliable Windows-centric editor-driven C++ maintenance nightmares which are getting even crazier with Vulkan and RTX cards. Nothing good in the web space either.
+More broadly, I have been following quite a few 3D engines and the aim here is to expose/emphasize a realistic rendering pipeline evolving towards "low complexity, high fidelity", in OpenGL. Most of the 3D engines are excessively complex unreliable Windows-centric editor-driven C++ maintenance nightmares which are getting even crazier with Vulkan and RTX cards. Nothing good in the web space either.
 
 Ubuntu as a platform for 3D graphics is still weak despite ~~its superb stability~~ (Edit 2022: Barely managed to install the latest Ubuntu 22.04, new fckups with Vulkan, Wayland, GPU drivers, Chromium being better than Chrome...), the success of Blender, and the emergence of Linux ports by the giants. A lesson learned from Unreal: I went through all the hassle of compiling it on Ubuntu and the editor still crashes in the year 2021. Unity's editor is more stable on Ubuntu and its HDRP pipeline now includes volumetric lighting. However, one can hardly say that any of these engines is a joy. There exist much cleaner Linux-friendly modern alternatives, such as [Anki](https://github.com/godlikepanos/anki-3d-engine), but the complexity is there. Scroll down to Credits where I share my experience with some of these computer graphics frameworks.
 
@@ -250,7 +250,7 @@ With a similar light intensity, pseudo-PBR is less playful, and the material is 
 On the other hand, somewhat brute shadows and mesh resolutions destroy the realism and mood if you start zooming or getting close to the objects.
 So it is a fine tool which must go hand in hand with some other improvements. At the moment, no IBL and no ambient terms, I consider this as an unnecessary code complexity. Ambience is achieved by simply adding the base color weighted with some 0.01 factor and such, this is too crude, but I like things look a bit darker and do not mind underexposure and lack of detail in dark areas.
 
-Some kind of a skybox is still a basic need to implement, but I would not like some 3ms. wasted on just a nicer background, anything samplerCube related is quite slow on GTX 760.
+A skybox is still the basic need to implement, but I would not like some 3ms. wasted on just a nicer background, anything "samplerCube" related is quite slow on GTX 760.
 
 In addition to baking and ambience, a proper PBR would bring one more complication, which is some tangent-bitangent space usually relegated either to Assimp, or custom C++ implementations. So the mesh essentially gets one more GPU tangent buffer in addition to normals. However, it is still possible to compute tangents directly in the shader, but this might reduce the performance. 
 
