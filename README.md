@@ -7,7 +7,7 @@ Wear its darkness with an empty smile”<br>
 
 <table align="center">
     <tr>
-    <th align="center">Volumetric Rendering of Sponza with Two Directional Lights: 12ms. of the OpenGL Pipeline. GTX 760, 4096x4096 Shadow Maps, 1920x1080 Screen Resolution.</th>
+    <th align="center">Volumetric Rendering of Sponza with Two Directional Lights: 12ms. of the OpenGL Pipeline. GTX 760, 4096x4096 Shadow Maps, 1920x1080 Screen Resolution</th>
     </tr>
     <tr>
     <td>
@@ -22,7 +22,7 @@ This is a real time rendering of the Sponza demo scene, written in Go (Golang) a
 
 1. i7, 16GB of RAM, GTX 760. Ubuntu, GLFW3, OpenGL, GLTF 2.0, Golang, MIT license.
 
-2. Forward directional light(s), shadow mapping (PCF 3x3), basic PBR (no baking, no ambient term), and above all, fully 3D ray marched volumetric lighting!
+2. Forward directional light(s), shadow mapping (PCF 3x3), basic PBR (no baking, no ambient term), and above all, a 3D ray marched volumetric lighting!
 
 Why yet another rendering framework/engine/code? In a narrow sense, consider this code as a study of volumetric lighting and Go/GC in 3D.
 
