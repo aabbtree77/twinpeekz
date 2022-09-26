@@ -40,7 +40,7 @@ This Go code focuses on the first of these qualitative jumps, mostly inspired by
 
 2. Install Ubuntu dependencies:
   ```console
-  sudo apt-get install xorg-dev libgl1-mesa-dev
+  sudo apt install xorg-dev libgl1-mesa-dev
   ```
 
 3. Download Sponza from github to "Sponza_GLTF": 
@@ -137,8 +137,8 @@ However, I was severely disappointed by its characteristics and timing, see the 
 
 <table>
 <tr>
-<th> PCF 3x3, time = (1.1 + 2.2)ms. </th>
-<th> PCSS(128, 128), time = (1.1 + 75)ms.</th>
+<th> PCF 3x3, time = 1.1+2.2 ms </th>
+<th> PCSS(128, 128), time = 1.1+75 ms</th>
 </tr>
 <tr>
 <td>
@@ -156,8 +156,8 @@ However, I was severely disappointed by its characteristics and timing, see the 
 
 <table>
 <tr>
-<th> PCSS(16, 16), time = (1.1+6.5)ms. </th>
-<th> PCSS(4, 25), time = (1.1 + 5.8)ms. </th>
+<th> PCSS(16, 16), time = 1.1+6.5 ms</th>
+<th> PCSS(4, 25), time = 1.1+5.8 ms</th>
 </tr>
 <tr>
 <td>
@@ -187,8 +187,8 @@ Let us see some little PBR in action.
 
 <table>
 <tr>
-<th style="text-align:center"> Pseudo-PBR rendering by Tomas Öhberg with a weak point light setup. </th>
-<th style="text-align:center"> PBR rendering with full volumetrics in this code. </th>
+<th style="text-align:center"> Pseudo-PBR Rendering by Tomas Öhberg with a Dim Point Light Setup </th>
+<th style="text-align:center"> PBR Rendering with Full Volumetrics </th>
 </tr>
 <tr>
 <td>
@@ -214,7 +214,7 @@ Let us evaluate some more images.
 
 <table>
 <tr>
-<th style="text-align:center"> PBR, darker setup, non-volumetric</th>
+<th style="text-align:center"> PBR, Darker Setup, Non-Volumetric</th>
 </tr>
 <tr>
 <td>
@@ -225,7 +225,7 @@ Let us evaluate some more images.
 
 <table>
 <tr>
-<th style="text-align:center"> Pseudo-PBR, darker setup, non-volumetric</th>
+<th style="text-align:center"> Pseudo-PBR, Darker Setup, Non-Volumetric</th>
 </tr>
 <tr>
 <td>
@@ -236,7 +236,7 @@ Let us evaluate some more images.
 
 <table>
 <tr>
-<th style="text-align:center"> Pseudo-PBR, bright setup, non-volumetric</th>
+<th style="text-align:center"> Pseudo-PBR, Bright Setup, Non-Volumetric</th>
 </tr>
 <tr>
 <td>
@@ -303,8 +303,8 @@ For some future implementation, I will mention three references here:
 
 <table>
 <tr>
-<th style="text-align:center"> Volumetric Lighting: Andre Pestana, time = [1.06 3.78 2.52 0.21 7.58]ms. </th>
-<th style="text-align:center"> Volumetric Lighting: Jake Ryan, time = [1.06 4.07 2.54 0.35 8.03]ms. </th>
+<th style="text-align:center"> Volumetric Lighting: Andre Pestana, Time = [1.06 3.78 2.52 0.21 7.58] ms </th>
+<th style="text-align:center"> Volumetric Lighting: Jake Ryan, Time = [1.06 4.07 2.54 0.35 8.03] ms </th>
 </tr>
 <tr>
 <td>
