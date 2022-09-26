@@ -92,7 +92,7 @@ There are four layers of code:
 
 1. **main.go**, **camera.go** - mostly GLFW stuff, window, mouse, keyboard management. Initial camera position in makeCam() (camera.go). AWSDEC  and arrow keys to move in 3D, holding+LMB changes camera view direction. Scrolling zooms in and out, F11 toggles full screen. Window resizes change certain frame buffers, but the shadow map resolution remains the same.
 
-  Some camera-related math functions are relegated to the external dependency, i.e. the g3n engine (BSD-2), which one could "vendor" directly. The pain point will not be a Go package though, but the system libs like "xorg-dev" or "libgl1-mesa-dev" on Ubuntu. See [Fyne](https://github.com/fyne-io/fyne/blob/master/.github/workflows/platform_tests.yml) and g3n repos for more of these precise OpenGL/AL Ubuntu layer lib names.
+    Elementary camera-related math functions are relegated to the external dependency, i.e. the g3n engine (BSD-2), which one could "vendor" directly. The pain point will not be a Go package though, but the system libs like "xorg-dev" or "libgl1-mesa-dev" on Ubuntu. See [Fyne](https://github.com/fyne-io/fyne/blob/master/.github/workflows/platform_tests.yml) and g3n repos for more of these precise OpenGL/AL Ubuntu layer lib names.
 
 2. **scene.go** - GLTF loading and some GPU buffer preparation. Each model must have .gltf, .bin and its texture image files in the same folder, tested mostly on an enhanced Sponza scene. There is no missing data filling and excessive checking, if the model does not have all the data it needs to have then it is simply not loaded or some error might occur. You know what is in your GLTF file and adjust scene.go to use the data you need.
 
