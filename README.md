@@ -26,9 +26,9 @@ This is a real time rendering of the Sponza demo scene, written in Go (Golang) a
 
 Why yet another rendering framework/engine/code? In a narrow sense, consider this code as a study of volumetric lighting and Go/GC in 3D.
 
-More broadly, I have been following quite a few 3D engines, and the aim here is to expose/emphasize a realistic rendering pipeline evolving towards "low complexity, high fidelity", in OpenGL. Most of the 3D engines are excessively complex unreliable Windows-centric editor-driven C++ maintenance nightmares which are getting even more complex with Vulkan and RTX cards. Nothing good yet in the web space either.
+More broadly, I have been following quite a few 3D engines, and the aim here is to expose/emphasize a realistic rendering pipeline evolving towards "low complexity, high fidelity", in OpenGL. Most of the 3D engines are excessively complex unreliable Windows-centric editor-driven C++ maintenance nightmares which are getting even crazier with Vulkan and RTX cards. Nothing good in the web space either.
 
-Ubuntu as a platform for 3D graphics is still weak despite ~~its superb stability~~ (Edit 2022: Barely managed to install the latest Ubuntu 22.04, new fckups with Vulkan, Wayland, GPU drivers, Chromium being better than Chrome...) the success of Blender, and the emergence of Linux ports by the giants. A lesson learned from Unreal: I went through all the hassle of compiling it on Ubuntu and the editor still crashes in the year 2021. Unity's editor is more stable on Ubuntu and its HDRP pipeline now includes volumetric lighting. However, one can hardly say that any of these engines is a joy. There exist much cleaner Linux-friendly modern alternatives, such as [Anki](https://github.com/godlikepanos/anki-3d-engine), but the complexity is there. Scroll down to Credits where I share my experience with some of these computer graphics frameworks.
+Ubuntu as a platform for 3D graphics is still weak despite ~~its superb stability~~ (Edit 2022: Barely managed to install the latest Ubuntu 22.04, new fckups with Vulkan, Wayland, GPU drivers, Chromium being better than Chrome...), the success of Blender, and the emergence of Linux ports by the giants. A lesson learned from Unreal: I went through all the hassle of compiling it on Ubuntu and the editor still crashes in the year 2021. Unity's editor is more stable on Ubuntu and its HDRP pipeline now includes volumetric lighting. However, one can hardly say that any of these engines is a joy. There exist much cleaner Linux-friendly modern alternatives, such as [Anki](https://github.com/godlikepanos/anki-3d-engine), but the complexity is there. Scroll down to Credits where I share my experience with some of these computer graphics frameworks.
 
 Meanwhile, 3D graphics got much prettier since around 2014 mostly due to very few effects such as: (i) Volumetric lights exemplified by the Killzone Shadow Fall 2013, (ii) cleaner signal processing and water rendering tricks in INSIDE 2016, and (iii) the skyscapes in RDR2 2018. See the online GDC presentations about the technology behind these amazing projects.
 
@@ -61,11 +61,12 @@ This Go code focuses on the first of these qualitative jumps, mostly inspired by
   Y = 18.3 m.
   Z = 12.4 m.
   ```
+  
   Above "Dimensions" you will see "Scale" values, all of which will be 0.008, which is not right. Select the Sponza building in the Object mode, press ctrl+A and apply the scale. The transform panel's "Scale" values should now become 1.0. The transform panel is toggled by pressing "n".
 
   Export now the scene in GLTF 2.0 to Sponza_GLTF2, select "Format" as "GLTF Separate (.gltf + .bin + textures). Uncheck "+Y Up" in the "Transform" tab on the right side of the exporting prompt window, otherwise Y and Z axes will be switched and the camera will be messed up. Just in case, the initial camera position and orientation is set inside the function "makeCam()" in the file "camera.go": 
   ```go
-  oriecam.UpdateOrientation(mgl32.Vec3{10.0, -4.5, 4.0}, mgl32.Vec3{-1.0, 0.9, 0.0}, Z_AXIS)
+  cam.UpdateOrientation(mgl32.Vec3{10.0, -4.5, 4.0}, mgl32.Vec3{-1.0, 0.9, 0.0}, Z_AXIS)
   ```
   
 6. Clone this repo:
@@ -95,23 +96,23 @@ There are four layers of code:
 
 3. **rendering.go**, **shader.go** - the rendering pipeline follows the C++ code of Tomas Öhberg. The file shader.go is the work by Nicholas Blaskey (MIT license), I leave some geometry shader compilation there in case the point lights would need to be added later. 
 
-Some camera-related math functions are relegated to the external dependency, i.e. the g3n engine (BSD-2), which I should probably just copy and distribute directly in this code for installation stability reasons. In general, the pain point here will be not a Go package, but the Ubuntu system libs like "xorg-dev" or "libgl1-mesa-dev".
+  Some camera-related math functions are relegated to the external dependency, i.e. the g3n engine (BSD-2), which one could "vendor" directly. The pain point will not be a Go package though, but the system libs like "xorg-dev" or "libgl1-mesa-dev" on Ubuntu. See [Fyne](https://github.com/fyne-io/fyne/blob/master/.github/workflows/platform_tests.yml) and g3n repos for more of these precise OpenGL/AL Ubuntu layer lib names.
 
 4. Shaders:
 
-**hdr_frag.glsl** - this is the PBR code which I took from Angel Ortiz (MIT licensed), I removed light baking and the abient light contribution term.
+  **hdr_frag.glsl** - this is the PBR code which I took from Angel Ortiz (MIT licensed), I removed light baking and the abient light contribution term.
 
-**vol_frag.glsl** - implements two approaches, the one by Andre Pestana (ray marches over visibility * phase func) and by Jake Ryan (marches just over visibility and postprocesses it into a color), see the links in those files. 
+  **vol_frag.glsl** - implements two approaches, the one by Andre Pestana (ray marches over visibility * phase func) and by Jake Ryan (marches just over visibility and postprocesses it into a color), see the links in those files. 
 
-**postpr_frag.glsl** - simply adds the hdr and volumetric colors and postprocesses them in some standard ways. There is an option to clamp a bit the 
-volumetric part to emphasize "god rays", but this also saturates colors, and one can also strengthen rays by adjusting Beer-related parameters in vol_frag.glsl,
-or treating color as radiance in Pestana's method (simply multiplying light.color by some intensity value).
+  **postpr_frag.glsl** - simply adds the hdr and volumetric colors and postprocesses them in some standard ways. There is an option to clamp a bit the 
+  volumetric part to emphasize "god rays", but this also saturates colors, and one can also strengthen rays by adjusting Beer-related parameters in vol_frag.glsl,
+  or treating color as radiance in Pestana's method (simply multiplying light.color by some intensity value).
 
 The pipeline splits into
 
 shadow mapping -> hdr (PBR) -> volumetrics -> postprocessing.
 
-The execution time will depend largely on the number of lights and the shadow map texture sizes. Given a single directional light source and 4096x4096 textures, pure OpenGL time (measurement taken randomly, the last value summarizes all the stages):
+The execution time will depend largely on the number of lights and the shadow map texture sizes. Given a single directional light source and 4096x4096 textures, pure OpenGL rendering stage (measurement taken randomly, the last value summarizes all the stages):
 
 timeOpenGLms = [1.190624 3.639968 2.843136 0.210208 7.883936]
 
@@ -122,7 +123,7 @@ inside "main.go".
 
 Timing with two directional lights:
 
-timeOpenGLms= [1.918592 3.783936 4.978624 0.210656 10.891808000000001],
+timeOpenGLms= [1.918592 3.783936 4.978624 0.210656 10.891808],
 
 with the overall deltaT = 17.15ms.
 
@@ -178,7 +179,7 @@ Look into the shadow stripe on the left side, on the wall. It comes from the rea
 Smaller internal blocker search and PCSS PCF values (which already take 3-4 extra ms.) produce artifacts which barely improve a raw shadow mapping with PCF 3x3.
 So PCSS is a no go for me. It is probably a tool for some baking/prerendering that might give a smooth visual feel to the scene, or rendering at smaller shadow map resolutions followed by some filters, but it is better to simply increase the shadow map resolution as this stage takes roughly only 1ms. for 4K on my GTX 760, albeit for a single light.
 
-I was thinking of trying VSM, ESM as faster smooth shadow alternatives, but I deeply suspect many already went that way and did not find peace. So instead of trying every soft shadow technique one should probably just bite the bullet and go with an industry standard CSM, but that I do not want, at least for now. The code leaks from shaders to higher levels with all sorts of frustum computations and cascade stabilization and AA to avoid various "frame shimmering" effects. Considering all this baggage, the basic shadow mapping with PCF 3x3 at higher resolution such as 4K seems to be OK, until better, ray tracing times... Shadows are a big unsolved 3D graphics problem if you are pedantic enough.
+VSM, ESM as faster smooth shadow alternatives? I deeply suspect many already went that way and did not find peace. So instead of trying every soft shadow technique one should probably just bite the bullet and go with an industry standard CSM, but that I do not want, at least for now. The code leaks from shaders to higher levels with all sorts of frustum computations and cascade stabilization and AA to avoid various "frame shimmering" effects. Considering all this baggage, the basic shadow mapping with PCF 3x3 at higher resolution such as 4K seems to be OK, until better, ray tracing times... Shadows are a big unsolved 3D graphics problem if you are pedantic enough.
 
 ## Rendering Discussion II: PBR
 
