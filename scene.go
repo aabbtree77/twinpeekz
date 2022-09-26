@@ -67,8 +67,8 @@ func initScene() Scene {
 	//gltfFileToLoad := folderPath + "BoomBox.gltf"
 
 	//folderPath := "/home/tokyo/sponzaGLTFResc/"
-	folderPath := "/home/tokyo/sponzaGLTFRescNoLights/"
-	gltfFileToLoad := folderPath + "sponza.gltf"
+	folderPath := "/home/tokyo/Sponza_GLTF2/"
+	gltfFileToLoad := folderPath + "Sponza.gltf"
 
 	doc, err := gltf.Open(gltfFileToLoad)
 	if err != nil {
