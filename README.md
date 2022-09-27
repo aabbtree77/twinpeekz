@@ -20,19 +20,11 @@ Wear its darkness with an empty smile”<br>
 
 This is a real time rendering of the Sponza demo scene, written in Go (Golang) and GLSL. Details:
 
-1. i7, 16GB of RAM, GTX 760. Ubuntu, GLFW3, OpenGL, GLTF 2.0, Golang, MIT license.
+1. i7, 16GB of RAM, GTX 760. Ubuntu, GLFW3, OpenGL, GLTF 2.0, MIT license.
 
-2. Forward directional light(s), shadow mapping (PCF 3x3), basic PBR (no baking, no ambient term), and above all, a 3D ray marched volumetric lighting!
+2. Forward directional light(s), shadow mapping (PCF 3x3), basic PBR (no baking, no ambient term), 3D ray marched volumetric lighting.
 
-Why yet another rendering framework/engine/code? In a narrow sense, consider this code as a study of volumetric lighting and Go/GC in 3D.
-
-More broadly, I have been following quite a few 3D engines and the aim here is to expose/emphasize a realistic rendering pipeline evolving towards "low complexity, high fidelity", in OpenGL. Most of the 3D engines are excessively complex unreliable Windows-centric editor-driven C++ maintenance nightmares which are getting even crazier with Vulkan and RTX cards. Nothing good in the web space either.
-
-Ubuntu as a platform for 3D graphics is still weak despite ~~its superb stability~~ (Edit 2022: Barely managed to install the latest Ubuntu 22.04, new fckups with Vulkan, Wayland, GPU drivers, Chromium being better than Chrome...), the success of Blender, and the emergence of Linux ports by the giants. A lesson learned from Unreal: I went through all the hassle of compiling it on Ubuntu and the editor still crashes in the year 2021. Unity's editor is more stable on Ubuntu and its HDRP pipeline now includes volumetric lighting. However, one can hardly say that any of these engines is a joy. There exist much cleaner Linux-friendly modern alternatives, such as [Anki](https://github.com/godlikepanos/anki-3d-engine), but the complexity is there. Scroll down to Credits where I share my experience with some of these computer graphics frameworks.
-
-Meanwhile, 3D graphics got much prettier since around 2014 mostly due to very few effects such as: (i) Volumetric lights exemplified by the Killzone Shadow Fall 2013, (ii) cleaner signal processing and water rendering tricks in INSIDE 2016, and (iii) the skyscapes in RDR2 2018. See the online GDC presentations about the technology behind these amazing projects.
-
-This Go code focuses on the first of these qualitative jumps, mostly inspired by the work of Tomas Öhberg. It is a start towards a lightweight graphics code whose rendering pipeline one could control.
+Why yet another rendering code? In a narrow sense, this is a study of volumetric lighting and Go/GC in 3D. More broadly, Unreal/Unity/Godot types are hardly a joy to work with. Consider this attempt as a starting point towards a lightweight graphics engine whose rendering pipeline one could actually control.
 
 ## Setup
 
@@ -179,7 +171,7 @@ Look into the shadow stripe on the left side, on the wall. It comes from the rea
 Smaller internal blocker search and PCSS PCF values (which already take 3-4 extra ms.) produce artifacts which barely improve a raw shadow mapping with PCF 3x3.
 So PCSS is a no go for me. It is probably a tool for some baking/prerendering that might give a smooth visual feel to the scene, or rendering at smaller shadow map resolutions followed by some filters, but it is better to simply increase the shadow map resolution as this stage takes roughly only 1ms. for 4K on my GTX 760, albeit for a single light.
 
-VSM, ESM as faster smooth shadow alternatives? I deeply suspect many already went that way and did not find peace. So instead of trying every soft shadow technique one should probably just bite the bullet and go with an industry standard CSM, but that I do not want, at least for now. The code leaks from shaders to higher levels with all sorts of frustum computations and cascade stabilization and AA to avoid various "frame shimmering" effects. Considering all this baggage, the basic shadow mapping with PCF 3x3 at higher resolution such as 4K seems to be OK, until better, ray tracing times... Shadows are a big unsolved 3D graphics problem if you are pedantic enough.
+VSM, ESM as faster smooth shadow alternatives? I deeply suspect many already went that way and did not find peace. So instead of trying every soft shadow technique one should probably just bite the bullet and go with an industry standard CSM. However, CSM introduces a significant jump in complexity. The code leaks from shaders to higher levels with all sorts of frustum computations and cascade stabilization and AA to avoid various "frame shimmering" effects. Considering all this baggage, the basic shadow mapping with PCF 3x3 at higher resolution such as 4K seems to be OK, until better, ray tracing times...
 
 ## Rendering Discussion II: PBR
 
@@ -377,6 +369,7 @@ gc 44 @337.425s 0%: 0.046+0.42+0.006 ms clock, 0.37+0.14/0.49/0.60+0.054 ms cpu,
 gc 45 @345.492s 0%: 0.037+14+0.007 ms clock, 0.30+0.41/0.31/0.29+0.057 ms cpu, 4->4->0 MB, 5 MB goal, 8 P
 gc 46 @353.542s 0%: 0.045+15+0.006 ms clock, 0.36+0.25/0.58/0.27+0.051 ms cpu, 4->4->0 MB, 5 MB goal, 8 P
 ```
+
 You can see that the default GC setup does not consume more than 1ms. and it gets invoked every 8s. or so. However, a spike wasting whole 24ms. may occur once a minute or so. Dropping a frame or two per minute does not break any smooth 3D experience, but with heavier codes 
 taking place in Go its GC could become a problem or would need a special focus and experiments.
 
@@ -384,7 +377,7 @@ Pointers are troublesome, and we get them without the ability to control stack v
 allocations. They also overlap with some other purposes: a mutable function argument qualifier, or a test if the structure field exists after loading 
 a struct from *.json, by checking for the nil value if the structure element has been defined as a pointer.
 
-Also $GOPATH in the past, variable capitalization to mark visibility, unused variable errors, these are annoying.
+Also $GOPATH in the past, variable capitalization to mark visibility, unused variable errors, these are warts.
 
 I also use these math functions as the external dependency:
 
@@ -396,17 +389,11 @@ func Atan(v float32) float32 {
 	return float32(math.Atan(float64(v)))
 }
 ```
-you might think how terrible Go is as this calls for generic types. It is actually on the contrary! This is fairly readable, does not slow down the compilation, does not spit out crazy C++ template errors. Though it seems that Go is getting generic types by the end of this year, finally. However, this is totally not an issue. The real problem is pointers:
+you might think how terrible Go is as this calls for generic types. It is actually on the contrary! This is readable, does not slow down the compilation, does not spit out crazy C++ template errors. Edit 2022: Go now has generic types since version 1.18. However, this is totally not an issue. [Pointers](https://github.com/g3n/engine/issues/163) are troublesome though.
 
-https://github.com/g3n/engine/issues/163
+The tools are good. I could use go-vim, and mostly just :GoDef and ctrl+O to get back, sometimes :GoRename. My GLTF code was written just by looking at Quim Muntal's GLTF library with :GoDef.
 
-and such issues are endless. Besides, $GOPATH should not have been there, but this comes from a different use model initially at Google, they say. The node.js way of cloning everything locally into the code folder is so much better, but this was not the approach taken.
-
-Still, consider this: Golang is roughly ten years old, GC, no compile time gymnastics, at least not yet, very minimal OO, a single compiler mostly, 
-no multiple standards, no make-cmake-header-only crapola. And already 40K+ Golang issues on github.
-Imagine how gigantic this number is for C++!
-
-I use go-vim, and mostly just :GoDef and ctrl+O to get back, sometimes :GoRename. My GLTF code was written just by looking at Quim Muntal's GLTF loading library this way, see the last section for more details.
+Why is Go so little used in 3D, is it worth pushing Go there? The GC spikes will always be there, and so will [cgo](https://zchee.github.io/golang-wiki/cgo/) due to king of the hill. A modern non-GC C-frontend such as Nim/Zig seems to be more suitable, at first glance. However, Go is remarkable in that it is one of so very few languages with simple polymorphism (at least prior to Go 1.18), not to mention a good parallelism story. These do not help taming graphics APIs, but might become handy with asset loading and code "at scale". History shows that anything static and non-GC is always a mess.
 
 ## OpenGL Experience Report
 
