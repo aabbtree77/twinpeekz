@@ -56,7 +56,7 @@ Why yet another rendering code? In a narrow sense, this is a study of volumetric
     
     Above "Dimensions" you will see "Scale" values, all of which will be 0.008, which is not right. Select the Sponza building in the Object mode, press ctrl+A and apply the scale. The transform panel's "Scale" values should now become 1.0. The transform panel is toggled by pressing "n".
 
-    Export now the scene in GLTF 2.0 to Sponza_GLTF2, select "Format" as "GLTF Separate (.gltf + .bin + textures). Uncheck "+Y Up" in the "Transform" tab on the right side of the exporting prompt window, otherwise Y and Z axes will be switched and the camera will be messed up. Just in case, the initial camera position and orientation is set inside the function "makeCam()" in the file "camera.go": 
+    Export now the scene in GLTF 2.0 to the "Sponza_GLTF2" folder as "Sponza.gltf". Select "Format" as "GLTF Separate (.gltf + .bin + textures). Uncheck "+Y Up" in the "Transform" tab on the right side of the exporting prompt window, otherwise Y and Z axes will be switched and the camera will be messed up. Just in case, the initial camera position and orientation is set inside the function "makeCam()" in the file "camera.go": 
     ```go
     cam.UpdateOrientation(mgl32.Vec3{10.0, -4.5, 4.0}, mgl32.Vec3{-1.0, 0.9, 0.0}, Z_AXIS)
     ```
@@ -373,13 +373,13 @@ gc 46 @353.542s 0%: 0.045+15+0.006 ms clock, 0.36+0.25/0.58/0.27+0.051 ms cpu, 4
 You can see that the default GC setup does not consume more than 1ms. and it gets invoked every 8s. or so. However, a spike wasting whole 24ms. may occur once a minute or so. Dropping a frame or two per minute does not break any smooth 3D experience, but with heavier codes 
 taking place in Go its GC could become a problem or would need a special focus and experiments.
 
-Pointers are troublesome, and we get them without the ability to control stack vs heap 
+Pointers are [troublesome](https://github.com/g3n/engine/issues/163), and we get them without ability to control stack vs heap 
 allocations. They also overlap with some other purposes: a mutable function argument qualifier, or a test if the structure field exists after loading 
 a struct from *.json, by checking for the nil value if the structure element has been defined as a pointer.
 
-Also $GOPATH in the past, variable capitalization to mark visibility, unused variable errors, these are warts.
+Two additional warts: $GOPATH with "github.com" nonsense, and (ii) variable capitalization to mark visibility.
 
-I also use these math functions as the external dependency:
+Generic types... Certain math functions come from the external dependency:
 
 https://github.com/g3n/engine/blob/master/math32/math.go
 
@@ -389,15 +389,17 @@ func Atan(v float32) float32 {
 	return float32(math.Atan(float64(v)))
 }
 ```
-you might think how terrible Go is as this calls for generic types. It is actually on the contrary! This is readable, does not slow down the compilation, does not spit out crazy C++ template errors. Edit 2022: Go now has generic types since version 1.18. However, this is totally not an issue. [Pointers](https://github.com/g3n/engine/issues/163) are troublesome though.
+you might think how terrible Go is as this calls for generic types. It is actually on the contrary. This is readable, does not slow down the compilation, does not spit out crazy C++ template errors. Edit 2022: Go now has generic types since version 1.18, and I do not know whether we should laugh or cry about it.
 
-The tools are good. I could use go-vim, and mostly just :GoDef and ctrl+O to get back, sometimes :GoRename. My GLTF code was written just by looking at Quim Muntal's GLTF library with :GoDef.
+The tools are good. I could use go-vim, and mostly just :GoDef and ctrl+O to get back, sometimes :GoRename. My GLTF code was written just by exploring Quim Muntal's GLTF library with :GoDef.
 
-Why is Go so little used in 3D, is it worth pushing Go there? The GC spikes will always be there, and so will [cgo](https://zchee.github.io/golang-wiki/cgo/) due to king of the hill. A modern non-GC C-frontend such as Nim/Zig seems to be more suitable, at first glance. However, Go is remarkable in that it is one of so very few languages with simple polymorphism (at least prior to Go 1.18), not to mention a good parallelism story. These do not help taming graphics APIs, but might become handy with asset loading and code "at scale". History shows that anything static and non-GC is always a mess.
+Why is Go so little used in 3D, is it worth pushing Go there? The GC spikes will always be there, and so will [cgo](https://zchee.github.io/golang-wiki/cgo/) due to "king of the hill". A modern non-GC C-frontend such as Nim/Zig seems to be more suitable, at first glance. However, Go is remarkable in that it has a simple polymorphism (at least had it prior to Go 1.18), not to mention a good parallelism story unlike in Python/Js, and a community. These do not help taming graphics APIs, but might come in handy with asset loading and code "at scale". 
+
+History shows that anything static and non-GC is always a mess. I also get a feeling that Go with nil pointer issues will be easier to read/write/maintain than anything static non-GC out there, or even static FP. Go should be good for "low complexity, high fidelity" graphics.
 
 ## OpenGL Experience Report
 
-The amazing part is that OpenGL works, given that it is an API implemented by a graphics card maker (NVIDIA in my case) for Linux (Ubuntu). Programming is very tiresome though, as there is not much help from the compiler.
+Programming with GLSL/OpenGL is very tiresome as there is not much help from the compiler. This is the elephant in the room.
 
 I was hunting down one bug for days which was rendering a black screen without a crash. The problem turned out to be gl.BufferData function storing mesh index array on a GPU. I was using
 type uint whose analogue in C++ takes 4 bytes of memory, but in Go it's 8! Switching to uint32 simply solved the problem, but to actually locate 
@@ -413,9 +415,14 @@ Tricky: Reading fragment's world position from the depth buffer of the hdr stage
 
 ## To Do:
 
-Automatic mesh scale and more scenes, tighter frustum, fix the rusty chain bug which is likely Sponza primitive No. 12 which has no 
-MetallicRoughnessTexture in Sponza.gltf. I simply do not load the whole primitive in this case as the code does not have a fall down 
-option to use PBR without such textures, whereas it should just load the base color and use it.
+Automatic mesh scale and more scenes, tighter frustum, rewrite GLTF parsing and loading, study geometry, light leaking. 
+
+Fix a rusty chain bug which comes with Sponza primitive No. 12. It has no 
+MetallicRoughnessTexture in Sponza.gltf. What to do about it? I simply drop the whole primitive as the code does not have a fall down 
+to use PBR without such textures, whereas it should just load the base color and use it.
+
+Get out of the box. Think of water. Picnic at Hanging Rock. Blade Runner. 
+
 
 ## Credits, Rendering Frameworks I Have Tried, Many Thanks To:
 
