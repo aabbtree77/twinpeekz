@@ -395,7 +395,7 @@ The tools are good. I could use go-vim, and mostly just :GoDef and ctrl+O to get
 
 Why is Go so little used in 3D, is it worth pushing Go there? The GC spikes will always be there, and so will [cgo](https://zchee.github.io/golang-wiki/cgo/) due to "king of the hill". A modern non-GC C-frontend such as Nim/Zig seems to be more suitable, at first glance. However, Go is remarkable in that it has a simple polymorphism (at least had it prior to Go 1.18), not to mention a good parallelism story unlike in Python/Js, and a community. These do not help taming graphics APIs, but might come in handy with asset loading and code "at scale". 
 
-History shows that anything static and non-GC is always a mess. I also get a feeling that Go with nil pointer issues will be easier to read/write/maintain than anything static non-GC out there, or even static FP. Go should be good for "low complexity, high fidelity" graphics.
+History shows that anything static and non-GC is always [a mess](https://hirrolot.github.io/posts/why-static-languages-suffer-from-complexity#the-unfortunate-consequences-of-being-static). I also get a feeling that Go with nil pointer issues will be easier to read/write/maintain than anything static non-GC out there, or even static FP. Go should be good for "low complexity, high fidelity" graphics.
 
 ## OpenGL Experience Report
 
