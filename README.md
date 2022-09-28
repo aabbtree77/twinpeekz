@@ -1,9 +1,6 @@
 > “Extinguished by light, I turn on the night <br>
 Wear its darkness with an empty smile”<br>
-&ndash; Pink Floyd "Wearing The Inside Out", 1994
-
-> “There are things you can't get anywhere... but we dream they can be found in other people.”<br>
-&ndash; Twin Peaks, 1991
+&ndash; Pink Floyd "Wearing the Inside Out", 1994
 
 <table align="center">
     <tr>
