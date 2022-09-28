@@ -405,15 +405,15 @@ MetallicRoughnessTexture in Sponza.gltf, so the whole primitive gets dropped. In
 
 * Math could use [generic types](https://planetscale.com/blog/generics-can-make-your-go-code-slower) in a few places.
 
-* Forget about cleaner shadows with CSM and temporal anything. Avoid large open spaces.
+* Forget about cleaner shadows, CSM and temporal anything. Avoid large open spaces.
 
-* Culling, baking, LOD popping, all sorts of re-render on change optimizations. Lets avoid that. "Different is better than better".
+* Culling, baking, LOD popping, all sorts of re-render on change optimizations. Let's avoid that. "Different is better than better".
 
 * A skybox would be nice, but I would not like some 3ms. wasted just to get a nicer background. The same applies to point lights in forward rendering. Anything "samplerCube" related is too slow on GTX 760. Dual-paraboloid maps as in [GTA-5](https://www.adriancourreges.com/blog/2015/11/02/gta-v-graphics-study/)?
 
 * Bloom/glow effects. "Neon on my naked skin, passing silhouettes of strange illuminated mannequins".
 
-* Water-Underwater transitions as in [INSIDE 2016](https://youtu.be/RdN06E6Xn9E?t=2755).
+* Water-Underwater transitions as in [INSIDE 2016](https://youtu.be/RdN06E6Xn9E?t=2755). 2.5D vs 3D.
 
 * Rewrite everything in Nim/Zig alikes, or not. Faster raw loops, more stack vs heap control, but also maintenance nightmares with compile-time gymnastics. No goroutines. Still, loops are too precious in 3D, might bite the bullet.
 
@@ -421,7 +421,7 @@ MetallicRoughnessTexture in Sponza.gltf, so the whole primitive gets dropped. In
 
 * [Forward vs Deferred vs Forward+](https://www.3dgep.com/forward-plus/). Forward, most likely. INSIDE used deferred rendering and it was amazing though. This is also a question of philosophy: Flamboyancy of multiple effects with lights as "fancy decals" vs "less is more" with something geometrical. Forward+? Tiling/voxelization, 3D textures, perhaps not today, not for GTX 760. 
 
-* Volumetric Gokoban? Make that game richer in graphics?
+* Volumetric Gokoban? Make that game rich in graphics, kids love that. Will fry your GPU, but we do not know what to do with it anyway.
 
 * Picnic at Hanging Rock 1975. Blade Runner 1982... The sky is the limit.
 
