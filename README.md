@@ -241,8 +241,6 @@ With a similar light intensity, pseudo-PBR is less playful, and the material is 
 On the other hand, somewhat brute shadows and mesh resolutions destroy the realism and mood if you start zooming or getting close to the objects.
 So it is a fine tool which must go hand in hand with some other improvements. At the moment, no IBL and no ambient terms, I consider this as an unnecessary code complexity. Ambience is achieved by simply adding the base color weighted with some 0.01 factor and such, this is too crude, but I like things look a bit darker and do not mind underexposure and lack of detail in dark areas.
 
-A skybox is still the basic need to implement, but I would not like some 3ms. wasted on just a nicer background, anything "samplerCube" related is quite slow on GTX 760.
-
 In addition to baking and ambience, a proper PBR would bring one more complication, which is some tangent-bitangent space usually relegated either to Assimp, or custom C++ implementations. So the mesh essentially gets one more GPU tangent buffer in addition to normals. However, it is still possible to compute tangents directly in the shader, but this might reduce the performance. 
 
 For some future implementation, I will mention three references here:
@@ -372,30 +370,15 @@ gc 46 @353.542s 0%: 0.045+15+0.006 ms clock, 0.36+0.25/0.58/0.27+0.051 ms cpu, 4
 The default GC setup does not consume more than 1ms. and it gets invoked every 8s. or so. However, a spike wasting whole 24ms. may occur once a minute or so. Dropping a frame or two per minute does not break any smooth 3D experience, but with heavier codes 
 taking place in Go its GC could become a problem or would need a special focus and experiments.
 
-Pointers are [troublesome](https://github.com/g3n/engine/issues/163), and we get them without ability to control stack vs heap 
+Pointers bring [trouble](https://github.com/g3n/engine/issues/163), and we get them without ability to control stack vs heap 
 allocations. They also overlap with some other purposes: a mutable function argument qualifier, or a test if the structure field exists after loading 
 a struct from *.json, by checking for the nil value if the structure element has been defined as a pointer.
 
-Two additional warts: $GOPATH with "github.com" nonsense, and (ii) variable capitalization to mark visibility.
-
-Generic types are not essential. Certain math functions come from the external dependency:
-
-https://github.com/g3n/engine/blob/master/math32/math.go
-
-This code may look ugly to some:
-```console
-func Atan(v float32) float32 {
-	return float32(math.Atan(float64(v)))
-}
-```
-
-However, it is readable and does not spit out crazy C++ template errors. Edit 2022: Unfortunately, Go now has generic types, [since version 1.18](https://planetscale.com/blog/generics-can-make-your-go-code-slower).
-
 The tools are good. I could use go-vim, and mostly just :GoDef and ctrl+O to get back, sometimes :GoRename. The GLTF code was written just by exploring Quim Muntal's GLTF library with :GoDef.
 
-Why is Go so little used in 3D? The GC spikes are there, along with the [cgo](https://zchee.github.io/golang-wiki/cgo/) layer. Go does not help taming graphics APIs.
+Why is Go so little used in 3D? The GC spikes are there, along with the [cgo](https://zchee.github.io/golang-wiki/cgo/) layer. Go does not help taming graphics APIs, its forte would be MMORTS communication middleware.
 
-History shows that anything static and non-GC is always [a mess](https://hirrolot.github.io/posts/why-static-languages-suffer-from-complexity#the-unfortunate-consequences-of-being-static). Go with nil pointer issues will likely be easier/faster to read/write/maintain than anything static non-GC out there, or even static FP. Go should be good for "low complexity, high fidelity" graphics.
+However, history shows that anything static and non-GC is always [a mess](https://hirrolot.github.io/posts/why-static-languages-suffer-from-complexity#the-unfortunate-consequences-of-being-static). Go with nil pointer issues will likely be easier/faster to read/write/maintain than anything static non-GC out there, or even static FP. Go should be good for "low complexity, high fidelity" graphics. INSIDE 2016, maybe even Until Dawn 2015. This is not Red Dead Redemption 2 2018, but it is a lot.
 
 ## OpenGL Experience Report
 
@@ -413,15 +396,34 @@ Instead of the variable location in code we get the day of the month.
 
 Tricky: Reading fragment's world position from the depth buffer of the hdr stage in the volumetric ligthing shader.
 
-## To Do:
+## Suggested Projects/Random Thoughts
 
-Automatic mesh scale and more scenes, tighter frustum, rewrite GLTF parsing and loading, study geometry, light leaking. 
+* Automatic mesh scale, tighter frustum, rewrite GLTF parsing and loading. Perhaps even with goroutines. 
 
-Fix a rusty chain bug which comes with Sponza primitive No. 12. It has no 
-MetallicRoughnessTexture in Sponza.gltf. I simply drop the whole primitive as the code does not have a fall down 
-to use PBR without such textures, whereas it should just load the base color and use it.
+* Failback/failover to some defaults when it comes to file paths and assets. Fix a rusty chain bug with Sponza primitive No. 12. It has no 
+MetallicRoughnessTexture in Sponza.gltf, so the whole primitive gets dropped. Instead, failback to the base color.
 
-Get out of the box. Think of water. Picnic at Hanging Rock. Blade Runner. 
+* Math could use [generic types](https://planetscale.com/blog/generics-can-make-your-go-code-slower) in a few places.
+
+* Forget about cleaner shadows with CSM and temporal anything. Avoid large open spaces.
+
+* Culling, baking, LOD popping, all sorts of re-render on change optimizations. Lets avoid that. "Different is better than better".
+
+* A skybox would be nice, but I would not like some 3ms. wasted just to get a nicer background. The same applies to point lights in forward rendering. Anything "samplerCube" related is too slow on GTX 760. Dual-paraboloid maps as in [GTA-5](https://www.adriancourreges.com/blog/2015/11/02/gta-v-graphics-study/)?
+
+* Bloom/glow effects. "Neon on my naked skin, passing silhouettes of strange illuminated mannequins".
+
+* Water-Underwater transitions as in [INSIDE 2016](https://youtu.be/RdN06E6Xn9E?t=2755).
+
+* Rewrite everything in Nim/Zig alikes, or not. Faster raw loops, more stack vs heap control, but also maintenance nightmares with compile-time gymnastics. No goroutines. Still, loops are too precious in 3D, might bite the bullet.
+
+* Vulkan, WebGPU? Maybe later.
+
+* [Forward vs Deferred vs Forward+](https://www.3dgep.com/forward-plus/). Forward, most likely. INSIDE used deferred rendering and it was amazing though. This is also a question of philosophy: Flamboyancy of multiple effects with lights as "fancy decals" vs "less is more" with something geometrical. Forward+? Tiling/voxelization, 3D textures, perhaps not today, not for GTX 760. 
+
+* Volumetric Gokoban? Make that game richer in graphics?
+
+* Picnic at Hanging Rock 1975. Blade Runner 1982... The sky is the limit.
 
 ## Credits, Rendering Frameworks I Have Tried, Many Thanks To:
 
