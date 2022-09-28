@@ -196,10 +196,9 @@ Let us see some little PBR in action.
 </tr>
 </table>
 
-Despite an overexposure of colors due to the light rays, you can see the specular/metallic reflections from the vases and the curtains, while these are less visible in the pseudo-PBR rendering (Tomas Öhberg code) even in the low volumetric exposure. These highlights also move as the camera view changes, enhancing 
-the 3D experience in the both cases. The pseudo-PBR also emphasizes the edges of the curtain better.
+Despite an overexposure of colors due to the light rays, you can see the specular/metallic reflections from the vases and the curtains, while these are less visible in the pseudo-PBR rendering (Tomas Öhberg code) even in the low volumetric exposure. These highlights also move as the camera view changes, enhancing 3D experience in the both cases. The pseudo-PBR also emphasizes the edges of the curtain better.
 
-What is a pseudo PBR? It is a shortcut I use for Tomas Öhberg's code. It has its own simplistic physics that includes specular highlights, but it does not use
+What is the pseudo PBR? It is a shortcut I use for Tomas Öhberg's code. It has its own simplistic physics that includes specular highlights, but it does not use
 the metallic roughness textures, only the base color which is also called "diffuse color".
 
 Let us evaluate some more images.
@@ -370,7 +369,7 @@ gc 45 @345.492s 0%: 0.037+14+0.007 ms clock, 0.30+0.41/0.31/0.29+0.057 ms cpu, 4
 gc 46 @353.542s 0%: 0.045+15+0.006 ms clock, 0.36+0.25/0.58/0.27+0.051 ms cpu, 4->4->0 MB, 5 MB goal, 8 P
 ```
 
-You can see that the default GC setup does not consume more than 1ms. and it gets invoked every 8s. or so. However, a spike wasting whole 24ms. may occur once a minute or so. Dropping a frame or two per minute does not break any smooth 3D experience, but with heavier codes 
+The default GC setup does not consume more than 1ms. and it gets invoked every 8s. or so. However, a spike wasting whole 24ms. may occur once a minute or so. Dropping a frame or two per minute does not break any smooth 3D experience, but with heavier codes 
 taking place in Go its GC could become a problem or would need a special focus and experiments.
 
 Pointers are [troublesome](https://github.com/g3n/engine/issues/163), and we get them without ability to control stack vs heap 
@@ -379,23 +378,24 @@ a struct from *.json, by checking for the nil value if the structure element has
 
 Two additional warts: $GOPATH with "github.com" nonsense, and (ii) variable capitalization to mark visibility.
 
-Generic types... Certain math functions come from the external dependency:
+Generic types are not essential. Certain math functions come from the external dependency:
 
 https://github.com/g3n/engine/blob/master/math32/math.go
 
-If you look into the code such as
+This code may look ugly to some:
 ```console
 func Atan(v float32) float32 {
 	return float32(math.Atan(float64(v)))
 }
 ```
-you might think how terrible Go is as this calls for generic types. It is actually on the contrary. This is readable, does not slow down the compilation, does not spit out crazy C++ template errors. Edit 2022: Go now has generic types since version 1.18, and I do not know whether we should laugh or cry about it.
 
-The tools are good. I could use go-vim, and mostly just :GoDef and ctrl+O to get back, sometimes :GoRename. My GLTF code was written just by exploring Quim Muntal's GLTF library with :GoDef.
+However, it is readable and does not spit out crazy C++ template errors. Edit 2022: Unfortunately, Go now has generic types, [since version 1.18](https://planetscale.com/blog/generics-can-make-your-go-code-slower).
 
-Why is Go so little used in 3D, is it worth pushing Go there? The GC spikes will always be there, and so will [cgo](https://zchee.github.io/golang-wiki/cgo/) due to "king of the hill". A modern non-GC C-frontend such as Nim/Zig seems to be more suitable, at first glance. However, Go is remarkable in that it has a simple polymorphism (at least had it prior to Go 1.18), not to mention a good parallelism story unlike in Python/Js, and a community. These do not help taming graphics APIs, but might come in handy with asset loading and code "at scale". 
+The tools are good. I could use go-vim, and mostly just :GoDef and ctrl+O to get back, sometimes :GoRename. The GLTF code was written just by exploring Quim Muntal's GLTF library with :GoDef.
 
-History shows that anything static and non-GC is always [a mess](https://hirrolot.github.io/posts/why-static-languages-suffer-from-complexity#the-unfortunate-consequences-of-being-static). I also get a feeling that Go with nil pointer issues will be easier to read/write/maintain than anything static non-GC out there, or even static FP. Go should be good for "low complexity, high fidelity" graphics.
+Why is Go so little used in 3D? The GC spikes are there, along with the [cgo](https://zchee.github.io/golang-wiki/cgo/) layer. Go does not help taming graphics APIs.
+
+History shows that anything static and non-GC is always [a mess](https://hirrolot.github.io/posts/why-static-languages-suffer-from-complexity#the-unfortunate-consequences-of-being-static). Go with nil pointer issues will likely be easier/faster to read/write/maintain than anything static non-GC out there, or even static FP. Go should be good for "low complexity, high fidelity" graphics.
 
 ## OpenGL Experience Report
 
@@ -418,11 +418,10 @@ Tricky: Reading fragment's world position from the depth buffer of the hdr stage
 Automatic mesh scale and more scenes, tighter frustum, rewrite GLTF parsing and loading, study geometry, light leaking. 
 
 Fix a rusty chain bug which comes with Sponza primitive No. 12. It has no 
-MetallicRoughnessTexture in Sponza.gltf. What to do about it? I simply drop the whole primitive as the code does not have a fall down 
+MetallicRoughnessTexture in Sponza.gltf. I simply drop the whole primitive as the code does not have a fall down 
 to use PBR without such textures, whereas it should just load the base color and use it.
 
 Get out of the box. Think of water. Picnic at Hanging Rock. Blade Runner. 
-
 
 ## Credits, Rendering Frameworks I Have Tried, Many Thanks To:
 
