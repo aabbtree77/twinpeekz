@@ -391,26 +391,30 @@ Instead of the variable location in code we get the day of the month.
 
 Tricky: Reading fragment's world position from the depth buffer of the hdr stage in the volumetric ligthing shader.
 
-## What Not To Do
+## What (Not) To Do Next
 
 * Automatic mesh scale, tighter frustum, rewrite GLTF parsing and loading, perhaps even with goroutines?
 
 * Failback/failover to some defaults when it comes to file paths and assets. Fix a rusty chain bug with Sponza primitive No. 12. It has no 
 MetallicRoughnessTexture in Sponza.gltf, so the whole primitive gets dropped. Instead, failback to the base color.
 
+* Geometry instancing.
+
+* Static objects that cast static/baked shadows when the lights are stationary.
+
 * Math could use [generic types](https://planetscale.com/blog/generics-can-make-your-go-code-slower) in a few places, hardly worth it.
 
 * Cleaner shadows, CSM and temporal anything.
 
-* Culling, baking, LOD popping, all sorts of re-render on change optimizations. Let's avoid that.
+* Culling, baking, LOD popping, all sorts of "re-render only on change" optimizations.
 
 * A skybox would be nice, but I would not like some 3ms. wasted just to get a nicer background. The same applies to point lights in forward rendering. Anything "samplerCube" related is too slow on GTX 760. Dual-paraboloid maps as in [GTA-5](https://www.adriancourreges.com/blog/2015/11/02/gta-v-graphics-study/)?
 
-* Bloom/glow effects? "Neon on my naked skin, passing silhouettes of strange illuminated mannequins".
+* Bloom/glow effects?
 
 * Water-Underwater transitions as in [INSIDE 2016](https://youtu.be/RdN06E6Xn9E?t=2755)?
 
-* Rewrite everything in Nim/Zig alikes. 2-3x faster raw loops, more stack vs heap control, but also maintenance nightmares with compile-time gymnastics. No goroutines.
+* Rewrite everything in Nim/Zig. 2-3x faster loops, but also maintenance nightmares with compile-time gymnastics. No goroutines.
 
 * Vulkan, WebGPU.
 
