@@ -1,5 +1,4 @@
-> “It's just a trick.”<br>
-&ndash; La grande bellezza, 2013
+> “Different is better than better.”<br>
 
 <table align="center">
     <tr>
@@ -394,7 +393,7 @@ Tricky: Reading fragment's world position from the depth buffer of the hdr stage
 
 ## What Not To Do
 
-* Automatic mesh scale, tighter frustum, rewrite GLTF parsing and loading. Perhaps even with goroutines. 
+* Automatic mesh scale, tighter frustum, rewrite GLTF parsing and loading, perhaps even with goroutines?
 
 * Failback/failover to some defaults when it comes to file paths and assets. Fix a rusty chain bug with Sponza primitive No. 12. It has no 
 MetallicRoughnessTexture in Sponza.gltf, so the whole primitive gets dropped. Instead, failback to the base color.
@@ -403,19 +402,19 @@ MetallicRoughnessTexture in Sponza.gltf, so the whole primitive gets dropped. In
 
 * Cleaner shadows, CSM and temporal anything.
 
-* Culling, baking, LOD popping, all sorts of re-render on change optimizations. Let's avoid that. "Different is better than better".
+* Culling, baking, LOD popping, all sorts of re-render on change optimizations. Let's avoid that.
 
 * A skybox would be nice, but I would not like some 3ms. wasted just to get a nicer background. The same applies to point lights in forward rendering. Anything "samplerCube" related is too slow on GTX 760. Dual-paraboloid maps as in [GTA-5](https://www.adriancourreges.com/blog/2015/11/02/gta-v-graphics-study/)?
 
 * Bloom/glow effects? "Neon on my naked skin, passing silhouettes of strange illuminated mannequins".
 
-* Water-Underwater transitions as in [INSIDE 2016](https://youtu.be/RdN06E6Xn9E?t=2755)? 2.5D vs 3D.
+* Water-Underwater transitions as in [INSIDE 2016](https://youtu.be/RdN06E6Xn9E?t=2755)?
 
-* Rewrite everything in Nim/Zig alikes. 2-3x faster raw loops, more stack vs heap control, but also maintenance nightmares and compile-time gymnastics. No goroutines.
+* Rewrite everything in Nim/Zig alikes. 2-3x faster raw loops, more stack vs heap control, but also maintenance nightmares with compile-time gymnastics. No goroutines.
 
 * Vulkan, WebGPU.
 
-* [Forward vs Deferred vs Forward+](https://www.3dgep.com/forward-plus/). Forward, most likely, but it does not matter. INSIDE used deferred rendering and it was amazing. Forward+? Tiling/voxelization, 3D textures, perhaps not today, not for GTX 760. 
+* [Forward vs Deferred vs Forward+](https://www.3dgep.com/forward-plus/). Forward, most likely, but it does not matter. INSIDE used deferred rendering and it was amazing. Forward+? Tiling/voxelization, 3D textures, perhaps not today, not for GTX. 
 
 * Volumetric Gokoban? Make that game rich in graphics, kids love that, but this is dubious.
 
