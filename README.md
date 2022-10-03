@@ -311,9 +311,6 @@ The timings are provided for each rendering stage separately, supplied with the 
 Golang is great at the level of main.go, no need to use unsafe pointers to pass user 
 data with GLFW callbacks, just pass a struct/object method using an object as an implicit first argument (as in UFCS).
 
-Golang's GC is not such a big problem, at least not for this scene, but 2-3x universal slow-down on raw loops compared 
-to C/C++/Nim is not attractive.
-
 Here is the log of Golang's GC:
 ```console
 gc 3 @7.479s 0%: 0.051+24+0.004 ms clock, 0.41+0.47/0.22/0.14+0.036 ms cpu, 17->17->0 MB, 18 MB goal, 8 P
@@ -365,15 +362,15 @@ gc 46 @353.542s 0%: 0.045+15+0.006 ms clock, 0.36+0.25/0.58/0.27+0.051 ms cpu, 4
 The default GC setup does not consume more than 1ms. and it gets invoked every 8s. or so. However, a spike wasting whole 24ms. may occur once a minute or so. Dropping a frame or two per minute does not break any smooth 3D experience, but with heavier codes 
 taking place in Go its GC could become a problem or would need a special focus and experiments.
 
-Pointers bring [trouble](https://github.com/g3n/engine/issues/163), and we get them without ability to control stack vs heap 
+Pointers bring [trouble](https://github.com/g3n/engine/issues/163), and we get them without the ability to control stack vs heap 
 allocations. They also overlap with some other purposes: a mutable function argument qualifier, or a test if the structure field exists after loading 
 a struct from *.json, by checking for the nil value if the structure element has been defined as a pointer.
 
 The tools are good. I could use go-vim, and mostly just :GoDef and ctrl+O to get back, sometimes :GoRename. The GLTF code was written just by exploring Quim Muntal's GLTF library with :GoDef.
 
-Why is Go so little used in 3D? The GC spikes are there, along with the [cgo](https://zchee.github.io/golang-wiki/cgo/) layer. Go does not help taming graphics APIs, its forte would be MMORTS communication middleware.
+Why is Go so little used in 3D? The GC spikes are there, along with the [cgo](https://zchee.github.io/golang-wiki/cgo/) layer/binding generation which adds a certain disparity with types and pointers (read about my OpenGL bug mentioned below, check the OpenGL part in [this comparison](https://github.com/phillvancejr/Cpp-Go-Zig-Odin)). Ultimately, the runtime is too slow for an extremely resource-hungry domain. Even the Gokoban game is already not so snappy on older machines. 
 
-However, history shows that anything static and non-GC is always [a mess](https://hirrolot.github.io/posts/why-static-languages-suffer-from-complexity#the-unfortunate-consequences-of-being-static). Go with nil pointer issues will likely be easier/faster to read/write/maintain than anything static non-GC out there, or even static FP. Go should be good for "low complexity, high fidelity" graphics. INSIDE 2016, maybe even Until Dawn 2015. This is not Red Dead Redemption 2 2018, but it is a lot.
+The code here was written prior to Go version 1.18. The math parts could now use [generic types](https://planetscale.com/blog/generics-can-make-your-go-code-slower) in a few places, though this is hardly worth it.
 
 ## OpenGL Experience Report
 
@@ -393,36 +390,20 @@ Tricky: Reading fragment's world position from the depth buffer of the hdr stage
 
 ## What (Not) To Do Next
 
-* Automatic mesh scale, tighter frustum, rewrite GLTF parsing and loading, perhaps even with goroutines?
+* Rewrite everything in Nim, focusing on mesh instancing and complete scene export from Blender, in GLTF 2.0. Why Nim? Fast runtime, this [GLTF code](https://github.com/guzba/gltfviewer) and [shader compilation macro](https://github.com/treeform/shady). [Azul3D](https://github.com/azul3d/engine) abandoned Go for Zig.
 
-* Failback/failover to some defaults when it comes to file paths and assets. Fix a rusty chain bug with Sponza primitive No. 12. It has no 
-MetallicRoughnessTexture in Sponza.gltf, so the whole primitive gets dropped. Instead, failback to the base color.
+* Reliable loading: Automatic mesh scale, failback/failover when it comes to missing file paths and assets, e.g. Sponza primitive No. 12 (rusty chain) has no 
+MetallicRoughnessTexture in Sponza.gltf.
 
-* Geometry instancing.
+* CSM, AA, baking, culling, LOD popping? Unlikely, but one needs a tighter frustum.
 
-* Static objects that cast static/baked shadows when the lights are stationary.
+* Vulkan, WebGPU? Let's stick to Ubuntu and OpenGL as everything else is just too broken and disruptive.
 
-* Math could use [generic types](https://planetscale.com/blog/generics-can-make-your-go-code-slower) in a few places, hardly worth it.
-
-* Cleaner shadows, CSM and temporal anything.
-
-* Culling, baking, LOD popping, all sorts of "re-render only on change" optimizations.
+* Bloom/glow, water-underwater transitions as in [INSIDE 2016](https://youtu.be/RdN06E6Xn9E?t=2755)?
 
 * A skybox would be nice, but I would not like some 3ms. wasted just to get a nicer background. The same applies to point lights in forward rendering. Anything "samplerCube" related is too slow on GTX 760. Dual-paraboloid maps as in [GTA-5](https://www.adriancourreges.com/blog/2015/11/02/gta-v-graphics-study/)?
 
-* Bloom/glow effects?
-
-* Water-Underwater transitions as in [INSIDE 2016](https://youtu.be/RdN06E6Xn9E?t=2755)?
-
-* Rewrite everything in Nim/Zig. 2-3x faster loops, but also maintenance nightmares with compile-time gymnastics. No goroutines.
-
-* Vulkan, WebGPU.
-
-* [Forward vs Deferred vs Forward+](https://www.3dgep.com/forward-plus/). Forward, most likely, but it does not matter. INSIDE used deferred rendering and it was amazing. Forward+? Tiling/voxelization, 3D textures, perhaps not today, not for GTX. 
-
-* Volumetric Gokoban? Make that game rich in graphics, kids love that, but this is dubious.
-
-* Picnic at Hanging Rock 1975. Blade Runner 1982... The sky is the limit, but the attempts to reiterate these projects fail admirably.
+* [Forward vs Deferred vs Forward+](https://www.3dgep.com/forward-plus/). Forward, most likely, but it does not matter. INSIDE 2016 used deferred rendering. Forward+? Tiling/voxelization, 3D textures, perhaps not today, not for GTX. 
 
 ## Credits, Rendering Frameworks I Have Tried, Many Thanks To:
 
