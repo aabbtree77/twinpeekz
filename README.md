@@ -77,7 +77,7 @@ Why yet another rendering code? In a narrow sense, this is a study of volumetric
 
 There are four layers of code:
 
-1. **main.go**, **camera.go** - mostly GLFW stuff, window, mouse, keyboard management. Initial camera position in makeCam() (camera.go). AWSDEC  and arrow keys to move in 3D, holding+LMB changes camera view direction. Scrolling zooms in and out, F11 toggles full screen. Window resizes change certain frame buffers, but the shadow map resolution remains the same.
+1. **main.go**, **camera.go** - GLFW window, mouse, keyboard management. Initial camera position in makeCam() (camera.go). AWSDEC  and arrow keys to move in 3D, holding+LMB changes camera view direction. Scrolling zooms in and out, F11 toggles full screen. Window resizes change certain frame buffers, but the shadow map resolution remains the same.
 
     Elementary camera-related math functions are relegated to the external dependency, i.e. the g3n engine (BSD-2), which one could "vendor" directly. The pain point will not be a Go package though, but the system libs like "xorg-dev" or "libgl1-mesa-dev" on Ubuntu. See [Fyne](https://github.com/fyne-io/fyne/blob/master/.github/workflows/platform_tests.yml) and g3n repos for more of these precise OpenGL/AL Ubuntu layer lib names.
 
@@ -99,7 +99,7 @@ The pipeline splits into
 
 shadow mapping -> hdr (PBR) -> volumetrics -> postprocessing.
 
-The execution time will depend largely on the number of lights and the shadow map texture sizes. Given a single directional light source and 4096x4096 textures, pure OpenGL rendering stage (measurement taken randomly, the last value summarizes all the stages):
+The execution time will depend on the number of lights and the shadow map texture sizes. Given a single directional light source and 4096x4096 textures, pure OpenGL rendering stage (measurement taken randomly, the last value summarizes all the stages):
 
 timeOpenGLms = [1.190624 3.639968 2.843136 0.210208 7.883936]
 
@@ -390,9 +390,9 @@ Tricky: Reading fragment's world position from the depth buffer of the hdr stage
 
 ## What (Not) To Do Next
 
-* Rewrite everything in Nim, focusing on mesh instancing and complete scene export from Blender, in GLTF 2.0. Why Nim? Fast runtime, this [GLTF code](https://github.com/guzba/gltfviewer) and [shader compilation macro](https://github.com/treeform/shady). [Azul3D](https://github.com/azul3d/engine) abandoned Go for Zig.
+* Rewrite everything in Nim, focus on mesh instancing and complete scene export from Blender, in GLTF 2.0. Why Nim? Fast runtime, this [GLTF/OpenGL code](https://github.com/guzba/gltfviewer) and the [shader compilation macro](https://github.com/treeform/shady). [Azul3D](https://github.com/azul3d/engine) abandoned Go for Zig.
 
-* Reliable loading: Automatic mesh scale, failback/failover when it comes to missing file paths and assets, e.g. Sponza primitive No. 12 (rusty chain) has no 
+* Reliable loading: Automatic mesh scale, failback/failover w.r.t. broken file paths and assets, e.g. Sponza primitive No. 12 (rusty chain) has no 
 MetallicRoughnessTexture in Sponza.gltf.
 
 * CSM, AA, baking, culling, LOD popping? Unlikely, but one needs a tighter frustum.
@@ -435,7 +435,7 @@ MetallicRoughnessTexture in Sponza.gltf.
 
     Both of these works do not have licenses, but this should not be a problem. Andre Pestana is also the one who added metallicRoughness textures to Sponza via Subtance Designer.
 
-5. **Dihara Wijetunga** for PCSS which I initially incorporated in my Go-controlled shaders, but eventually dropped as it is a wrong tool for real time rendering. His dwSampleFramework (MIT-licensed) is also quite a candidate to dissect and rewrite in more productive languages. It has OpenGL and Vulkan codes going side by side, and some interesting extensions scattered in his github repos. It compiles on Ubuntu with an error which is not hard to fix by googling (it comes from VS2019 use), and his models are not included in some places and need Blender to say generate "plane.obj" or "rescale lucy.obj".
+5. **Dihara Wijetunga** for PCSS which I initially incorporated in my Go-controlled shaders, but eventually dropped as it is a wrong tool for real time rendering. His dwSampleFramework (MIT-licensed) is also quite a candidate to dissect and rewrite in more productive languages. It has OpenGL and Vulkan codes written side by side, and some interesting extensions scattered in his github repos. It compiles on Ubuntu with an error which is not hard to fix by googling (it comes from VS2019 use). The testing models are not included in some places and need Blender to generate "plane.obj" or rescale "lucy.obj".
 
 6. **Panagiotis Christopoulos Charitos**, who helped me to solve the screen tearing issue which must be pretty common and good to know:
 
@@ -445,7 +445,7 @@ MetallicRoughnessTexture in Sponza.gltf.
 
     https://www.youtube.com/watch?v=uFDa4M4ZBPs 
 
-    Initially I was hoping to learn from any of these two engines, as they were both modern Vulkan-based and had volumetric lights I wanted above anything else. However, my excitement quickly evaporated as I could not get through the jungle of C++ and Vulkan.
+    Initially I was hoping to learn from any of these two engines, as they were both modern Vulkan-based and had volumetric lights I wanted above anything else. However, my excitement evaporated as I could not get through the jungle of C++ and Vulkan.
 
 7. **Finn Bear** and **Quim Muntal** on this github issue
 
