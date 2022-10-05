@@ -359,16 +359,15 @@ gc 45 @345.492s 0%: 0.037+14+0.007 ms clock, 0.30+0.41/0.31/0.29+0.057 ms cpu, 4
 gc 46 @353.542s 0%: 0.045+15+0.006 ms clock, 0.36+0.25/0.58/0.27+0.051 ms cpu, 4->4->0 MB, 5 MB goal, 8 P
 ```
 
-The default GC setup does not consume more than 1ms. and it gets invoked every 8s. or so. However, a spike wasting whole 24ms. may occur once a minute or so. Dropping a frame or two per minute does not break any smooth 3D experience, but with heavier codes 
-taking place in Go its GC could become a problem or would need a special focus and experiments.
+The default GC setup does not consume more than 1ms. and it gets invoked every 8s. or so. However, a spike wasting whole 24ms. may occur once a minute or so. Dropping a frame or two per minute does not break any smooth 3D experience. A bigger problem here is that the Go code per se, i.e. the non-OpenGL part, already takes 7-8ms. per frame, for a scene of mild complexity with little action going on.
 
 Pointers bring [trouble](https://github.com/g3n/engine/issues/163), and we get them without the ability to control stack vs heap 
 allocations. They also overlap with some other purposes: a mutable function argument qualifier, or a test if the structure field exists after loading 
 a struct from *.json, by checking for the nil value if the structure element has been defined as a pointer.
 
-The tools are good. I could use go-vim, and mostly just :GoDef and ctrl+O to get back, sometimes :GoRename. The GLTF code was written just by exploring Quim Muntal's GLTF library with :GoDef.
+The tools are OK. I could use go-vim, and mostly just :GoDef and ctrl+O to get back, sometimes :GoRename. The GLTF code was written just by exploring Quim Muntal's GLTF library with :GoDef. No luxury with "import pdb; pdb.set_trace()" as with Python's REPL. Perhaps [gdbgui](https://www.gdbgui.com/) or [gdlv](https://github.com/aarzilli/gdlv/issues/20) could be useful, but I relied on go-vim and :GoDef with printf mostly, and RenderDoc.
 
-Why is Go so little used in 3D? The GC spikes are there, along with the [cgo](https://zchee.github.io/golang-wiki/cgo/) layer/binding generation which adds a certain disparity with types and pointers (read about my OpenGL bug mentioned below, check the OpenGL part in [this comparison](https://github.com/phillvancejr/Cpp-Go-Zig-Odin)). Ultimately, the runtime is too slow for an extremely resource-hungry domain. Even the Gokoban game is already not so snappy on older machines. 
+Why is Go so little used in 3D? The GC spikes are there, along with the [cgo](https://zchee.github.io/golang-wiki/cgo/) layer/binding generation which adds friction with types and pointers (read about my OpenGL bug mentioned below, check the OpenGL part in [this comparison](https://github.com/phillvancejr/Cpp-Go-Zig-Odin)). Ultimately, the runtime is too slow for an extremely resource-hungry domain. Even the Gokoban game is already not so snappy on older machines. 
 
 The code here was written prior to Go version 1.18. The math parts could now use [generic types](https://planetscale.com/blog/generics-can-make-your-go-code-slower) in a few places, though this is hardly worth it.
 
@@ -395,25 +394,25 @@ Tricky: Reading fragment's world position from the depth buffer of the hdr stage
 * Reliable loading: Automatic mesh scale, failback/failover w.r.t. broken file paths and assets, e.g. Sponza primitive No. 12 (rusty chain) has no 
 MetallicRoughnessTexture in Sponza.gltf.
 
-* CSM, AA, baking, culling, LOD popping? Unlikely, but one needs a tighter frustum.
+* CSM, AA, baking, culling, LOD popping? Unlikely, but one needs a tighter frustum. Track its dimensions.
 
 * Vulkan, WebGPU? Let's stick to Ubuntu and OpenGL as everything else is just too broken and disruptive.
 
-* Bloom/glow, water-underwater transitions as in [INSIDE 2016](https://youtu.be/RdN06E6Xn9E?t=2755)?
+* Bloom/glow, water-underwater transitions as in [INSIDE 2016](https://youtu.be/RdN06E6Xn9E?t=2755).
 
 * A skybox would be nice, but I would not like some 3ms. wasted just to get a nicer background. The same applies to point lights in forward rendering. Anything "samplerCube" related is too slow on GTX 760. Dual-paraboloid maps as in [GTA-5](https://www.adriancourreges.com/blog/2015/11/02/gta-v-graphics-study/)?
 
-* [Forward vs Deferred vs Forward+](https://www.3dgep.com/forward-plus/). Forward, most likely, but it does not matter. INSIDE 2016 used deferred rendering. Forward+? Tiling/voxelization, 3D textures, perhaps not today, not for GTX. 
+* [Forward vs Deferred vs Forward+](https://www.3dgep.com/forward-plus/). Forward, most likely, but it does not matter. INSIDE 2016 used deferred rendering. Forward+? Tiling/voxelization, 3D textures. No. 
 
 ## Why Nim and not Go?
 
 This will go into another repo, but for now let's drop a few arguments:
 
-* Fast C/C++ no limits runtime, cleaner basics (const, let, var, ref/ptr/addr very explicit and not needed most of the time). However, lots of wasted effort on compile time as usual with anything static non-GC which will be liability in a long run. Hairy evolving compile time experiments, obj vs ref obj, naked imports, messed up sum types, these can be avoided. [Azul3D](https://github.com/azul3d/engine) abandoned Go for Zig. 
+* Fast C/C++ no limits runtime. [Azul3D](https://github.com/azul3d/engine) abandoned Go for Zig. 
 
-* Pleasant on the eye, e.g. [this readable GLTF code](https://github.com/guzba/gltfviewer).
+* Pleasant on the eye, e.g. [this GLTF code](https://github.com/guzba/gltfviewer) reads better than a spec.
 
-* Tools/community/minimalism much weaker than Go. However, all this compile time DSL macro nonsense does bring unique attempts to make OpenGL easier, see e.g. [this shader compilation macro](https://github.com/treeform/shady), this needs to be tested, could be a solid punch line. 
+* Unique attempts to make OpenGL easier, e.g. [this shader compilation macro](https://github.com/treeform/shady).
 
 * A quick check on a few full OpenGL Ubuntu compiled binaries in Go and Nim. 
 
@@ -444,9 +443,9 @@ This will go into another repo, but for now let's drop a few arguments:
     /lib64/ld-linux-x86-64.so.2 (0x00007f2017d9e000)
     ```
     
-    The difference might be due to that gltfviewer uses a statically compiled GLFW, also due to compiler options.
-    The Nim binary's dynamic part is only glibc and Linux kernel's vdso, while in the Go case we get unnecessary stuff from X11 and gl.   
-
+    The second executable depends on fewer dynamically linked libraries as gltfviewer uses a statically linked GLFW, but where has libGL gone?
+    The latter is supposed to be only dynamically-linkable.
+     
 ## Credits, Rendering Frameworks I Have Tried, Many Thanks To:
 
 1. **Tomas Öhberg**. Initially I was simply translating his marvelous C++ work written in the Autumn of 2017:
