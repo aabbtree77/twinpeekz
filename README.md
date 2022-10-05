@@ -390,7 +390,7 @@ Tricky: Reading fragment's world position from the depth buffer of the hdr stage
 
 ## What (Not) To Do Next
 
-* Rewrite everything in Nim, focus on mesh instancing and complete scene export from Blender, in GLTF 2.0. Why Nim? Fast runtime, this [GLTF/OpenGL code](https://github.com/guzba/gltfviewer) and the [shader compilation macro](https://github.com/treeform/shady). [Azul3D](https://github.com/azul3d/engine) abandoned Go for Zig.
+* Rewrite everything in Nim, focus on mesh instancing and complete scene export from Blender, in GLTF 2.0.
 
 * Reliable loading: Automatic mesh scale, failback/failover w.r.t. broken file paths and assets, e.g. Sponza primitive No. 12 (rusty chain) has no 
 MetallicRoughnessTexture in Sponza.gltf.
@@ -404,6 +404,48 @@ MetallicRoughnessTexture in Sponza.gltf.
 * A skybox would be nice, but I would not like some 3ms. wasted just to get a nicer background. The same applies to point lights in forward rendering. Anything "samplerCube" related is too slow on GTX 760. Dual-paraboloid maps as in [GTA-5](https://www.adriancourreges.com/blog/2015/11/02/gta-v-graphics-study/)?
 
 * [Forward vs Deferred vs Forward+](https://www.3dgep.com/forward-plus/). Forward, most likely, but it does not matter. INSIDE 2016 used deferred rendering. Forward+? Tiling/voxelization, 3D textures, perhaps not today, not for GTX. 
+
+## Why Nim and not Go?
+
+This will go into another repo, but for now let's drop a few arguments:
+
+* Fast C/C++ no limits runtime, cleaner basics (const, let, var, ref/ptr/addr very explicit and not needed most of the time). However, lots of wasted effort on compile time as usual with anything static non-GC which will be liability in a long run. Hairy evolving compile time experiments, obj vs ref obj, naked imports, messed up sum types, these can be avoided. [Azul3D](https://github.com/azul3d/engine) abandoned Go for Zig. 
+
+* Pleasant on the eye, e.g. [this readable GLTF code](https://github.com/guzba/gltfviewer).
+
+* Tools/community/minimalism much weaker than Go. However, all this compile time DSL macro nonsense does bring unique attempts to make OpenGL easier, see e.g. [this shader compilation macro](https://github.com/treeform/shady), this needs to be tested, could be a solid punch line. 
+
+* A quick check on a few full OpenGL Ubuntu compiled binaries in Go and Nim. 
+
+    Go:
+    ```console
+    tokyo@tokyo-Z87-DS3H:~/twinpeekz$ ldd twinpeekz
+    linux-vdso.so.1 (0x00007ffc9cd9c000)
+    libGL.so.1 => /lib/x86_64-linux-gnu/libGL.so.1 (0x00007f8ea74a3000)
+    libX11.so.6 => /lib/x86_64-linux-gnu/libX11.so.6 (0x00007f8ea7363000)
+    libm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007f8ea727c000)
+    libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f8ea7054000)
+    libGLdispatch.so.0 => /lib/x86_64-linux-gnu/libGLdispatch.so.0 (0x00007f8ea6f9c000)
+    libGLX.so.0 => /lib/x86_64-linux-gnu/libGLX.so.0 (0x00007f8ea6f66000)
+    libxcb.so.1 => /lib/x86_64-linux-gnu/libxcb.so.1 (0x00007f8ea6f3c000)
+    /lib64/ld-linux-x86-64.so.2 (0x00007f8ea7543000)
+    libXau.so.6 => /lib/x86_64-linux-gnu/libXau.so.6 (0x00007f8ea6f36000)
+    libXdmcp.so.6 => /lib/x86_64-linux-gnu/libXdmcp.so.6 (0x00007f8ea6f2e000)
+    libbsd.so.0 => /lib/x86_64-linux-gnu/libbsd.so.0 (0x00007f8ea6f16000)
+    libmd.so.0 => /lib/x86_64-linux-gnu/libmd.so.0 (0x00007f8ea6f07000)
+    ``` 
+    
+    Nim:
+    ```console
+    tokyo@tokyo-Z87-DS3H:~/gltfviewer/src$ ldd gltfviewer.out
+    linux-vdso.so.1 (0x00007ffccd3c8000)
+    libm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007f2017afe000)
+    libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f20178d6000)
+    /lib64/ld-linux-x86-64.so.2 (0x00007f2017d9e000)
+    ```
+    
+    The difference might be due to that gltfviewer uses a statically compiled GLFW, also due to compiler options.
+    The Nim binary's dynamic part is only glibc and Linux kernel's vdso, while in the Go case we get unnecessary stuff from X11 and gl.   
 
 ## Credits, Rendering Frameworks I Have Tried, Many Thanks To:
 
