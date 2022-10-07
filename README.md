@@ -412,17 +412,17 @@ MetallicRoughnessTexture in Sponza.gltf.
 
 ## Why Nim and not Go?
 
-There are not that many [mature static non-GC languages](https://github.com/phillvancejr/Cpp-Go-Zig-Odin). For now, let's consider Nim:
+There are not that many [mature static non-GC languages](https://github.com/phillvancejr/Cpp-Go-Zig-Odin). For now, let's consider Nim over Go:
 
-* Faster closer to the metal runtime. [Azul3D](https://github.com/azul3d/engine) abandoned Go for Zig. 
+* Faster closer to the metal runtime. Notably, [Azul3D](https://github.com/azul3d/engine) abandoned Go for Zig. 
 
 * Pleasant on the eye, e.g. [this GLTF code](https://github.com/guzba/gltfviewer) reads better than a spec, without macros and DSL.
 
-* Less clutter with pointers. Go has const, var and * and we do not know what and when escapes to the heap. Nim has const, let, var separated from ptr, addr, ref, with the latter being largely avoidable.
+* Less clutter with pointers. Go uses const, var, *, & and unsafe.Pointer to interface with C. We do not know what and when escapes to the heap and * infects everything. Nim has const, let, var separated from ref, new and [] (GC heap stuff), with ptr and addr to handle C. The ref/ptr mess is very explicit and avoidable in Nim, unlike Go.
 
-* To be fair, Nim lacks solid sum types/ADTs and the "less is more" philosophy. Its compile time is complex and evolving, most of it should be avoided.
+* To be fair, Nim lacks solid sum types/ADTs and the "less is more" philosophy.
 
-* Let's avoid nonsequential code execution as well.
+* Let's avoid nonsequential code execution.
 
 * Unique attempts to make OpenGL easier, e.g. [this shader compilation macro](https://github.com/treeform/shady).
 
