@@ -13,13 +13,21 @@
 
 ## Introduction
 
-This is a real time rendering of the Sponza demo scene, written in Go (Golang) and GLSL. Details:
+This is real time rendering of the Sponza demo scene, written in Go (Golang) and GLSL. Details:
 
 1. i7, 16GB of RAM, GTX 760. Ubuntu, GLFW3, OpenGL, GLTF 2.0, MIT license.
 
 2. Forward directional light(s), shadow mapping (PCF 3x3), basic PBR (no baking, no ambient term), 3D ray marched volumetric lighting.
 
-Why yet another rendering code? In a narrow sense, this is a study of volumetric lighting and Go/GC in 3D. More broadly, Unreal/Unity/Godot types are hardly a joy to work with. Consider this attempt as a starting point towards a lightweight graphics engine whose rendering pipeline one could actually control.
+[Why yet another rendering code?](https://github.com/paranim/paranim) In a narrow sense, this is a study of volumetric lighting and Go/GC in 3D. More broadly, Unreal/Unity/Godot types are hardly a joy to work with. Consider this attempt as a starting point towards a lightweight graphics engine whose rendering pipeline one could actually control.
+
+## Why Volumetric Lighting?
+
+It is one of the post 2013 graphics effects that vastly advances immersion and realism, also an interesting approximation to [the rendering equation](https://en.wikipedia.org/wiki/Rendering_equation) which connects programming with geometric optics. It is a GPU-hungry technique, but not as bad as ray tracing.
+
+## Why Go?
+
+The only static language with a simple polymorphism/compile time and a large practical "no design patterns" community. The Go runtime is not enough for 3D, unfortunately. I am considering Nim.
 
 ## Setup
 
@@ -408,9 +416,11 @@ MetallicRoughnessTexture in Sponza.gltf.
 
 This will go into another repo, but for now let's drop a few arguments:
 
-* Fast C/C++ no limits runtime. [Azul3D](https://github.com/azul3d/engine) abandoned Go for Zig. 
+* Faster closer to the metal runtime. [Azul3D](https://github.com/azul3d/engine) abandoned Go for Zig. 
 
-* Pleasant on the eye, e.g. [this GLTF code](https://github.com/guzba/gltfviewer) reads better than a spec.
+* Pleasant on the eye, e.g. [this GLTF code](https://github.com/guzba/gltfviewer) reads better than a spec, without macros and DSLs.
+
+* Less of that *, nil, interface, letter capitalization clutter, though Nim's compile time is complex and evolving, hence most of it should be avoided.
 
 * Unique attempts to make OpenGL easier, e.g. [this shader compilation macro](https://github.com/treeform/shady).
 
