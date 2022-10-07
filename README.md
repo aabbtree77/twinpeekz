@@ -27,7 +27,7 @@ It is one of the post 2013 graphics effects that vastly advances immersion and r
 
 ## Why Go?
 
-The only static language with a simple polymorphism/compile time and a large practical "no design patterns" community. The Go runtime is not enough for 3D, unfortunately. I am considering Nim.
+The only static language with a simple polymorphism/compile time and a large practical "no design patterns" community. Edit 2022: The Go runtime is not enough for 3D, unfortunately. I am rewriting this code in Nim.
 
 ## Setup
 
@@ -418,9 +418,13 @@ This will go into another repo, but for now let's drop a few arguments:
 
 * Faster closer to the metal runtime. [Azul3D](https://github.com/azul3d/engine) abandoned Go for Zig. 
 
-* Pleasant on the eye, e.g. [this GLTF code](https://github.com/guzba/gltfviewer) reads better than a spec, without macros and DSLs.
+* Pleasant on the eye, e.g. [this GLTF code](https://github.com/guzba/gltfviewer) reads better than a spec, without macros and DSL.
 
-* Less of that *, nil, interface, letter capitalization clutter, though Nim's compile time is complex and evolving, hence most of it should be avoided.
+* Less of that *, nil, interface, reflect and "capitalization for export" clutter. Having clear const, let, var separated from the always messy ptr, addr, ref in Nim is already progress. Compare this to having only const, var and * in Go which makes you perpetually crippled.
+
+* To be fair, Nim lacks solid sum types/ADTs and "less is more" philosophy. Its compile time is complex and evolving, most of it should be avoided.
+
+* Let's avoid nonsequential code execution as well. It does not scale at the level of "an actor "cannon" spawns the actors of type "cannonball" that hit an actor "wall". This is relevant to asset loading and MMORTS though.
 
 * Unique attempts to make OpenGL easier, e.g. [this shader compilation macro](https://github.com/treeform/shady).
 
