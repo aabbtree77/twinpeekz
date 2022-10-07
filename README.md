@@ -23,7 +23,7 @@ This is real time rendering of the Sponza demo scene, written in Go (Golang) and
 
 ## Why Volumetric Lighting?
 
-It is one of the post 2013 graphics effects that vastly advances immersion and realism, also an interesting approximation to [the rendering equation](https://en.wikipedia.org/wiki/Rendering_equation) which connects programming with geometric optics. It is a GPU-hungry technique, but not as bad as ray tracing.
+It is one of the post 2013 graphics effects that vastly advances immersion and realism, also an interesting approximation to [the rendering equation](https://en.wikipedia.org/wiki/Rendering_equation) which connects programming with geometric optics. It is a GPU-hungry technique, but not as hungry as ray tracing.
 
 ## Why Go?
 
@@ -375,8 +375,6 @@ a struct from *.json, by checking for the nil value if the structure element has
 
 The tools are OK. I could use go-vim, and mostly just :GoDef and ctrl+O to get back, sometimes :GoRename. The GLTF code was written just by exploring Quim Muntal's GLTF library with :GoDef. No luxury with "import pdb; pdb.set_trace()" as with Python's REPL. Perhaps [gdbgui](https://www.gdbgui.com/) or [gdlv](https://github.com/aarzilli/gdlv/issues/20) could be useful, but I relied on go-vim and :GoDef with printf mostly, and RenderDoc.
 
-Why is Go so little used in 3D? The GC spikes are there, along with the [cgo](https://zchee.github.io/golang-wiki/cgo/) layer/binding generation which adds friction with types and pointers (read about my OpenGL bug mentioned below, check the OpenGL part in [this comparison](https://github.com/phillvancejr/Cpp-Go-Zig-Odin)). Ultimately, the runtime is too slow for an extremely resource-hungry domain. Even the Gokoban game is already not so snappy on older machines. 
-
 The code here was written prior to Go version 1.18. The math parts could now use [generic types](https://planetscale.com/blog/generics-can-make-your-go-code-slower) in a few places, though this is hardly worth it.
 
 ## OpenGL Experience Report
@@ -414,17 +412,17 @@ MetallicRoughnessTexture in Sponza.gltf.
 
 ## Why Nim and not Go?
 
-This will go into another repo, but for now let's drop a few arguments:
+There are not that many [mature static non-GC languages](https://github.com/phillvancejr/Cpp-Go-Zig-Odin). For now, let's consider Nim:
 
 * Faster closer to the metal runtime. [Azul3D](https://github.com/azul3d/engine) abandoned Go for Zig. 
 
 * Pleasant on the eye, e.g. [this GLTF code](https://github.com/guzba/gltfviewer) reads better than a spec, without macros and DSL.
 
-* Less of that *, nil, interface, reflect and "capitalization for export" clutter. Having clear const, let, var separated from the always messy ptr, addr, ref in Nim is already progress. Compare this to having only const, var and * in Go which makes you perpetually crippled.
+* Less clutter with pointers. Go has const, var and * and we do not know what and when escapes to the heap. Nim has const, let, var separated from ptr, addr, ref, with the latter being largely avoidable.
 
-* To be fair, Nim lacks solid sum types/ADTs and "less is more" philosophy. Its compile time is complex and evolving, most of it should be avoided.
+* To be fair, Nim lacks solid sum types/ADTs and the "less is more" philosophy. Its compile time is complex and evolving, most of it should be avoided.
 
-* Let's avoid nonsequential code execution as well. It does not scale at the level of "an actor "cannon" spawns the actors of type "cannonball" that hit an actor "wall". This is relevant to asset loading and MMORTS though.
+* Let's avoid nonsequential code execution as well.
 
 * Unique attempts to make OpenGL easier, e.g. [this shader compilation macro](https://github.com/treeform/shady).
 
