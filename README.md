@@ -27,7 +27,13 @@ It is one of the post 2013 graphics effects that vastly advances immersion and r
 
 ## Why Go?
 
-The only static language with a simple polymorphism/compile time and a large practical "no design patterns" community. Edit 2022: The Go runtime is not enough for 3D, unfortunately. I am rewriting this code in Nim.
+The only static language with a simple polymorphism/compile time and a large practical "no design patterns" community. 
+
+Edit 2022: The Go runtime is not enough for 3D. Anything "static and far from C" brings layers and artificial limits. This rules out a lot of otherwise interesting projects such as F#, Elm/Reason ML, Pony... The language should be that of a "better C" category. I am rewriting this code in Nim.
+
+## Why OpenGL?
+
+Vulkan and WebGPU are a mess, OpenGL is the lesser evil.
 
 ## Setup
 
@@ -373,7 +379,7 @@ Pointers bring [trouble](https://github.com/g3n/engine/issues/163), and we get t
 allocations. They also overlap with some other purposes: a mutable function argument qualifier, or a test if the structure field exists after loading 
 a struct from *.json, by checking for the nil value if the structure element has been defined as a pointer.
 
-The tools are OK. I could use go-vim, and mostly just :GoDef and ctrl+O to get back, sometimes :GoRename. The GLTF code was written just by exploring Quim Muntal's GLTF library with :GoDef. No luxury with "import pdb; pdb.set_trace()" as with Python's REPL. Perhaps [gdbgui](https://www.gdbgui.com/) or [gdlv](https://github.com/aarzilli/gdlv/issues/20) could be useful, but I relied on go-vim and :GoDef with printf mostly, and RenderDoc.
+The tools are OK. I could use go-vim, and mostly just :GoDef and ctrl+O to get back, sometimes :GoRename. The GLTF code was written just by exploring Quim Muntal's GLTF library with :GoDef. No luxury with "import pdb; pdb.set_trace()" as with Python's REPL. Perhaps [gdbgui](https://www.gdbgui.com/) or [gdlv](https://github.com/aarzilli/gdlv/issues/20) could be useful. I relied on go-vim and :GoDef with printf, and RenderDoc.
 
 The code here was written prior to Go version 1.18. The math parts could now use [generic types](https://planetscale.com/blog/generics-can-make-your-go-code-slower) in a few places, though this is hardly worth it.
 
@@ -414,13 +420,13 @@ MetallicRoughnessTexture in Sponza.gltf.
 
 There are not that many [mature static non-GC languages](https://github.com/phillvancejr/Cpp-Go-Zig-Odin). For now, let's consider Nim over Go:
 
-* Faster closer to the metal runtime. Notably, [Azul3D](https://github.com/azul3d/engine) abandoned Go for Zig. 
+* Fast close to the metal runtime. Notably, [Azul3D](https://github.com/azul3d/engine) abandoned Go for Zig. 
 
 * Pleasant on the eye, e.g. [this GLTF code](https://github.com/guzba/gltfviewer) reads better than a spec, without macros and DSL.
 
 * Less clutter with pointers. Go uses const, var, *, & and unsafe.Pointer to interface with C. We do not know what and when escapes to the heap and * infects everything. Nim has const, let, var separated from ref, new and [] (GC heap stuff), with ptr and addr to handle C. The ref/ptr mess is very explicit and avoidable in Nim, unlike Go.
 
-* To be fair, Nim lacks solid sum types/ADTs and the "less is more" philosophy.
+* To be fair, Nim lacks solid sum types/ADTs and the "less is more" philosophy. Let's hope the complexity is gradual.
 
 * Let's avoid nonsequential code execution.
 
@@ -455,8 +461,7 @@ There are not that many [mature static non-GC languages](https://github.com/phil
     /lib64/ld-linux-x86-64.so.2 (0x00007f2017d9e000)
     ```
     
-    The second executable depends on fewer dynamically linked libraries as gltfviewer uses a statically linked GLFW, but where has libGL gone?
-    The latter is supposed to be only dynamically-linkable.
+    The second executable depends on fewer dynamically linked libraries, but where has libGL gone?
      
 ## Credits, Rendering Frameworks I Have Tried, Many Thanks To:
 
