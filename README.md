@@ -472,7 +472,7 @@ There are not that many [mature static non-GC languages](https://github.com/phil
     }
     ``` 
     
-    Result: Go semantics with ** []*struct ** and ***struct**.
+    Result: Go semantics with __[]*struct__ and ***struct**, in the best case scenario.
 
     [Nim: treeform/staticglfw](https://github.com/treeform/staticglfw/blob/f6a40acf98466c3a11ab3f074a70d570c297f82b/src/staticglfw.nim#L429-L430): ptr Monitor and Monitor with
 
