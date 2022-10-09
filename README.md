@@ -674,6 +674,6 @@ Go and $GOPATH and is thus not available for non-programmers. I helped solving t
 
     https://github.com/danaugrs/gokoban/issues/14
 
-    Edit 2022: This is no longer an issue as the repository now uses Go modules and compiles without gymnastics.
+    _Edit 2022: This is no longer an issue as the repository now uses Go modules and compiles without extra efforts._
 
     TBH, I largely ignored the g3n engine code as I found it quite complex, but I was perhaps too unprepared at the time.
