@@ -35,7 +35,7 @@ We have the king of the hill in 3D. One gets used to its complexity, may even re
 std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&
 ```
 
-which should have been just type "String"...
+which should have been just "String". Non-debuggable code paths, the joy of [CMake](https://github.com/onqtam/awesome-cmake).
 
 Go is the only static language with simple polymorphism/compile time and a large practical "no design patterns" community. 
 
@@ -452,7 +452,7 @@ There are not that many [mature static non-GC languages](https://github.com/phil
 
     Here GLFWmonitor is some opaque C struct hidden under platform specific layers, the "GLFWAPI" macro can be ignored. 
     
-    Input: C semantics with **struct**** and **struct***.  
+    Input: C semantics with __struct**__ and __struct*__.  
 
     What do these types become in Go and Nim bindings?
 
@@ -472,7 +472,7 @@ There are not that many [mature static non-GC languages](https://github.com/phil
     }
     ``` 
     
-    Result: Go semantics with __[]*struct__ and ***struct**, in the best case scenario.
+    Result: Go semantics with __[]*struct__ and __*struct__, in the best case scenario.
 
     [Nim: treeform/staticglfw](https://github.com/treeform/staticglfw/blob/f6a40acf98466c3a11ab3f074a70d570c297f82b/src/staticglfw.nim#L429-L430): ptr Monitor and Monitor with
 
@@ -490,7 +490,7 @@ There are not that many [mature static non-GC languages](https://github.com/phil
     
     In Nim, Monitor* simply marks the exported type, while "pointer" is equivalent to "void*" in C.
     
-    Result: Nim semantics with **ptr pointer** and **pointer**.   
+    Result: Nim semantics with __ptr pointer__ and __pointer__.   
 
     [Nim: nimgl/glfw](https://github.com/nimgl/nimgl/blob/309d6ed8164ad184ed5bbb171c9f3d9d1c11ff81/src/nimgl/glfw.nim#L1740-L1767):
     ```nim
@@ -507,7 +507,7 @@ There are not that many [mature static non-GC languages](https://github.com/phil
     
     This comes after missing the pointer reported in [this issue](https://github.com/nimgl/nimgl/issues/54) which then got [fixed](https://github.com/nimgl/glfw/commit/52a06d468ac8e5f6afaf92b4070973cb0fb6c58c).
     
-    Result: Nim semantics with **ptr UncheckedArray[ptr object]** and **ptr object**.
+    Result: Nim semantics with __ptr UncheckedArray[ptr object]__ and __ptr object__.
     
     [jyapayne/nim-glfw](https://github.com/jyapayne/nim-glfw/blob/master/src/glfw/glfw_standalone.nim):
     
@@ -523,7 +523,7 @@ There are not that many [mature static non-GC languages](https://github.com/phil
       Monitor* {.incompleteStruct.} = object
     ```
 
-    Result: Nim semantics with **ptr ptr object**, **object** and pragma.
+    Result: Nim semantics with __ptr ptr object__, __ptr object__ and pragma.
 
     Which one is the right way?    
     
