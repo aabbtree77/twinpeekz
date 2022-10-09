@@ -440,7 +440,7 @@ There are not that many [mature static non-GC languages](https://github.com/phil
 
 * Nim has const, let, var separated from ref, new and [] (GC-ed heap stuff), with ptr, pointer and addr to handle C and var in function arguments under the hood. Pointers are explicit and can be used sparingly.
 
-* Pointers are a problem on the both camps. Consider a few [GLFW function](https://github.com/glfw/glfw/blob/a465c1c32e0754d3de56e01c59a0fef33202f04c/src/monitor.c#L306-L326) signatures: namely "glfwGetMonitors" and "glfwGetPrimaryMonitor" whose outputs are of types GLFWmonitor** and GLFWmonitor*, resp. 
+* Pointers are a problem on the both camps. Consider a few [GLFW function signatures](https://github.com/glfw/glfw/blob/a465c1c32e0754d3de56e01c59a0fef33202f04c/src/monitor.c#L306-L326):
 
     ```c
     GLFWAPI GLFWmonitor** glfwGetMonitors(int* count)
@@ -450,7 +450,7 @@ There are not that many [mature static non-GC languages](https://github.com/phil
     GLFWAPI GLFWmonitor* glfwGetPrimaryMonitor(void)
     ```
 
-    Here GLFWmonitor is some opaque C struct, hidden under platform specific layers, the "GLFWAPI" macro can be ignored here. 
+    Here GLFWmonitor is some opaque C struct hidden under platform specific layers, the "GLFWAPI" macro can be ignored. 
     
     Input: C semantics with **struct**** and **struct***.  
 
@@ -472,7 +472,7 @@ There are not that many [mature static non-GC languages](https://github.com/phil
     }
     ``` 
     
-    Result: Go semantics with **[]*struct** and ***struct**.
+    Result: Go semantics with ** []*struct ** and ***struct**.
 
     [Nim: treeform/staticglfw](https://github.com/treeform/staticglfw/blob/f6a40acf98466c3a11ab3f074a70d570c297f82b/src/staticglfw.nim#L429-L430): ptr Monitor and Monitor with
 
@@ -492,7 +492,7 @@ There are not that many [mature static non-GC languages](https://github.com/phil
     
     Result: Nim semantics with **ptr pointer** and **pointer**.   
 
-    [Nim: nimgl/glfw]:
+    [Nim: nimgl/glfw](https://github.com/nimgl/nimgl/blob/309d6ed8164ad184ed5bbb171c9f3d9d1c11ff81/src/nimgl/glfw.nim#L1740-L1767):
     ```nim
     proc glfwGetMonitors*(count: ptr int32): ptr UncheckedArray[GLFWMonitor] {.importc: "glfwGetMonitors".}
     proc glfwGetPrimaryMonitor*(): GLFWMonitor {.importc: "glfwGetPrimaryMonitor".}
@@ -529,7 +529,7 @@ There are not that many [mature static non-GC languages](https://github.com/phil
     
 * Let's avoid nonsequential code execution.
 
-* Unique attempts to make OpenGL easier, e.g. [this shader compilation macro](https://github.com/treeform/shady).
+* Attempts to make OpenGL easier, e.g. [this shader compilation macro](https://github.com/treeform/shady)?
 
 * A quick check on a few full OpenGL Ubuntu compiled binaries in Go and Nim. 
 
