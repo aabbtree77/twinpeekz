@@ -41,7 +41,11 @@ Go is the only static language with simple polymorphism/compile time and a large
 
 _Edit 2022: I am no longer sure about simplicity (esp. since Go v.1.18), and Go in 3D. Anything "too far from C" brings layers and artificial runtime performance limits. This argument also rules out F#, Elm/Reason ML, Pony... The language should be that of a "better C" category._ 
 
-_The problem is, we do not have much choice in the "mature/popular static non-GC" language category. Rust is not productive, Zig is too low level. Ada, ATS, D, Nim have failed to attract masses, for a reason. Odin/V/Kit/C3/Carbon/Jai are relatively little known and further fracture the community, missing the punch line and any written software in them. Add a bunch of more exotic options such as carp, ark, ion, quaint, myrddin, cyclone, nimskull, neut... Scroll below for some arguments around Nim which I consider to be one of the better options. The "static non-GC" space could also be just hopeless._
+_The problem is, we do not have much choice in the "mature/popular static non-GC" language category. Rust is not productive, Zig is too low level. Ada, ATS, D, Nim have failed to attract masses, for a reason._ 
+
+_Odin/V/Kit/C3/Carbon/Jai are modern and designed by smart ambitious people, but they miss a punch line and any written software in them. Add a bunch of more exotic options such as carp, ark, ion, quaint, myrddin, cyclone, nimskull, neut..._ 
+
+_Scroll below for some arguments around Nim which I consider to be one of the better options for 3D. The "static non-GC" space could also be just hopeless._
 
 ## Why OpenGL?
 
@@ -432,7 +436,7 @@ MetallicRoughnessTexture in Sponza.gltf.
 
 There are not that many [mature static non-GC languages](https://github.com/phillvancejr/Cpp-Go-Zig-Odin). For now, let's consider Nim over Go:
 
-* Fast close to the metal runtime. Notably, [Azul3D](https://github.com/azul3d/engine) abandoned Go for Zig. 
+* Fast close to the metal [runtime](https://github.com/frol/completely-unscientific-benchmarks). Notably, [Azul3D](https://github.com/azul3d/engine) abandoned Go for Zig. 
 
 * Pleasant on the eye, e.g. [this GLTF code](https://github.com/guzba/gltfviewer) reads better than a spec, without macros and DSL.
 
