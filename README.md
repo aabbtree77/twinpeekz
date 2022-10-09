@@ -43,9 +43,9 @@ _Edit 2022: I am no longer sure about [simplicity](https://thume.ca/2019/07/14/a
 
 _The problem is, we do not have much choice in the "mature/popular static non-GC" language category. [Rust is not productive](https://hirrolot.github.io/posts/why-static-languages-suffer-from-complexity), Zig is too low level. Ada, ATS, D, Nim have failed to attract masses, for a reason._ 
 
-_Odin/V/Kit/C3/Carbon/Jai are modern and designed by smart ambitious people, but they miss a punch line and any written software in them. Add a bunch of more exotic options such as carp, ark, ion, quaint, myrddin, cyclone, nimskull, neut..._ 
+_Odin/V/Kit/C3/Carbon/Jai are modern and designed by smart ambitious people, but they still miss a punch line. Add a bunch of more exotic options such as carp, ark, ion, quaint, myrddin, cyclone, nimskull, neut..._ 
 
-_Scroll below for some arguments around Nim which I consider to be one of the better options for 3D. The "static non-GC" space could also be just hopeless._
+_Scroll below for some arguments around Nim which I consider to be one of the better options for 3D.
 
 ## Why OpenGL?
 
