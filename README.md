@@ -13,7 +13,7 @@
 
 ## Introduction
 
-This is real time rendering of the Sponza demo scene, written in Go (Golang) and GLSL. Details:
+This is real time rendering of the Sponza demo scene, written in Go (Golang) and GLSL, plus some random thoughts about major pain points and choices. Details:
 
 1. i7, 16GB of RAM, GTX 760. Ubuntu, GLFW3, OpenGL, GLTF 2.0, MIT license.
 
@@ -23,13 +23,25 @@ This is real time rendering of the Sponza demo scene, written in Go (Golang) and
 
 ## Why Volumetric Lighting?
 
-It is one of the post 2013 graphics effects that vastly advances immersion and realism, also an interesting approximation to [the rendering equation](https://en.wikipedia.org/wiki/Rendering_equation) which connects programming with geometric optics. It is a GPU-hungry technique, but not as hungry as ray tracing.
+It is one of the post 2013 graphics effects that vastly advances immersion and realism, also an important approximation to [the rendering equation](https://en.wikipedia.org/wiki/Rendering_equation) which connects programming with geometric optics. It is a GPU-hungry technique, but not as hungry as ray tracing. 
+
+What else got interesting after say 2013? Rendering water in INSIDE 2016, skyscapes in Red Dead Redemption 2 2018.
 
 ## Why Go?
 
-The only static language with a simple polymorphism/compile time and a large practical "no design patterns" community. 
+We have the king of the hill in 3D. One gets used to its complexity, may even restrict it somehow to a minimal viable subset, but the daily toil reduces to deciphering stuff such as
 
-Edit 2022: The Go runtime is not enough for 3D. Anything "static and far from C" brings layers and artificial limits. This rules out a lot of otherwise interesting projects such as F#, Elm/Reason ML, Pony... The language should be that of a "better C" category. I am rewriting this code in Nim.
+```cpp
+std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&
+```
+
+which should have been just type "String"...
+
+Go is the only static language with simple polymorphism/compile time and a large practical "no design patterns" community. 
+
+Edit 2022: I am no longer sure about simplicity (esp. since Go v.1.18), and Go in 3D. Anything "too far from C" brings layers and artificial runtime performance limits. This argument also rules out F#, Elm/Reason ML, Pony... The language should be that of a "better C" category. 
+
+The problem is, we do not have much choice in the "mature/popular static non-GC" language category. Rust is not productive, Zig is too low level. Ada, ATS, D, Nim have failed to attract masses, for a reason. Odin/V/Kit/C3/Carbon/Jai are relatively little known and further fracture the community, missing the punch line and any written software in them. Add a bunch of more exotic options such as carp, ark, ion, quaint, myrddin, cyclone, nimskull, neut... Scroll below for some arguments around Nim which I consider to be one of the better options, though this could be hopeless. 
 
 ## Why OpenGL?
 
@@ -424,10 +436,97 @@ There are not that many [mature static non-GC languages](https://github.com/phil
 
 * Pleasant on the eye, e.g. [this GLTF code](https://github.com/guzba/gltfviewer) reads better than a spec, without macros and DSL.
 
-* Less clutter with pointers. Go uses const, var, *, & and unsafe.Pointer to interface with C. We do not know what and when escapes to the heap and * infects everything. Nim has const, let, var separated from ref, new and [] (GC heap stuff), with ptr and addr to handle C. The ref/ptr mess is very explicit and avoidable in Nim, unlike Go.
+* Go uses const, var, *, & and unsafe.Pointer to interface with C. We do not know what and when escapes to the heap and * infects everything. 
 
-* To be fair, Nim lacks solid sum types/ADTs and the "less is more" philosophy. Let's hope the complexity is gradual.
+* Nim has const, let, var separated from ref, new and [] (GC-ed heap stuff), with ptr, pointer and addr to handle C and var in function arguments under the hood. Pointers are explicit and can be used sparingly.
 
+* Pointers are a problem on the both camps. Consider a few [GLFW function](https://github.com/glfw/glfw/blob/a465c1c32e0754d3de56e01c59a0fef33202f04c/src/monitor.c#L306-L326) signatures: namely "glfwGetMonitors" and "glfwGetPrimaryMonitor" whose outputs are of types GLFWmonitor** and GLFWmonitor*, resp. 
+
+    ```c
+    GLFWAPI GLFWmonitor** glfwGetMonitors(int* count)
+    ```
+
+    ```c
+    GLFWAPI GLFWmonitor* glfwGetPrimaryMonitor(void)
+    ```
+
+    Here GLFWmonitor is some opaque C struct, hidden under platform specific layers, the "GLFWAPI" macro can be ignored here. 
+    
+    Input: C semantics with **struct**** and **struct***.  
+
+    What do these types become in Go and Nim bindings?
+
+    [Go: go-gl/glfw/v3.3](https://github.com/go-gl/glfw/blob/62640a716d485dcbf341a7c187227a4a99fb1eba/v3.3/glfw/monitor.go#L56-L83):
+
+    ```go
+    func GetMonitors() []*Monitor {
+    ```
+
+    ```go
+    func GetPrimaryMonitor() *Monitor {
+    ```
+
+    ```go
+    type Monitor struct {
+      data *C.GLFWmonitor
+    }
+    ``` 
+    
+    Result: Go semantics with **[]*struct** and ***struct**.
+
+    [Nim: treeform/staticglfw](https://github.com/treeform/staticglfw/blob/f6a40acf98466c3a11ab3f074a70d570c297f82b/src/staticglfw.nim#L429-L430): ptr Monitor and Monitor with
+
+    ```nim
+    proc getMonitors*(count: ptr cint): ptr Monitor {.cdecl, importc: "glfwGetMonitors".}
+    proc getPrimaryMonitor*(): Monitor {.cdecl, importc: "glfwGetPrimaryMonitor".}
+    ```
+
+    with
+
+    ```nim
+    type
+      Monitor* = pointer
+    ```
+    
+    In Nim, Monitor* simply marks the exported type, while "pointer" is equivalent to "void*" in C.
+    
+    Result: Nim semantics with **ptr pointer** and **pointer**.   
+
+    [Nim: nimgl/glfw]:
+    ```nim
+    proc glfwGetMonitors*(count: ptr int32): ptr UncheckedArray[GLFWMonitor] {.importc: "glfwGetMonitors".}
+    proc glfwGetPrimaryMonitor*(): GLFWMonitor {.importc: "glfwGetPrimaryMonitor".}
+    ```
+    
+    with 
+    
+    ```nim
+    type
+      GLFWMonitor* = ptr object
+    ```
+    
+    This comes after missing the pointer reported in [this issue](https://github.com/nimgl/nimgl/issues/54) which then got [fixed](https://github.com/nimgl/glfw/commit/52a06d468ac8e5f6afaf92b4070973cb0fb6c58c).
+    
+    Result: Nim semantics with **ptr UncheckedArray[ptr object]** and **ptr object**.
+    
+    [jyapayne/nim-glfw](https://github.com/jyapayne/nim-glfw/blob/master/src/glfw/glfw_standalone.nim):
+    
+    ```nim
+    proc getMonitors*(count: ptr cint): ptr ptr Monitor {.importc: "glfwGetMonitors", cdecl.}
+    proc getPrimaryMonitor*(): ptr Monitor {.importc: "glfwGetPrimaryMonitor", cdecl.}
+    ```
+    
+    with 
+    
+    ```nim
+    type
+      Monitor* {.incompleteStruct.} = object
+    ```
+
+    Result: Nim semantics with **ptr ptr object**, **object** and pragma.
+
+    Which one is the right way?    
+    
 * Let's avoid nonsequential code execution.
 
 * Unique attempts to make OpenGL easier, e.g. [this shader compilation macro](https://github.com/treeform/shady).
