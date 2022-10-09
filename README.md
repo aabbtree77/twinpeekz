@@ -39,9 +39,9 @@ which should have been just "String". Non-debuggable code paths, the joy of [CMa
 
 Go is the only static language with simple polymorphism/compile time and a large practical "no design patterns" community. 
 
-_Edit 2022: I am no longer sure about simplicity (esp. since Go v.1.18), and Go in 3D. Anything "too far from C" brings layers and artificial runtime performance limits. This argument also rules out F#, Elm/Reason ML, Pony... The language should be that of a "better C" category._ 
+_Edit 2022: I am no longer sure about [simplicity](https://thume.ca/2019/07/14/a-tour-of-metaprogramming-models-for-generics/) ([esp. since Go v.1.18](https://planetscale.com/blog/generics-can-make-your-go-code-slower)), and Go in 3D. Anything "too far from C" brings layers and artificial runtime performance limits. This argument also rules out F#, Elm/Reason ML, Pony... The language should be that of a "better C" category._ 
 
-_The problem is, we do not have much choice in the "mature/popular static non-GC" language category. Rust is not productive, Zig is too low level. Ada, ATS, D, Nim have failed to attract masses, for a reason._ 
+_The problem is, we do not have much choice in the "mature/popular static non-GC" language category. [Rust is not productive](https://hirrolot.github.io/posts/why-static-languages-suffer-from-complexity), Zig is too low level. Ada, ATS, D, Nim have failed to attract masses, for a reason._ 
 
 _Odin/V/Kit/C3/Carbon/Jai are modern and designed by smart ambitious people, but they miss a punch line and any written software in them. Add a bunch of more exotic options such as carp, ark, ion, quaint, myrddin, cyclone, nimskull, neut..._ 
 
