@@ -43,9 +43,11 @@ _Edit 2022: I am no longer sure about [simplicity](https://thume.ca/2019/07/14/a
 
 _The problem is, we do not have much choice in the "mature/popular static non-GC" language category. [Rust is not productive](https://hirrolot.github.io/posts/why-static-languages-suffer-from-complexity), Zig is too low level. Ada, ATS, D, Nim have failed to attract masses, for a reason._ 
 
-_Odin/V/Kit/C3/Carbon/Jai are modern and designed by smart ambitious people, but they still miss a punch line. Add a bunch of more exotic options such as carp, ark, ion, quaint, myrddin, cyclone, nimskull, neut..._ 
+_Odin/V/Kit/C3/Carbon/Jai are modern and designed by smart ambitious people, but they still miss a punch line._ 
 
-_Scroll below for some arguments around Nim which I consider to be one of the better options for 3D.
+_Many lesser known static language projects exist. They are interesting, no doubt, but lacking even more than "the Odin line": carp, ark, ion, quaint, myrddin, cyclone, nimskull, neut..._ 
+
+_Scroll below for some arguments around Nim which I consider to be one of the better options for 3D._
 
 ## Why OpenGL?
 
@@ -434,7 +436,7 @@ MetallicRoughnessTexture in Sponza.gltf.
 
 ## Why Nim and not Go?
 
-There are not that many [mature static non-GC languages](https://github.com/phillvancejr/Cpp-Go-Zig-Odin). For now, let's consider Nim over Go:
+There are not that many [mature static non-GC languages](https://github.com/phillvancejr/Cpp-Go-Zig-Odin). Consider Nim over Go:
 
 * Fast close to the metal [runtime](https://github.com/frol/completely-unscientific-benchmarks). Notably, [Azul3D](https://github.com/azul3d/engine) abandoned Go for Zig. 
 
@@ -531,9 +533,12 @@ There are not that many [mature static non-GC languages](https://github.com/phil
 
     Which one is the right way?    
     
-* Let's avoid nonsequential code execution.
+* Nonsequential code execution is somewhat irrelevant to 3D, let's ignore it, for now.
 
-* Attempts to make OpenGL easier, e.g. [this shader compilation macro](https://github.com/treeform/shady)?
+* There are multiple attempts to make OpenGL easier in Nim: [stisa-2017](https://github.com/stisa/crow), [AlxHnr-2017](https://github.com/AlxHnr/3d-opengl-demo),
+[jackmott-2019](https://github.com/jackmott/easygl), [krux02-2020](https://github.com/krux02/opengl-sandbox), [liquidev-2021](https://github.com/liquidev/aglet), [treeform-2022](https://github.com/treeform/shady)... These deserve a special study.
+
+* A few more potentially useful OpenGL projects in Nim: [Samulus-2017](https://github.com/Samulus/toycaster) which is a ray caster based on [jackmott-2019](https://github.com/jackmott/easygl); [anon767-2020](https://github.com/anon767/nimgl-breakout) is "Learnopengl 2D Breakout Game ported to nim". "Learn OpenGL" itself, [pseudo-random-2020](https://github.com/pseudo-random/geometryutils/tree/master/src/geometryutils) provides useful math functions.
 
 * A quick check on a few full OpenGL Ubuntu compiled binaries in Go and Nim. 
 
