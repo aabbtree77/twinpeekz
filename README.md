@@ -39,7 +39,7 @@ which should have been just "String". Non-debuggable code paths, C++11-14-17-20 
 
 Go is the only static language with simple polymorphism/compile time and a large practical "no design patterns" community. 
 
-_Edit 2022: The simplicity is no longer there since Go v.1.18 generics: [1](https://thume.ca/2019/07/14/a-tour-of-metaprogramming-models-for-generics/), [2](https://planetscale.com/blog/generics-can-make-your-go-code-slower). Pointers... I now consider Nim as a better language._
+_Edit 2022: The simplicity is no longer there since Go v.1.18 generics: [1](https://thume.ca/2019/07/14/a-tour-of-metaprogramming-models-for-generics/), [2](https://planetscale.com/blog/generics-can-make-your-go-code-slower). Pointers, reflection, struct tags, capitalization... I now consider Nim as a better language._
 
 ## Why OpenGL?
 
