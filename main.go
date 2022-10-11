@@ -144,12 +144,12 @@ func main() {
 
 	//Rendering loop
 	//-------------------------------------------------------------------------------------------------------------------------
-	/*Enable v-sync (0-off, 1-on in glfw.SwapInterval)
+	/*Enable VSync (0-off, 1-on in glfw.SwapInterval)
 	You might also need adjust your card settings, i.e. executing this helped for my GTX 760 setup:
 	nvidia-settings --assign CurrentMetaMode="nvidia-auto-select +0+0 { ForceFullCompositionPipeline = On }"
 	See https://github.com/godlikepanos/anki-3d-engine/issues/59
 	*/
-	glfw.SwapInterval(1)
+	glfw.SwapInterval(0)
 
 	var timeOpenGLms [5]float64
 

@@ -13,11 +13,11 @@
 
 ## Introduction
 
-This is real time rendering of the Sponza demo scene, written in Go (Golang) and GLSL, plus some random thoughts about major pain points and choices. Details:
+This is real time rendering of the Sponza demo scene, written in Go (Golang) and GLSL, plus some random thoughts about programming for 3D. Details:
 
 1. i7, 16GB of RAM, GTX 760. Ubuntu, GLFW3, OpenGL, GLTF 2.0, MIT license.
 
-2. Forward directional light(s), shadow mapping (PCF 3x3), basic PBR (no baking, no ambient term), 3D ray marched volumetric lighting.
+2. Forward directional lights, shadow mapping (PCF 3x3), basic PBR (no baking, no ambient term), 3D ray marched volumetric lighting.
 
 [Why yet another rendering code?](https://github.com/paranim/paranim) In a narrow sense, this is a study of volumetric lighting and Go/GC in 3D. More broadly, Unreal/Unity/Godot types are hardly a joy to work with. Consider this attempt as a starting point towards a lightweight graphics engine whose rendering pipeline one could actually control.
 
@@ -35,19 +35,11 @@ We have the king of the hill in 3D, but it requires deciphering stuff such as
 std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&
 ```
 
-which should have been just "String". Non-debuggable code paths, template errors, tracking C++11-14-17-20, the joy of [CMake](https://github.com/onqtam/awesome-cmake)...
+which should have been just "String". Non-debuggable code paths, C++11-14-17-20 layers, the joy of [CMake](https://github.com/onqtam/awesome-cmake)...
 
 Go is the only static language with simple polymorphism/compile time and a large practical "no design patterns" community. 
 
-_Edit 2022: I am no longer sure about [simplicity](https://thume.ca/2019/07/14/a-tour-of-metaprogramming-models-for-generics/) ([esp. since Go v.1.18](https://planetscale.com/blog/generics-can-make-your-go-code-slower)), and Go in 3D. Anything "too far from C" brings layers and artificial runtime performance limits. This argument also rules out F#, Elm/Reason ML, Pony... The language should be that of a "better C" category._ 
-
-_The problem is, we do not have much choice in the "mature/popular static non-GC" language category. [Rust is not productive](https://hirrolot.github.io/posts/why-static-languages-suffer-from-complexity), Zig is too low level. Ada, ATS, Fortran, D, Nim have failed to attract masses, for a reason._ 
-
-_Odin/V/Kit/C3/Carbon/Jai are modern and designed by smart ambitious people, but they still miss a punch line._ 
-
-_Many lesser known static language projects exist. They are interesting, no doubt, but lacking even more than "the Odin line": carp, ark, ion, quaint, myrddin, cyclone, nimskull, neut..._ 
-
-_Scroll below for some arguments around Nim which I consider to be one of the better options for 3D._
+_Edit 2022: The simplicity is no longer there since Go v.1.18 generics: [1](https://thume.ca/2019/07/14/a-tour-of-metaprogramming-models-for-generics/), [2](https://planetscale.com/blog/generics-can-make-your-go-code-slower). Pointers... I now consider Nim as a better language._
 
 ## Why OpenGL?
 
@@ -137,14 +129,20 @@ timeOpenGLms = [1.190624 3.639968 2.843136 0.210208 7.883936]
 
 squeezes a volumetrically rendered Sponza frame under 8ms.
 
-This is the raw OpenGL part. The overall frame rendering in Go takes deltaT = 16.69ms, which I measure in the keyboard update function
-inside "main.go".
-
 Timing with two directional lights:
 
-timeOpenGLms= [1.918592 3.783936 4.978624 0.210656 10.891808],
+timeOpenGLms= [1.918592 3.783936 4.978624 0.210656 10.891808].
 
-with the overall deltaT = 17.15ms.
+This is the raw OpenGL part. The overall frame rendering time depends a lot on whether one turns on/off VSync, line 152 in main.go:
+
+```go
+glfw.SwapInterval(0)
+```
+
+When this is set to zero (VSync=Off), the overall frame rendering time is timeOpenGLms plus about 0.4ms. on average, never exceeding 1ms.
+VSync=On keeps the scene at 60FPS rate with 16-17ms rendering time. 
+
+The Go runtime is very fast here, but one should emphasize that all Go does is OpenGL buffer rebinding and GLSL shader setup in the main render loop. All the meshes and textures are uploaded to the GPU in the initialization phase. The code does not perform any adaptive frustum computations or mesh removal/uploads.
 
 ## Rendering Discussion I: Shadows
 
@@ -391,11 +389,11 @@ gc 45 @345.492s 0%: 0.037+14+0.007 ms clock, 0.30+0.41/0.31/0.29+0.057 ms cpu, 4
 gc 46 @353.542s 0%: 0.045+15+0.006 ms clock, 0.36+0.25/0.58/0.27+0.051 ms cpu, 4->4->0 MB, 5 MB goal, 8 P
 ```
 
-The default GC setup does not consume more than 1ms. and it gets invoked every 8s. or so. However, a spike wasting whole 24ms. may occur once a minute or so. Dropping a frame or two per minute does not break any smooth 3D experience. A bigger problem here is that the Go code per se, i.e. the non-OpenGL part, already takes 7-8ms. per frame, for a scene of mild complexity with little action going on.
+**The default GC setup does not consume more than 1ms. and it gets invoked every 8s. or so. However, a spike wasting whole 24ms. may occur once a minute or so. Dropping a frame or two per minute does not break any smooth 3D experience. Considering that the Go code barely adds 1ms. to the overall OpenGL time per frame, Go's runtime is perfectly adequate for real time 3D applications with the scenes of Sponza's complexity.**
 
-Pointers bring [trouble](https://github.com/g3n/engine/issues/163), and we get them without the ability to control stack vs heap 
-allocations. They also overlap with some other purposes: a mutable function argument qualifier, or a test if the structure field exists after loading 
-a struct from *.json, by checking for the nil value if the structure element has been defined as a pointer.
+_Pointers bring [troubles](https://github.com/g3n/engine/issues/163), and we get them without the ability to control stack vs heap 
+allocations. They also overlap with some other purposes: A mutable function argument qualifier, or a test if the structure field exists after loading 
+a struct from *.json, by checking for the nil value if the structure element has been defined as a pointer. Pointers are also in the type specifiers, Go slice semantics, they also decay..._
 
 The tools are OK. I could use go-vim, and mostly just :GoDef and ctrl+O to get back, sometimes :GoRename. The GLTF code was written just by exploring Quim Muntal's GLTF library with :GoDef. No luxury with "import pdb; pdb.set_trace()" as with Python's REPL. Perhaps [gdbgui](https://www.gdbgui.com/) or [gdlv](https://github.com/aarzilli/gdlv/issues/20) could be useful. I relied on go-vim and :GoDef with printf, and RenderDoc.
 
@@ -403,7 +401,7 @@ The code here was written prior to Go version 1.18. The math parts could now use
 
 ## OpenGL Experience Report
 
-Programming with GLSL/OpenGL is very tiresome as there is not much help from the compiler. This is the elephant in the room.
+Programming with GLSL/OpenGL is very tiresome as there is not much help from the compiler. However, this is only a part of the problem. The bigger issue is the lack of incremental coding/testing. The OpenGL setup and its state spreads everywhere and one has to write a lot of code before even seeing the first results on the screen. This is the elephant in the room.
 
 I was hunting down one bug for days which was rendering a black screen without a crash. The problem turned out to be gl.BufferData function storing mesh index array on a GPU. I was using
 type uint whose analogue in C++ takes 4 bytes of memory, but in Go it's 8! Switching to uint32 simply solved the problem, but to actually locate 
@@ -438,7 +436,7 @@ MetallicRoughnessTexture in Sponza.gltf.
 
 There are not that many [mature static non-GC languages](https://github.com/phillvancejr/Cpp-Go-Zig-Odin). Consider Nim over Go:
 
-* Fast close to the metal [runtime](https://github.com/frol/completely-unscientific-benchmarks). Notably, [Azul3D](https://github.com/azul3d/engine) abandoned Go for Zig. 
+* Faster closer to the metal [runtime](https://github.com/frol/completely-unscientific-benchmarks). Notably, [Azul3D](https://github.com/azul3d/engine) abandoned Go for Zig. 
 
 * Pleasant on the eye, e.g. [this GLTF code](https://github.com/guzba/gltfviewer) reads better than a spec, without macros and DSL.
 
@@ -540,7 +538,7 @@ There are not that many [mature static non-GC languages](https://github.com/phil
 
 * A few more potentially useful OpenGL projects in Nim: [Samulus-2017](https://github.com/Samulus/toycaster) which is a ray caster based on [jackmott-2019](https://github.com/jackmott/easygl); [anon767-2020](https://github.com/anon767/nimgl-breakout) is "Learnopengl 2D Breakout Game ported to nim". "Learn OpenGL" itself, [pseudo-random-2020](https://github.com/pseudo-random/geometryutils/tree/master/src/geometryutils) provides useful math functions.
 
-* A quick check on a few full OpenGL Ubuntu compiled binaries in Go and Nim. 
+* A quick check on a few OpenGL Ubuntu compiled binaries in Go and Nim. 
 
     Go:
     ```console
