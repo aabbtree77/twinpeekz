@@ -13,13 +13,13 @@
 
 ## Introduction
 
-This is real time rendering of the Sponza demo scene, written in Go (Golang) and GLSL, plus some random thoughts about programming and 3D. Details:
+This is real time rendering of Sponza, written in Go (Golang) and GLSL, with some random thoughts. Details:
 
 1. i7, 16GB of RAM, GTX 760. Ubuntu, GLFW3, OpenGL, GLTF 2.0, MIT license.
 
 2. Forward rendering, directional lights, shadow mapping (PCF 3x3), basic PBR (no baking, no ambient term), 3D ray marched volumetric lighting.
 
-[Why yet another rendering code?](https://github.com/paranim/paranim) In a narrow sense, this is a study of volumetric lighting and Go/GC in 3D. More broadly, Unreal/Unity/Godot types are hardly a joy to work with. Consider this attempt as a starting point towards a lightweight graphics engine whose rendering pipeline one could actually control.
+[Why yet another rendering code?](https://github.com/paranim/paranim) One needs a 3D engine whose rendering pipeline one can actually control.
 
 ## Why Volumetric Lighting?
 
@@ -35,15 +35,15 @@ We have the king of the hill in 3D, but it requires deciphering stuff such as
 std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&
 ```
 
-which should have been just "String". Non-debuggable code paths, C++11-14-17-20 layers, the joy of [CMake](https://github.com/onqtam/awesome-cmake)...
+which should have been just "String". Non-debuggable code paths, 11-14-17-20-23 layers, [CMake](https://github.com/onqtam/awesome-cmake)...
 
 Go is the only static language with simple polymorphism/compile time and a large practical "no design patterns" community. 
 
-_Edit 2022: The simplicity is kind of no longer there since Go v.1.18 generics: [1](https://planetscale.com/blog/generics-can-make-your-go-code-slower), [2](https://thume.ca/2019/07/14/a-tour-of-metaprogramming-models-for-generics/), but the real problem is pervasive pointers and 2-3x slower runtime than that of C. Go could still be optimal for long term maintenance, considering how bad anything else is out there. It does have a large community with unique projects such as go-libp2p... However, I now consider Nim as a better language. It removes both of the most glaring issues of Go, unlike C++/Rust/Zig..._
+_Edit 2022: No longer true since Go v.1.18 generics: [1](https://planetscale.com/blog/generics-can-make-your-go-code-slower), [2](https://thume.ca/2019/07/14/a-tour-of-metaprogramming-models-for-generics/). The real problem with Go is its pervasive pointers and 2-3x slower runtime than that of C. I now consider Nim as it removes both of these issues with style._
 
 ## Why OpenGL?
 
-Vulkan and WebGPU are a mess, OpenGL is the lesser evil.
+Vulkan and WebGPU are a mess, OpenGL is the lesser evil. Let's stick to Ubuntu, avoid multiple platforms. Let's not expect too much from the web space, 3D-wise.
 
 ## Setup
 
@@ -53,6 +53,8 @@ Vulkan and WebGPU are a mess, OpenGL is the lesser evil.
   ```console
   sudo apt install xorg-dev libgl1-mesa-dev
   ```
+
+  See [Fyne](https://github.com/fyne-io/fyne/blob/master/.github/workflows/platform_tests.yml) and [g3n](https://github.com/g3n/engine) for more of these OpenGL/AL Ubuntu dependencies often linked in Go codes, but the two above should be sufficient here.
 
 3. Download Sponza from github to "Sponza_GLTF": 
   ```console
@@ -103,8 +105,6 @@ There are four layers of code:
 
 1. **main.go**, **camera.go** - GLFW window, mouse, keyboard management. Initial camera position in makeCam() (camera.go). AWSDEC  and arrow keys to move in 3D, holding+LMB changes camera view direction. Scrolling zooms in and out, F11 toggles full screen. Window resizes change certain frame buffers, but the shadow map resolution remains the same.
 
-    Elementary camera-related math functions are relegated to the external dependency, i.e. the g3n engine (BSD-2), which one could "vendor" directly. The pain point will not be a Go package though, but the system libs like "xorg-dev" or "libgl1-mesa-dev" on Ubuntu. See [Fyne](https://github.com/fyne-io/fyne/blob/master/.github/workflows/platform_tests.yml) and g3n repos for more of these precise OpenGL/AL Ubuntu layer lib names.
-
 2. **scene.go** - GLTF loading and some GPU buffer preparation. Each model must have .gltf, .bin and its texture image files in the same folder, tested mostly on an enhanced Sponza scene. There is no missing data filling and excessive checking, if the model does not have all the data it needs to have then it is simply not loaded or some error might occur. You know what is in your GLTF file and adjust scene.go to use the data you need.
 
 3. **rendering.go**, **shader.go** - the rendering pipeline follows the C++ code of Tomas Öhberg. The file shader.go is the work by Nicholas Blaskey (MIT license), I leave a geometry shader compilation there in case the point lights would need to be added later (they are very expensive!).
@@ -140,9 +140,9 @@ glfw.SwapInterval(0)
 ```
 
 When this is set to zero (VSync=Off), the overall frame rendering time is timeOpenGLms plus about 0.4ms. on average, never exceeding 1ms.
-VSync=On keeps the scene at 60FPS rate with 16-17ms rendering time. 
+VSync=On keeps the scene at the 60 FPS rate with 16-17ms rendering time. 
 
-The Go runtime is very fast here, but one should emphasize that all Go does is OpenGL buffer rebinding and GLSL shader setup in the main render loop. All the meshes and textures are uploaded to the GPU in the initialization phase. The code does not perform any adaptive frustum computations or mesh removal/uploads.
+The Go runtime is very fast here, but one should emphasize that all Go does is OpenGL buffer rebinding and GLSL shader setup in the main render loop. All the meshes and textures are uploaded to the GPU in the initialization phase. The code does not perform any adaptive frustum computations or mesh removal/GPU uploads.
 
 ## Rendering Discussion I: Shadows
 
@@ -264,9 +264,9 @@ Let us evaluate some more images.
 With a similar light intensity, pseudo-PBR is less playful, and the material is more dry and digital, but with a lot more light it exhibits some highlight generation. That proper light intensity region however is very narrow as with more light the shadow-light diffuse effects begin to dominate specular/metallic reflections which become barely visible, while in low light intensity settings the material has no highlights. Pseudo-PBR highlights are also bigger and more blurry, the surfaces do not have that thin glass layer that plays nicely with light.
 
 On the other hand, somewhat brute shadows and mesh resolutions destroy the realism and mood if you start zooming or getting close to the objects.
-So it is a fine tool which must go hand in hand with some other improvements. At the moment, no IBL and no ambient terms, I consider this as an unnecessary code complexity. Ambience is achieved by simply adding the base color weighted with some 0.01 factor and such, this is too crude, but I like things look a bit darker and do not mind underexposure and lack of detail in dark areas.
+So a PBR is a fine tool which must go hand in hand with some other improvements. At the moment, no IBL and no ambient terms, I consider this as an unnecessary code complexity. Ambience is achieved by simply adding the base color weighted with some 0.01 factor and such, this is too crude, but I like things look a bit darker and do not mind underexposure and lack of detail in dark areas.
 
-In addition to baking and ambience, a proper PBR would bring one more complication, which is some tangent-bitangent space usually relegated either to Assimp, or custom C++ implementations. So the mesh essentially gets one more GPU tangent buffer in addition to normals. However, it is still possible to compute tangents directly in the shader, but this might reduce the performance. 
+In addition to baking and ambience, a proper PBR would bring one more complication, which is the tangent-bitangent space usually relegated either to Assimp, or custom C++ implementations. So the mesh essentially gets one more GPU tangent buffer in addition to normals. However, it is still possible to compute tangents directly in the shader, but this might reduce the performance. 
 
 For some future implementation, I will mention three references here:
 
@@ -391,9 +391,9 @@ gc 46 @353.542s 0%: 0.045+15+0.006 ms clock, 0.36+0.25/0.58/0.27+0.051 ms cpu, 4
 
 **The default GC setup does not consume more than 1ms. and it gets invoked every 8s. or so. However, a spike wasting whole 24ms. may occur once a minute or so. Dropping a frame or two per minute does not break any smooth 3D experience. Considering that the Go code barely adds 1ms. to the overall OpenGL time per frame, Go's runtime is perfectly adequate for real time 3D applications with the scenes of Sponza's complexity.**
 
-_Pointers bring [troubles](https://github.com/g3n/engine/issues/163), and we get them without the ability to control stack vs heap 
+Pointers bring [troubles](https://github.com/g3n/engine/issues/163), and we get them without the ability to control stack vs heap 
 allocations. They also overlap with some other purposes: A mutable function argument qualifier, or a test if the structure field exists after loading 
-a struct from *.json, by checking for the nil value if the structure element has been defined as a pointer. Pointers are also in the type specifiers, Go slice semantics, they also decay..._
+a struct from *.json, by checking for the nil value if the structure element has been defined as a pointer. Pointers are also in the type specifiers, the Go slice semantics, they also decay...
 
 The tools are OK. I could use go-vim, and mostly just :GoDef and ctrl+O to get back, sometimes :GoRename. The GLTF code was written just by exploring Quim Muntal's GLTF library with :GoDef. No luxury with "import pdb; pdb.set_trace()" as with Python's REPL. Perhaps [gdbgui](https://www.gdbgui.com/) or [gdlv](https://github.com/aarzilli/gdlv/issues/20) could be useful. I relied on go-vim and :GoDef with printf, and RenderDoc.
 
@@ -407,7 +407,7 @@ I was hunting down one bug for days which was rendering a black screen without a
 type uint whose analogue in C++ takes 4 bytes of memory, but in Go it's 8! Switching to uint32 simply solved the problem, but to actually locate 
 that I had to use RenderDoc. Luckily, I had a working C++ alternative code by Tomas Öhberg, so I could compare the raw data differences in the both cases by loading a simple 3D cube.
 
-An unused variable warning is actually an error and looks like this:
+An unused variable warning is actually an error:
 ```console
 2021/07/02 11:59:36 Could not find uniform:  metalRoughMap
 ```
@@ -436,13 +436,13 @@ MetallicRoughnessTexture in Sponza.gltf.
 
 There are not that many [mature static non-GC languages](https://github.com/phillvancejr/Cpp-Go-Zig-Odin). Consider Nim over Go:
 
-* Faster closer to the metal [runtime](https://github.com/frol/completely-unscientific-benchmarks). Notably, [Azul3D](https://github.com/azul3d/engine) abandoned Go for Zig. 
+* Faster closer to the metal runtime. Notably, [Azul3D](https://github.com/azul3d/engine) abandoned Go for Zig. 
 
 * Pleasant on the eye, e.g. [this GLTF code](https://github.com/guzba/gltfviewer) reads better than a spec, without macros and DSL.
 
 * Go uses const, var, *, & and unsafe.Pointer to interface with C. We do not know what and when escapes to the heap and * infects everything. 
 
-* Nim has const, let, var separated from ref, new and [] (GC-ed heap stuff), with ptr, pointer and addr to handle C and var in function arguments under the hood. Pointers are explicit and can be used sparingly.
+* Nim has const, let, var separated from ref, new and [] (GC-ed data on the heap), with ptr, pointer and addr to handle C and var in function arguments under the hood. Pointers are explicit and can be used sparingly.
 
 * Pointers are a problem on the both camps. Consider a few [GLFW function signatures](https://github.com/glfw/glfw/blob/a465c1c32e0754d3de56e01c59a0fef33202f04c/src/monitor.c#L306-L326):
 
@@ -536,7 +536,7 @@ There are not that many [mature static non-GC languages](https://github.com/phil
 * There are multiple attempts to make OpenGL easier in Nim: [stisa-2017](https://github.com/stisa/crow), [AlxHnr-2017](https://github.com/AlxHnr/3d-opengl-demo),
 [jackmott-2019](https://github.com/jackmott/easygl), [krux02-2020](https://github.com/krux02/opengl-sandbox), [liquidev-2021](https://github.com/liquidev/aglet), [treeform-2022](https://github.com/treeform/shady)... These deserve a special study.
 
-* A few more potentially useful OpenGL projects in Nim: [Samulus-2017](https://github.com/Samulus/toycaster) which is a ray caster based on [jackmott-2019](https://github.com/jackmott/easygl); [anon767-2020](https://github.com/anon767/nimgl-breakout) is "Learnopengl 2D Breakout Game ported to nim". "Learn OpenGL" itself, [pseudo-random-2020](https://github.com/pseudo-random/geometryutils/tree/master/src/geometryutils) provides useful math functions.
+* A few more potentially useful OpenGL projects in Nim: [Samulus-2017](https://github.com/Samulus/toycaster) which is a ray caster based on [jackmott-2019](https://github.com/jackmott/easygl); [anon767-2020](https://github.com/anon767/nimgl-breakout) is "Learnopengl 2D Breakout Game ported to nim". "Learn OpenGL" itself, [pseudo-random-2020](https://github.com/pseudo-random/geometryutils/tree/master/src/geometryutils) provides OpenGL-related math structures.
 
 * A quick check on a few OpenGL Ubuntu compiled binaries in Go and Nim. 
 
@@ -568,6 +568,14 @@ There are not that many [mature static non-GC languages](https://github.com/phil
     ```
     
     The second executable depends on fewer dynamically linked libraries, but where has libGL gone?
+
+* Nim is unusually flexible with style and case-insensitivity and this issue remains [controversial](https://github.com/nim-lang/RFCs/issues/456). One example where this feature bites can be seen in nim-gl bindings to GLFW. [Check this out](https://github.com/nimgl/nimgl/blob/309d6ed8164ad184ed5bbb171c9f3d9d1c11ff81/src/nimgl/glfw.nim#L857):
+
+    ```nim
+    GLFWCursorSpecial* = 0x00033001 ## Originally GLFW_CURSOR but conflicts with GLFWCursor type
+    ``` 
+    
+    In the original OpenGL C interface we have the GLFW_CURSOR constant and the GLFWCursor structure. In Nim these two become the same due its style rules. Someone had to locate this bug and come up with "GLFWCursorSpecial" name instead of "GLFW_CURSOR". The C pointers introduce a further friction with FFI bindings, I have seen this in Go as well, do not trust anything automatically generated, these bindings need to be tested with each version, maintained.
      
 ## Credits, Rendering Frameworks I Have Tried, Many Thanks To:
 
