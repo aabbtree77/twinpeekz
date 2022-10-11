@@ -13,11 +13,11 @@
 
 ## Introduction
 
-This is real time rendering of the Sponza demo scene, written in Go (Golang) and GLSL, plus some random thoughts about programming for 3D. Details:
+This is real time rendering of the Sponza demo scene, written in Go (Golang) and GLSL, plus some random thoughts about programming and 3D. Details:
 
 1. i7, 16GB of RAM, GTX 760. Ubuntu, GLFW3, OpenGL, GLTF 2.0, MIT license.
 
-2. Forward directional lights, shadow mapping (PCF 3x3), basic PBR (no baking, no ambient term), 3D ray marched volumetric lighting.
+2. Forward rendering, directional lights, shadow mapping (PCF 3x3), basic PBR (no baking, no ambient term), 3D ray marched volumetric lighting.
 
 [Why yet another rendering code?](https://github.com/paranim/paranim) In a narrow sense, this is a study of volumetric lighting and Go/GC in 3D. More broadly, Unreal/Unity/Godot types are hardly a joy to work with. Consider this attempt as a starting point towards a lightweight graphics engine whose rendering pipeline one could actually control.
 
