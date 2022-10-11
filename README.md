@@ -29,19 +29,19 @@ What else got interesting after say 2013? Rendering water in INSIDE 2016, skysca
 
 ## Why Go?
 
-We have the king of the hill in 3D. One gets used to its complexity, may even restrict it somehow to a minimal viable subset, but the daily toil reduces to deciphering stuff such as
+We have the king of the hill in 3D, but it requires deciphering stuff such as
 
 ```cpp
 std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&
 ```
 
-which should have been just "String". Non-debuggable code paths, the joy of [CMake](https://github.com/onqtam/awesome-cmake).
+which should have been just "String". Non-debuggable code paths, template errors, tracking C++11-14-17-20, the joy of [CMake](https://github.com/onqtam/awesome-cmake)...
 
 Go is the only static language with simple polymorphism/compile time and a large practical "no design patterns" community. 
 
 _Edit 2022: I am no longer sure about [simplicity](https://thume.ca/2019/07/14/a-tour-of-metaprogramming-models-for-generics/) ([esp. since Go v.1.18](https://planetscale.com/blog/generics-can-make-your-go-code-slower)), and Go in 3D. Anything "too far from C" brings layers and artificial runtime performance limits. This argument also rules out F#, Elm/Reason ML, Pony... The language should be that of a "better C" category._ 
 
-_The problem is, we do not have much choice in the "mature/popular static non-GC" language category. [Rust is not productive](https://hirrolot.github.io/posts/why-static-languages-suffer-from-complexity), Zig is too low level. Ada, ATS, D, Nim have failed to attract masses, for a reason._ 
+_The problem is, we do not have much choice in the "mature/popular static non-GC" language category. [Rust is not productive](https://hirrolot.github.io/posts/why-static-languages-suffer-from-complexity), Zig is too low level. Ada, ATS, Fortran, D, Nim have failed to attract masses, for a reason._ 
 
 _Odin/V/Kit/C3/Carbon/Jai are modern and designed by smart ambitious people, but they still miss a punch line._ 
 
