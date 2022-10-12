@@ -54,7 +54,7 @@ Everybody wants WebGPU, but it has got a very long way to go. The rest do not ha
     sudo apt install xorg-dev libgl1-mesa-dev
     ```
 
-    [Fyne](https://github.com/fyne-io/fyne/blob/master/.github/workflows/platform_tests.yml) and [g3n](https://github.com/g3n/engine) lists more of these OpenGL/AL Ubuntu dependencies often linked in Go codes, but the two above should be sufficient here.
+    [Fyne](https://github.com/fyne-io/fyne/blob/master/.github/workflows/platform_tests.yml) and [g3n](https://github.com/g3n/engine) list more of these OpenGL/AL Ubuntu dependencies often linked in Go codes, but the two above should be sufficient here.
 
 3. Download Sponza from github to "Sponza_GLTF": 
     ```console
@@ -536,7 +536,7 @@ There are not that many [mature static non-GC languages](https://github.com/phil
 * There are multiple attempts to make OpenGL easier in Nim: [stisa-2017](https://github.com/stisa/crow), [AlxHnr-2017](https://github.com/AlxHnr/3d-opengl-demo),
 [jackmott-2019](https://github.com/jackmott/easygl), [krux02-2020](https://github.com/krux02/opengl-sandbox), [liquidev-2021](https://github.com/liquidev/aglet), [treeform-2022](https://github.com/treeform/shady)... These deserve a special study.
 
-* A few more potentially useful OpenGL projects in Nim: [Samulus-2017](https://github.com/Samulus/toycaster) which is a ray caster based on [jackmott-2019](https://github.com/jackmott/easygl); [anon767-2020](https://github.com/anon767/nimgl-breakout) is "Learnopengl 2D Breakout Game ported to Nim". "Learn OpenGL" itself, [the Cherno in Nim](https://github.com/elliotwaite/nim-opengl-tutorials-by-the-cherno). [pseudo-random-2020](https://github.com/pseudo-random/geometryutils/tree/master/src/geometryutils) provides OpenGL-related math structures.
+* A few more potentially useful OpenGL projects in Nim: [Samulus-2017](https://github.com/Samulus/toycaster) which is a ray caster based on [jackmott-2019](https://github.com/jackmott/easygl); [anon767-2020](https://github.com/anon767/nimgl-breakout) is "Learnopengl 2D Breakout Game ported to nim". "Learn OpenGL" itself, [the Cherno in Nim](https://github.com/elliotwaite/nim-opengl-tutorials-by-the-cherno). [pseudo-random-2020](https://github.com/pseudo-random/geometryutils/tree/master/src/geometryutils) provides OpenGL-related math structures.
 
 * A quick check on a few OpenGL Ubuntu compiled binaries in Go and Nim. 
 
@@ -575,7 +575,7 @@ There are not that many [mature static non-GC languages](https://github.com/phil
     GLFWCursorSpecial* = 0x00033001 ## Originally GLFW_CURSOR but conflicts with GLFWCursor type
     ``` 
     
-    In the original OpenGL C interface we have the GLFW_CURSOR constant and the GLFWCursor structure. In Nim these two become the same due its style rules. Someone had to locate this bug and come up with "GLFWCursorSpecial" name instead of "GLFW_CURSOR". The C pointers introduce a further friction with FFI bindings, I have seen this in Go as well, do not trust anything automatically generated, these bindings need to be tested with each version, maintained.
+    In the original OpenGL C interface we have the GLFW_CURSOR constant and the GLFWCursor structure. In Nim these two become the same due its style rules.
      
 ## Credits, Rendering Frameworks I Have Tried, Many Thanks To:
 
