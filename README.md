@@ -13,13 +13,13 @@
 
 ## Introduction
 
-This is real time rendering of Sponza, written in Go (Golang) and GLSL, with some random thoughts. Details:
+This code renders Sponza in real time. Details:
 
-1. i7, 16GB of RAM, GTX 760. Ubuntu, GLFW3, OpenGL, GLTF 2.0, MIT license.
+1. i7, 16GB of RAM, GTX 760. Ubuntu, GLFW3, OpenGL/GLSL, GLTF 2.0, Go (Golang), MIT license.
 
 2. Forward rendering, directional lights, shadow mapping (PCF 3x3), basic PBR (no baking, no ambient term), 3D ray marched volumetric lighting.
 
-[Why yet another rendering code?](https://github.com/paranim/paranim) One needs a 3D engine whose rendering pipeline one can actually control.
+[Why yet another rendering code?](https://github.com/paranim/paranim) One needs a 3D rendering pipeline that one can actually control.
 
 ## Why Volumetric Lighting?
 
@@ -39,11 +39,11 @@ which should have been just "String". Non-debuggable code paths, 11-14-17-20-23 
 
 Go is the only static language with simple polymorphism/compile time and a large practical "no design patterns" community. 
 
-_Edit 2022: No longer true since Go v.1.18 generics: [1](https://planetscale.com/blog/generics-can-make-your-go-code-slower), [2](https://thume.ca/2019/07/14/a-tour-of-metaprogramming-models-for-generics/). The real problem with Go is its 2-3x slower runtime than that of C. Pointers can also be a hindrance. I now consider Nim as it removes both of these issues with style._
+_Edit 2022: No longer true since Go v.1.18 generics: [1](https://planetscale.com/blog/generics-can-make-your-go-code-slower), [2](https://thume.ca/2019/07/14/a-tour-of-metaprogramming-models-for-generics/). The bigger problem with "Go for 3D" idea is that the Go runtime is 2-3x slower than that of C. I now consider Nim as it removes this issue with style._
 
 ## Why OpenGL?
 
-Everybody wants WebGPU, but it has got a very long way to go. The rest do not have a clear winner, so one sticks to what he knows best. See [bgfx](https://github.com/bkaradzic/bgfx) or [Mach](https://machengine.org/#early-stages) for some multiplatform-ambitious 3D rendering API examples, but they add complexity.
+These are extremely disruptive times in computer graphics. Everybody wants WebGPU, but it has got a very long way to go. The rest do not have a clear winner, so one sticks to what he knows best. See [bgfx](https://github.com/bkaradzic/bgfx) or [Mach](https://machengine.org/#early-stages) for some multiplatform-ambitious 3D rendering API examples, but they add complexity.
 
 ## Setup
 
@@ -393,7 +393,7 @@ gc 46 @353.542s 0%: 0.045+15+0.006 ms clock, 0.36+0.25/0.58/0.27+0.051 ms cpu, 4
 
 Pointers bring [troubles](https://github.com/g3n/engine/issues/163), and we get them without the ability to control stack vs heap 
 allocations. They also overlap with some other purposes: A mutable function argument qualifier, or a test if the structure field exists after loading 
-a struct from *.json, by checking for the nil value if the structure element has been defined as a pointer. Pointers are also in the type specifiers, the Go slice semantics, they also decay...
+a struct from *.json, by checking for the nil value if the structure element has been defined as a pointer. Pointers are also in the type specifiers, the Go slice semantics, they also decay and make stack entities escape to the heap.
 
 The tools are OK. I could use go-vim, and mostly just :GoDef and ctrl+O to get back, sometimes :GoRename. The GLTF code was written just by exploring Quim Muntal's GLTF library with :GoDef. No luxury with "import pdb; pdb.set_trace()" as with Python's REPL. Perhaps [gdbgui](https://www.gdbgui.com/) or [gdlv](https://github.com/aarzilli/gdlv/issues/20) could be useful. I relied on go-vim and :GoDef with printf, and RenderDoc.
 
@@ -415,6 +415,8 @@ Instead of the variable location in code we get the day of the month.
 
 Tricky: Reading fragment's world position from the depth buffer of the hdr stage in the volumetric ligthing shader.
 
+One must also set up a proper texture unit system and consider [the difference between a texture unit and texture id](https://stackoverflow.com/questions/9661878/set-the-texture-for-by-gluniform1i). [Some codes](https://github.com/guzba/gltfviewer) do not event use "glActiveTexture()" to activate the texture unit, yet the rendering still works even without setting up a certain sampler2D uniform to render the mesh colors. It turns out that a single sampler2D uniform in the fragment shader gets implicitly linked to the default zero texture unit, i.e. see [this SO](https://stackoverflow.com/questions/10868958/what-does-sampler2d-store).
+
 ## What (Not) To Do Next
 
 * Rewrite everything in Nim, focus on mesh instancing and complete scene export from Blender, in GLTF 2.0.
@@ -424,7 +426,7 @@ MetallicRoughnessTexture in Sponza.gltf.
 
 * CSM, AA, baking, culling, LOD popping? Unlikely, but one needs a tighter frustum. Track its dimensions.
 
-* Vulkan, WebGPU? Let's stick to Ubuntu and OpenGL as everything else is just too broken and disruptive.
+* Vulkan? Let's stick to Ubuntu and OpenGL as everything else is just too broken and disruptive.
 
 * Bloom/glow, water-underwater transitions as in [INSIDE 2016](https://youtu.be/RdN06E6Xn9E?t=2755).
 
