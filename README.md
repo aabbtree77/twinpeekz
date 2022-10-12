@@ -39,34 +39,34 @@ which should have been just "String". Non-debuggable code paths, 11-14-17-20-23 
 
 Go is the only static language with simple polymorphism/compile time and a large practical "no design patterns" community. 
 
-_Edit 2022: No longer true since Go v.1.18 generics: [1](https://planetscale.com/blog/generics-can-make-your-go-code-slower), [2](https://thume.ca/2019/07/14/a-tour-of-metaprogramming-models-for-generics/). The real problem with Go is its pervasive pointers and 2-3x slower runtime than that of C. I now consider Nim as it removes both of these issues with style._
+_Edit 2022: No longer true since Go v.1.18 generics: [1](https://planetscale.com/blog/generics-can-make-your-go-code-slower), [2](https://thume.ca/2019/07/14/a-tour-of-metaprogramming-models-for-generics/). The real problem with Go is its 2-3x slower runtime than that of C. Pointers can also be a hindrance. I now consider Nim as it removes both of these issues with style._
 
 ## Why OpenGL?
 
-Vulkan and WebGPU are a mess, OpenGL is the lesser evil. Let's stick to Ubuntu, avoid multiple platforms. Let's not expect too much from the web space, 3D-wise.
+Everybody wants WebGPU, but it has got a very long way to go. The rest do not have a clear winner, so one sticks to what he knows best. See [bgfx](https://github.com/bkaradzic/bgfx) or [Mach](https://machengine.org/#early-stages) for some multiplatform-ambitious 3D rendering API examples, but they add complexity.
 
 ## Setup
 
 1. Install [Go](https://go.dev/doc/install).
 
 2. Install Ubuntu dependencies:
-  ```console
-  sudo apt install xorg-dev libgl1-mesa-dev
-  ```
+    ```console
+    sudo apt install xorg-dev libgl1-mesa-dev
+    ```
 
-  See [Fyne](https://github.com/fyne-io/fyne/blob/master/.github/workflows/platform_tests.yml) and [g3n](https://github.com/g3n/engine) for more of these OpenGL/AL Ubuntu dependencies often linked in Go codes, but the two above should be sufficient here.
+    [Fyne](https://github.com/fyne-io/fyne/blob/master/.github/workflows/platform_tests.yml) and [g3n](https://github.com/g3n/engine) lists more of these OpenGL/AL Ubuntu dependencies often linked in Go codes, but the two above should be sufficient here.
 
 3. Download Sponza from github to "Sponza_GLTF": 
-  ```console
-  sudo apt install subversion
-  svn export https://github.com/KhronosGroup/glTF-Sample-Models.git/trunk/2.0/Sponza/glTF Sponza_GLTF
-  ```
+    ```console
+    sudo apt install subversion
+    svn export https://github.com/KhronosGroup/glTF-Sample-Models.git/trunk/2.0/Sponza/glTF Sponza_GLTF
+    ```
 
 4. Install Blender:
-  ```console
-  sudo snap install blender --classic
-  sudo snap refresh blender
-  ``` 
+    ```console
+    sudo snap install blender --classic
+    sudo snap refresh blender
+    ``` 
 
 5. Run Blender, delete the cube by pressing "x", import GLTF 2.0, select "Sponza_GLTF". If you press "n" or open the transform panel, "Dimensions" will show these values:
     ```console
@@ -401,7 +401,7 @@ The code here was written prior to Go version 1.18. The math parts could now use
 
 ## OpenGL Experience Report
 
-Programming with GLSL/OpenGL is very tiresome as there is not much help from the compiler. However, this is only a part of the problem. The bigger issue is the lack of incremental coding/testing. The OpenGL setup and its state spreads everywhere and one has to write a lot of code before even seeing the first results on the screen. This is the elephant in the room.
+Programming with GLSL/OpenGL is very tiresome as there is not much help from the compiler. However, this is only a part of the problem. The bigger issue is the disappearance of an immediate incremental feedback. The OpenGL setup and its state spreads everywhere and one has to write a lot of code before even seeing the first result on the screen. This is the elephant in the room.
 
 I was hunting down one bug for days which was rendering a black screen without a crash. The problem turned out to be gl.BufferData function storing mesh index array on a GPU. I was using
 type uint whose analogue in C++ takes 4 bytes of memory, but in Go it's 8! Switching to uint32 simply solved the problem, but to actually locate 
@@ -536,7 +536,7 @@ There are not that many [mature static non-GC languages](https://github.com/phil
 * There are multiple attempts to make OpenGL easier in Nim: [stisa-2017](https://github.com/stisa/crow), [AlxHnr-2017](https://github.com/AlxHnr/3d-opengl-demo),
 [jackmott-2019](https://github.com/jackmott/easygl), [krux02-2020](https://github.com/krux02/opengl-sandbox), [liquidev-2021](https://github.com/liquidev/aglet), [treeform-2022](https://github.com/treeform/shady)... These deserve a special study.
 
-* A few more potentially useful OpenGL projects in Nim: [Samulus-2017](https://github.com/Samulus/toycaster) which is a ray caster based on [jackmott-2019](https://github.com/jackmott/easygl); [anon767-2020](https://github.com/anon767/nimgl-breakout) is "Learnopengl 2D Breakout Game ported to nim". "Learn OpenGL" itself, [pseudo-random-2020](https://github.com/pseudo-random/geometryutils/tree/master/src/geometryutils) provides OpenGL-related math structures.
+* A few more potentially useful OpenGL projects in Nim: [Samulus-2017](https://github.com/Samulus/toycaster) which is a ray caster based on [jackmott-2019](https://github.com/jackmott/easygl); [anon767-2020](https://github.com/anon767/nimgl-breakout) is "Learnopengl 2D Breakout Game ported to Nim". "Learn OpenGL" itself, [the Cherno in Nim](https://github.com/elliotwaite/nim-opengl-tutorials-by-the-cherno). [pseudo-random-2020](https://github.com/pseudo-random/geometryutils/tree/master/src/geometryutils) provides OpenGL-related math structures.
 
 * A quick check on a few OpenGL Ubuntu compiled binaries in Go and Nim. 
 
