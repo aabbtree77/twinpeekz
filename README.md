@@ -19,31 +19,21 @@ This code renders Sponza in real time. Details:
 
 2. Forward rendering, directional lights, shadow mapping (PCF 3x3), basic PBR (no baking, no ambient term), 3D ray marched volumetric lighting.
 
-[Why yet another rendering code?](https://github.com/paranim/paranim) One needs a 3D rendering pipeline that one can actually control.
+[Why yet another rendering code?](https://github.com/paranim/paranim) Why Go? Why OpenGL? Why not Unreal/Unity/Godot... 
 
-## Why Volumetric Lighting?
-
-It is one of the post 2013 graphics effects that vastly advances immersion and realism, also an important approximation to [the rendering equation](https://en.wikipedia.org/wiki/Rendering_equation) which connects programming with geometric optics. It is a GPU-hungry technique, but not as hungry as ray tracing. 
-
-What else got interesting after say 2013? Rendering water in INSIDE 2016, skyscapes in Red Dead Redemption 2 2018.
-
-## Why Go?
-
-We have the king of the hill in 3D, but it requires deciphering stuff such as
+One needs a 3D rendering pipeline that one can actually control. A graphics API alone brings so much complexity, why waste time deciphering
 
 ```cpp
 std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&
 ```
 
-which should have been just "String". Non-debuggable code paths, 11-14-17-20-23 layers, [CMake](https://github.com/onqtam/awesome-cmake)...
+which should have been just "String"?!
 
-Go is the only static language with simple polymorphism/compile time and a large practical "no design patterns" community. 
+## Why Volumetric Lighting?
 
-_Edit 2022: No longer true since Go v.1.18 generics: [1](https://planetscale.com/blog/generics-can-make-your-go-code-slower), [2](https://thume.ca/2019/07/14/a-tour-of-metaprogramming-models-for-generics/). The bigger problem with "Go for 3D" idea is that the Go runtime is 2-3x slower than that of C. I now consider Nim as it removes this issue with style._
+It is one of the post 2013 graphics effects that vastly advances immersion and realism. It is also a very smart approximation to [the rendering equation](https://en.wikipedia.org/wiki/Rendering_equation) which connects programming with geometric optics without brute force ray tracing. 
 
-## Why OpenGL?
-
-These are extremely disruptive times in computer graphics. Everybody wants WebGPU, but it has got a very long way to go. The rest do not have a clear winner, so one sticks to what he knows best. See [bgfx](https://github.com/bkaradzic/bgfx) or [Mach](https://machengine.org/#early-stages) for some multiplatform-ambitious 3D rendering API examples, but they add complexity.
+What else got interesting after say 2013? Rendering water in INSIDE 2016, skyscapes in Red Dead Redemption 2 2018.
 
 ## Setup
 
@@ -393,7 +383,7 @@ gc 46 @353.542s 0%: 0.045+15+0.006 ms clock, 0.36+0.25/0.58/0.27+0.051 ms cpu, 4
 
 Pointers bring [troubles](https://github.com/g3n/engine/issues/163), and we get them without the ability to control stack vs heap 
 allocations. They also overlap with some other purposes: A mutable function argument qualifier, or a test if the structure field exists after loading 
-a struct from *.json, by checking for the nil value if the structure element has been defined as a pointer. Pointers are also in the type specifiers, the Go slice semantics, they also decay and make stack entities escape to the heap.
+a struct from *.json, by checking for the nil value if the structure element has been defined as a pointer. Pointers are also in the type specifiers, the Go slice semantics, they also decay, make stack entities escape to the heap, create bugs with shallow vs deep copying...
 
 The tools are OK. I could use go-vim, and mostly just :GoDef and ctrl+O to get back, sometimes :GoRename. The GLTF code was written just by exploring Quim Muntal's GLTF library with :GoDef. No luxury with "import pdb; pdb.set_trace()" as with Python's REPL. Perhaps [gdbgui](https://www.gdbgui.com/) or [gdlv](https://github.com/aarzilli/gdlv/issues/20) could be useful. I relied on go-vim and :GoDef with printf, and RenderDoc.
 
@@ -415,7 +405,7 @@ Instead of the variable location in code we get the day of the month.
 
 Tricky: Reading fragment's world position from the depth buffer of the hdr stage in the volumetric ligthing shader.
 
-One must also set up a proper texture unit system and consider [the difference between a texture unit and texture id](https://stackoverflow.com/questions/9661878/set-the-texture-for-by-gluniform1i). [Some codes](https://github.com/guzba/gltfviewer) do not event use "glActiveTexture()" to activate the texture unit, yet the rendering still works even without setting up a certain sampler2D uniform to render the mesh colors. It turns out that a single sampler2D uniform in the fragment shader gets implicitly linked to the default zero texture unit, i.e. see [this SO](https://stackoverflow.com/questions/10868958/what-does-sampler2d-store).
+Implicit behaviour. [This code](https://github.com/guzba/gltfviewer) does not use "glActiveTexture()" to activate the texture unit, yet the rendering still works even without setting up a certain sampler2D uniform to render the mesh colors. It turns out that a single sampler2D uniform in the fragment shader gets implicitly linked to the default zero texture unit, i.e. see [this SO](https://stackoverflow.com/questions/10868958/what-does-sampler2d-store). Texture units vs texture ids... 
 
 ## What (Not) To Do Next
 
@@ -426,11 +416,11 @@ MetallicRoughnessTexture in Sponza.gltf.
 
 * CSM, AA, baking, culling, LOD popping? Unlikely, but one needs a tighter frustum. Track its dimensions.
 
-* Vulkan? Let's stick to Ubuntu and OpenGL as everything else is just too broken and disruptive.
+* [Vulkan](https://github.com/oakes/vulkan_triangle_nim/blob/master/src/core.nim)? Let's stick to OpenGL and Ubuntu.
 
 * Bloom/glow, water-underwater transitions as in [INSIDE 2016](https://youtu.be/RdN06E6Xn9E?t=2755).
 
-* A skybox would be nice, but I would not like some 3ms. wasted just to get a nicer background. The same applies to point lights in forward rendering. Anything "samplerCube" related is too slow on GTX 760. Dual-paraboloid maps as in [GTA-5](https://www.adriancourreges.com/blog/2015/11/02/gta-v-graphics-study/)?
+* A skybox would be nice, but anything "samplerCube" related takes 3ms. on GTX 760. Dual-paraboloid maps as in [GTA-5](https://www.adriancourreges.com/blog/2015/11/02/gta-v-graphics-study/)?
 
 * [Forward vs Deferred vs Forward+](https://www.3dgep.com/forward-plus/). Forward, most likely, but it does not matter. INSIDE 2016 used deferred rendering. Forward+? Tiling/voxelization, 3D textures. No. 
 
@@ -438,15 +428,17 @@ MetallicRoughnessTexture in Sponza.gltf.
 
 There are not that many [mature static non-GC languages](https://github.com/phillvancejr/Cpp-Go-Zig-Odin). Consider Nim over Go:
 
-* Faster closer to the metal runtime. Notably, [Azul3D](https://github.com/azul3d/engine) abandoned Go for Zig. 
+* Faster closer to the metal runtime. 
+
+* Notably, [krux02](https://github.com/krux02/turnt-octo-wallhack) left Go for Nim. [Azul3D](https://github.com/azul3d/engine) abandoned Go for Zig. [jackmott](https://github.com/jackmott/easygl) abandoned Nim for Rust...
 
 * Pleasant on the eye, e.g. [this GLTF code](https://github.com/guzba/gltfviewer) reads better than a spec, without macros and DSL.
 
 * Go uses const, var, *, & and unsafe.Pointer to interface with C. We do not know what and when escapes to the heap and * infects everything. 
 
-* Nim has const, let, var separated from ref, new and [] (GC-ed data on the heap), with ptr, pointer and addr to handle C and var in function arguments under the hood. Pointers are explicit and can be used sparingly.
+* Nim has const, let, var separated from ref, new and [] (GC-ed data on the heap), with ptr, pointer, addr, cast to handle C and var in function arguments under the hood. Pointers are explicit and can be used sparingly.
 
-* Pointers are a problem on the both camps. Consider a few [GLFW function signatures](https://github.com/glfw/glfw/blob/a465c1c32e0754d3de56e01c59a0fef33202f04c/src/monitor.c#L306-L326):
+* Pointers bring ambiguities. Consider a few [GLFW function signatures](https://github.com/glfw/glfw/blob/a465c1c32e0754d3de56e01c59a0fef33202f04c/src/monitor.c#L306-L326):
 
     ```c
     GLFWAPI GLFWmonitor** glfwGetMonitors(int* count)
@@ -463,82 +455,31 @@ There are not that many [mature static non-GC languages](https://github.com/phil
     What do these types become in Go and Nim bindings?
 
     [Go: go-gl/glfw/v3.3](https://github.com/go-gl/glfw/blob/62640a716d485dcbf341a7c187227a4a99fb1eba/v3.3/glfw/monitor.go#L56-L83):
-
-    ```go
-    func GetMonitors() []*Monitor {
-    ```
-
-    ```go
-    func GetPrimaryMonitor() *Monitor {
-    ```
-
-    ```go
-    type Monitor struct {
-      data *C.GLFWmonitor
-    }
-    ``` 
     
     Result: Go semantics with __[]*struct__ and __*struct__, in the best case scenario.
 
     [Nim: treeform/staticglfw](https://github.com/treeform/staticglfw/blob/f6a40acf98466c3a11ab3f074a70d570c297f82b/src/staticglfw.nim#L429-L430):
-
-    ```nim
-    proc getMonitors*(count: ptr cint): ptr Monitor {.cdecl, importc: "glfwGetMonitors".}
-    proc getPrimaryMonitor*(): Monitor {.cdecl, importc: "glfwGetPrimaryMonitor".}
-    ```
-
-    with
-
-    ```nim
-    type
-      Monitor* = pointer
-    ```
-    
-    In Nim, Monitor* simply marks the exported type, while "pointer" is equivalent to "void*" in C.
     
     Result: Nim semantics with __ptr pointer__ and __pointer__.   
 
-    [Nim: nimgl/glfw](https://github.com/nimgl/nimgl/blob/309d6ed8164ad184ed5bbb171c9f3d9d1c11ff81/src/nimgl/glfw.nim#L1740-L1767):
-    ```nim
-    proc glfwGetMonitors*(count: ptr int32): ptr UncheckedArray[GLFWMonitor] {.importc: "glfwGetMonitors".}
-    proc glfwGetPrimaryMonitor*(): GLFWMonitor {.importc: "glfwGetPrimaryMonitor".}
-    ```
-    
-    with 
-    
-    ```nim
-    type
-      GLFWMonitor* = ptr object
-    ```
-    
-    This comes after missing the pointer reported in [this issue](https://github.com/nimgl/nimgl/issues/54) which then got [fixed](https://github.com/nimgl/glfw/commit/52a06d468ac8e5f6afaf92b4070973cb0fb6c58c).
+    [Nim: nimgl/glfw](https://github.com/nimgl/nimgl/blob/309d6ed8164ad184ed5bbb171c9f3d9d1c11ff81/src/nimgl/glfw.nim#L1740-L1767), which had a missing pointer reported in [this issue](https://github.com/nimgl/nimgl/issues/54) and then [fixed](https://github.com/nimgl/glfw/commit/52a06d468ac8e5f6afaf92b4070973cb0fb6c58c).
     
     Result: Nim semantics with __ptr UncheckedArray[ptr object]__ and __ptr object__.
     
     [jyapayne/nim-glfw](https://github.com/jyapayne/nim-glfw/blob/master/src/glfw/glfw_standalone.nim):
     
-    ```nim
-    proc getMonitors*(count: ptr cint): ptr ptr Monitor {.importc: "glfwGetMonitors", cdecl.}
-    proc getPrimaryMonitor*(): ptr Monitor {.importc: "glfwGetPrimaryMonitor", cdecl.}
-    ```
-    
-    with 
-    
-    ```nim
-    type
-      Monitor* {.incompleteStruct.} = object
-    ```
-
     Result: Nim semantics with __ptr ptr object__, __ptr object__ and pragma.
+    
+    [gcr/turbo-mush](https://github.com/gcr/turbo-mush/blob/0ccdfb09946fcb5c5056b3fd94dd75e00272584a/glfw.nim#L950): 
+    
+    Result: Nim semantics with __ptr ptr cint__, __ptr cint__.
 
     Which one is the right way?    
-    
-* Nonsequential code execution is somewhat irrelevant to 3D, let's ignore it, for now.
 
-* There are multiple attempts to make OpenGL easier in Nim: [stisa-2017](https://github.com/stisa/crow), [AlxHnr-2017](https://github.com/AlxHnr/3d-opengl-demo),
-[jackmott-2019](https://github.com/jackmott/easygl), [krux02-2020](https://github.com/krux02/opengl-sandbox), [liquidev-2021](https://github.com/liquidev/aglet), [treeform-2022](https://github.com/treeform/shady)... These deserve a special study.
+* Multiple attempts to make OpenGL easier in Nim: [stisa-2017](https://github.com/stisa/crow), [AlxHnr-2017](https://github.com/AlxHnr/3d-opengl-demo),
+[jackmott-2019](https://github.com/jackmott/easygl), [krux02-2020](https://github.com/krux02/opengl-sandbox), [liquidev-2021](https://github.com/liquidev/aglet), [treeform-2022](https://github.com/treeform/shady)...
 
-* A few more potentially useful OpenGL projects in Nim: [Samulus-2017](https://github.com/Samulus/toycaster) which is a ray caster based on [jackmott-2019](https://github.com/jackmott/easygl); [anon767-2020](https://github.com/anon767/nimgl-breakout) is "Learnopengl 2D Breakout Game ported to nim". "Learn OpenGL" itself, [the Cherno in Nim](https://github.com/elliotwaite/nim-opengl-tutorials-by-the-cherno). [pseudo-random-2020](https://github.com/pseudo-random/geometryutils/tree/master/src/geometryutils) provides OpenGL-related math structures.
+* A few other OpenGL projects in Nim: [Samulus-2017](https://github.com/Samulus/toycaster) which is a ray caster based on [jackmott-2019](https://github.com/jackmott/easygl); [anon767-2020](https://github.com/anon767/nimgl-breakout) is "Learnopengl 2D Breakout Game ported to nim". "Learn OpenGL" itself, [the Cherno in Nim](https://github.com/elliotwaite/nim-opengl-tutorials-by-the-cherno). [pseudo-random-2020](https://github.com/pseudo-random/geometryutils/tree/master/src/geometryutils).
 
 * A quick check on a few OpenGL Ubuntu compiled binaries in Go and Nim. 
 
