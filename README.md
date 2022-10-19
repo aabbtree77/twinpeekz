@@ -436,7 +436,7 @@ There are not that many [mature static non-GC languages](https://github.com/phil
 
 * Go uses const, var, *, & and unsafe.Pointer to interface with C. We do not know what and when escapes to the heap and * infects everything. 
 
-* Nim has const, let, var separated from ref, new and [] for the garbage-collected data on the heap. In addition, we have ptr, pointer, addr, cast, dealloc, allocCStringArray, deallocCStringArray, allocShared, deallocShared, UncheckedArray, untyped, cstring, copyMem etc. to handle FFI to C. Pointers are explicit and can be used sparingly.
+* Nim has const, let, var separated from ref, new and [] for the garbage-collected data on the heap. In addition, we have ptr, pointer, addr, cast, dealloc, allocCStringArray, deallocCStringArray, allocShared, deallocShared, UncheckedArray, untyped, cstring, copyMem etc. to handle FFI to C. Pointers/refs are optional and can be used sparingly.
 
 * Pointers bring ambiguities. Consider a few [GLFW function signatures](https://github.com/glfw/glfw/blob/a465c1c32e0754d3de56e01c59a0fef33202f04c/src/monitor.c#L306-L326):
 
@@ -487,13 +487,13 @@ There are not that many [mature static non-GC languages](https://github.com/phil
     In various Nim OpenGL bindings the type is cstringArray whose handling is a bit cleaner. 
   
     [gltfviewer](https://github.com/guzba/gltfviewer/blob/31ea77829426db9c43249362d9ede483a135b864/src/gltfviewer/shaders.nim#L15) uses **cstringArray** with **allocCStringArray** and **dealloc**. Jack Mott does [the same](https://github.com/jackmott/easygl/blob/9a987b48409875ffb0521f3887ae25571ff60347/src/easygl.nim#L294), but with **deallocCStringArray**.
-   The OpenGL bindings are in the Nim opengl package in the both of the cases.
+   The OpenGL bindings are in the opengl package in the both of the cases. 
    
-   [pseudo-random](https://github.com/pseudo-random/geometryutils/blob/553ff09471fd2646aad8443c9639ea7b91fca626/src/geometryutils/shader.nim#L49) uses the opengl package and **allocCStringArray**, but skips deallocations.
+   [pseudo-random](https://github.com/pseudo-random/geometryutils/blob/553ff09471fd2646aad8443c9639ea7b91fca626/src/geometryutils/shader.nim#L49) uses the opengl package and **allocCStringArray**, but skips deallocations. [treeform](https://github.com/treeform/shady/blob/51c59c5764b30a2c404c162caa5a7c72d50f97d6/src/shady/demo.nim#L48) works similarly, but with the nimgl/opengl bindings.
    
     [Arne Döring](https://github.com/krux02/opengl-sandbox/blob/7d55a0b9368f8f1dcda7140c251e724c93af46a3/fancygl/glwrapper.nim#L888) uses a two-stage casting with **cstring** and **cstringArray** without deallocations. The OpenGL bindings are self-hosted/generated [here](https://github.com/krux02/opengl-sandbox/blob/7d55a0b9368f8f1dcda7140c251e724c93af46a3/glad/gl.nim#L1634). 
     
-    [Elliot Waite](https://github.com/elliotwaite/nim-opengl-tutorials-by-the-cherno/blob/cfce01842ef2bf6712747885c620c1f549454f67/ep15/shader.nim#L49) simply casts Nim's string to **cstring** and takes **addr**, without deallocations. The bindings are in the Nim nimgl/opengl package.
+    [Elliot Waite](https://github.com/elliotwaite/nim-opengl-tutorials-by-the-cherno/blob/cfce01842ef2bf6712747885c620c1f549454f67/ep15/shader.nim#L49) simply casts Nim's string to **cstring** and takes **addr**, without deallocations. The bindings are in the Nim nimgl/opengl package. [anon767](https://github.com/anon767/nimgl-breakout/blob/19d4b7638d26432a0daccce3433ea06f80ac3cdc/src/shader.nim#L23) does the same.
     
 * Multiple attempts to make OpenGL easier in Nim: [stisa-2017](https://github.com/stisa/crow), [AlxHnr-2017](https://github.com/AlxHnr/3d-opengl-demo),
 [jackmott-2019](https://github.com/jackmott/easygl), [krux02-2020](https://github.com/krux02/opengl-sandbox), [liquidev-2021](https://github.com/liquidev/aglet), [treeform-2022](https://github.com/treeform/shady)...
