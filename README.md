@@ -428,15 +428,15 @@ MetallicRoughnessTexture in Sponza.gltf.
 
 There are not that many [mature static non-GC languages](https://github.com/phillvancejr/Cpp-Go-Zig-Odin). Consider Nim over Go:
 
-* Faster closer to the metal runtime. 
+* Faster closer to the metal runtime. Notably, [krux02](https://github.com/krux02/turnt-octo-wallhack) left Go for Nim. [Azul3D](https://github.com/azul3d/engine) abandoned Go for Zig. [jackmott](https://github.com/jackmott/easygl) abandoned Nim for Rust...
 
-* Notably, [krux02](https://github.com/krux02/turnt-octo-wallhack) left Go for Nim. [Azul3D](https://github.com/azul3d/engine) abandoned Go for Zig. [jackmott](https://github.com/jackmott/easygl) abandoned Nim for Rust...
+* Considering "static non-GC/GC" space, exceptionally pleasant on the eye. See e.g. [this GLTF code](https://github.com/guzba/gltfviewer) which reads like a spec, without macros and DSLs.
 
-* Pleasant on the eye, e.g. [this GLTF code](https://github.com/guzba/gltfviewer) reads better than a spec, without macros and DSL.
+* Neither Go, nor Nim has sum types/ADTs. Rust does have them, but it is not pleasant to read. 
 
 * Go uses const, var, *, & and unsafe.Pointer to interface with C. We do not know what and when escapes to the heap and * infects everything. 
 
-* Nim has const, let, var separated from ref, new and [] for the garbage-collected data on the heap. In addition, we have ptr, pointer, addr, cast, dealloc, allocCStringArray, deallocCStringArray, allocShared, deallocShared, UncheckedArray, untyped, cstring, copyMem etc. to handle FFI to C. Pointers/refs are optional and can be used sparingly.
+* Nim has const, let, var separated from ref, new and [] for the garbage-collected data on the heap. In addition, there exist ptr, pointer, addr, cast, dealloc, allocCStringArray, deallocCStringArray, allocShared, deallocShared, UncheckedArray, untyped, copyMem, unsafeAddr, unsafeNew and pragmas to handle FFI to C. Pointers/refs are very optional. 
 
 * Pointers bring ambiguities. Consider a few [GLFW function signatures](https://github.com/glfw/glfw/blob/a465c1c32e0754d3de56e01c59a0fef33202f04c/src/monitor.c#L306-L326):
 
@@ -491,7 +491,7 @@ There are not that many [mature static non-GC languages](https://github.com/phil
    
    [pseudo-random](https://github.com/pseudo-random/geometryutils/blob/553ff09471fd2646aad8443c9639ea7b91fca626/src/geometryutils/shader.nim#L49) uses the opengl package and **allocCStringArray**, but skips deallocations. [treeform](https://github.com/treeform/shady/blob/51c59c5764b30a2c404c162caa5a7c72d50f97d6/src/shady/demo.nim#L48) works similarly, but with the nimgl/opengl bindings.
    
-    [Arne Döring](https://github.com/krux02/opengl-sandbox/blob/7d55a0b9368f8f1dcda7140c251e724c93af46a3/fancygl/glwrapper.nim#L888) uses a two-stage casting with **cstring** and **cstringArray** without deallocations. The OpenGL bindings are self-hosted/generated [here](https://github.com/krux02/opengl-sandbox/blob/7d55a0b9368f8f1dcda7140c251e724c93af46a3/glad/gl.nim#L1634). 
+    [Arne Döring](https://github.com/krux02/opengl-sandbox/blob/7d55a0b9368f8f1dcda7140c251e724c93af46a3/fancygl/glwrapper.nim#L888) uses a two-stage casting with **cstring** and **cstringArray** without deallocations. The OpenGL bindings are self-hosted/generated [here](https://github.com/krux02/opengl-sandbox/blob/7d55a0b9368f8f1dcda7140c251e724c93af46a3/glad/gl.nim#L1634). [Jason Beetham](https://github.com/beef331/truss3d/blob/5ca3eafcdc3d769f25a6555efc214a2bed7d0127/src/truss3D/shaders.nim#L38) does a similar casting without deallocations, but with **unsafeAddr** instead of **addr** and the opengl package.
     
     [Elliot Waite](https://github.com/elliotwaite/nim-opengl-tutorials-by-the-cherno/blob/cfce01842ef2bf6712747885c620c1f549454f67/ep15/shader.nim#L49) simply casts Nim's string to **cstring** and takes **addr**, without deallocations. The bindings are in the Nim nimgl/opengl package. [anon767](https://github.com/anon767/nimgl-breakout/blob/19d4b7638d26432a0daccce3433ea06f80ac3cdc/src/shader.nim#L23) does the same.
     
