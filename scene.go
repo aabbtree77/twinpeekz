@@ -11,6 +11,9 @@ import (
 
 	"github.com/qmuntal/gltf"
 	"github.com/qmuntal/gltf/modeler"
+	
+	//"bufio"
+	//"os"
 )
 
 type Scene struct {
@@ -18,7 +21,7 @@ type Scene struct {
 	lights    []Light
 }
 
-//These will be on the GPU, but first preload to CPU
+// These will be on the GPU, but first preload to CPU
 type MeshGeometry struct {
 	vertArray [][3]float32
 	uvArray   [][2]float32
@@ -116,6 +119,9 @@ func initScene() Scene {
 		loadedTextureBaseColorIDs = append(loadedTextureBaseColorIDs, textureBaseColorID)
 		loadedTextureMetallicRoughnessIDs = append(loadedTextureMetallicRoughnessIDs, textureMetallicRoughnessID)
 		fmt.Printf("Loaded.\n")
+		
+		//fmt.Print("Press 'Enter' to continue...")
+    //bufio.NewReader(os.Stdin).ReadBytes('\n') 
 	}
 
 	//fmt.Printf("Loaded %d instances out of %d Sponza assets.\n", len(loadedMeshPtrs), len(fnames))
@@ -166,11 +172,10 @@ func loadMeshFromGLTF(doc *gltf.Document, primitive *gltf.Primitive) (MeshGeomet
 	if err != nil {
 		log.Fatal(err)
 	}
-	/*
-		fmt.Println("Positions:")
-		fmt.Printf("%#v", positions)
-		fmt.Println("\nDone.")
-	*/
+	fmt.Println("Positions:")
+	fmt.Printf("%#v", positions)
+	fmt.Println("\nDone.")
+
 	normalIndex := primitive.Attributes["NORMAL"]
 	normalAccessor := doc.Accessors[normalIndex]
 	normals, err := modeler.ReadNormal(doc, normalAccessor, nil)
@@ -362,7 +367,7 @@ func loadTextureGLTFMetallicRoughness(doc *gltf.Document, primitive *gltf.Primit
 	return textureID, nil
 }
 
-//Fill in texture and framebuffer IDs
+// Fill in texture and framebuffer IDs
 func (lht *Light) initShadowMap() {
 
 	gl.GenTextures(1, &(lht.txrID))

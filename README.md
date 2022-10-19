@@ -436,7 +436,7 @@ There are not that many [mature static non-GC languages](https://github.com/phil
 
 * Go uses const, var, *, & and unsafe.Pointer to interface with C. We do not know what and when escapes to the heap and * infects everything. 
 
-* Nim has const, let, var separated from ref, new and [] (GC-ed data on the heap), with ptr, pointer, addr, cast to handle C and var in function arguments under the hood. Pointers are explicit and can be used sparingly.
+* Nim has const, let, var separated from ref, new and [] for the garbage-collected data on the heap. In addition, we have ptr, pointer, addr, cast, dealloc, allocCStringArray, deallocCStringArray, allocShared, deallocShared, UncheckedArray, untyped, cstring, copyMem etc. to handle FFI to C. Pointers are explicit and can be used sparingly.
 
 * Pointers bring ambiguities. Consider a few [GLFW function signatures](https://github.com/glfw/glfw/blob/a465c1c32e0754d3de56e01c59a0fef33202f04c/src/monitor.c#L306-L326):
 
@@ -454,28 +454,47 @@ There are not that many [mature static non-GC languages](https://github.com/phil
 
     What do these types become in Go and Nim bindings?
 
-    [Go: go-gl/glfw/v3.3](https://github.com/go-gl/glfw/blob/62640a716d485dcbf341a7c187227a4a99fb1eba/v3.3/glfw/monitor.go#L56-L83):
-    
-    Result: Go semantics with __[]*struct__ and __*struct__, in the best case scenario.
+    [Go: go-gl/glfw/v3.3](https://github.com/go-gl/glfw/blob/62640a716d485dcbf341a7c187227a4a99fb1eba/v3.3/glfw/monitor.go#L56-L83): 
+    Go semantics with __[]*struct__ and __*struct__, in the best case scenario.
 
     [Nim: treeform/staticglfw](https://github.com/treeform/staticglfw/blob/f6a40acf98466c3a11ab3f074a70d570c297f82b/src/staticglfw.nim#L429-L430):
-    
-    Result: Nim semantics with __ptr pointer__ and __pointer__.   
+    Nim semantics with __ptr pointer__ and __pointer__.   
 
-    [Nim: nimgl/glfw](https://github.com/nimgl/nimgl/blob/309d6ed8164ad184ed5bbb171c9f3d9d1c11ff81/src/nimgl/glfw.nim#L1740-L1767), which had a missing pointer reported in [this issue](https://github.com/nimgl/nimgl/issues/54) and then [fixed](https://github.com/nimgl/glfw/commit/52a06d468ac8e5f6afaf92b4070973cb0fb6c58c).
-    
-    Result: Nim semantics with __ptr UncheckedArray[ptr object]__ and __ptr object__.
+    [Nim: nimgl/glfw](https://github.com/nimgl/nimgl/blob/309d6ed8164ad184ed5bbb171c9f3d9d1c11ff81/src/nimgl/glfw.nim#L1740-L1767), which had a missing pointer reported in [this issue](https://github.com/nimgl/nimgl/issues/54) and then [fixed](https://github.com/nimgl/glfw/commit/52a06d468ac8e5f6afaf92b4070973cb0fb6c58c):
+    Nim semantics with __ptr UncheckedArray[ptr object]__ and __ptr object__.
     
     [jyapayne/nim-glfw](https://github.com/jyapayne/nim-glfw/blob/master/src/glfw/glfw_standalone.nim):
-    
-    Result: Nim semantics with __ptr ptr object__, __ptr object__ and pragma.
+    Nim semantics with __ptr ptr object__, __ptr object__ and pragma.
     
     [gcr/turbo-mush](https://github.com/gcr/turbo-mush/blob/0ccdfb09946fcb5c5056b3fd94dd75e00272584a/glfw.nim#L950): 
+    Nim semantics with __ptr ptr cint__, __ptr cint__.
+
+    Which one is the right way?
     
-    Result: Nim semantics with __ptr ptr cint__, __ptr cint__.
-
-    Which one is the right way?    
-
+* Another tricky case is the OpenGL function
+ 
+    ```c
+    void glShaderSource(	GLuint shader,
+    GLsizei count,
+    const GLchar **string,
+    const GLint *length);
+    ```
+    
+    In particular, the third argument, i.e. ****string**. Let's see what this entails in Go and Nim. 
+  
+    In Go with go-gl bindings, we see an additional Go function [gl.Strs](https://github.com/go-gl/gl/blob/726fda9656d66a68688c09275cd7b8107083bdae/v2.1/gl/conversions.go#L90) whose output is of type **uint8, clf. the code by [Nicholas Blaskey](https://github.com/NicholasBlaskey/gophergl/blob/6459203ed630d94f155c4a1dc8d0f427cda1b3fc/Open/gl/shader.go#L18). This gets really messy with "\x00" symbols and casting wizardry. 
+  
+    In various Nim OpenGL bindings the type is cstringArray whose handling is a bit cleaner. 
+  
+    [gltfviewer](https://github.com/guzba/gltfviewer/blob/31ea77829426db9c43249362d9ede483a135b864/src/gltfviewer/shaders.nim#L15) uses **cstringArray** with **allocCStringArray** and **dealloc**. Jack Mott does [the same](https://github.com/jackmott/easygl/blob/9a987b48409875ffb0521f3887ae25571ff60347/src/easygl.nim#L294), but with **deallocCStringArray**.
+   The OpenGL bindings are in the Nim opengl package in the both of the cases.
+   
+   [pseudo-random](https://github.com/pseudo-random/geometryutils/blob/553ff09471fd2646aad8443c9639ea7b91fca626/src/geometryutils/shader.nim#L49) uses the opengl package and **allocCStringArray**, but skips deallocations.
+   
+    [Arne Döring](https://github.com/krux02/opengl-sandbox/blob/7d55a0b9368f8f1dcda7140c251e724c93af46a3/fancygl/glwrapper.nim#L888) uses a two-stage casting with **cstring** and **cstringArray** without deallocations. The OpenGL bindings are self-hosted/generated [here](https://github.com/krux02/opengl-sandbox/blob/7d55a0b9368f8f1dcda7140c251e724c93af46a3/glad/gl.nim#L1634). 
+    
+    [Elliot Waite](https://github.com/elliotwaite/nim-opengl-tutorials-by-the-cherno/blob/cfce01842ef2bf6712747885c620c1f549454f67/ep15/shader.nim#L49) simply casts Nim's string to **cstring** and takes **addr**, without deallocations. The bindings are in the Nim nimgl/opengl package.
+    
 * Multiple attempts to make OpenGL easier in Nim: [stisa-2017](https://github.com/stisa/crow), [AlxHnr-2017](https://github.com/AlxHnr/3d-opengl-demo),
 [jackmott-2019](https://github.com/jackmott/easygl), [krux02-2020](https://github.com/krux02/opengl-sandbox), [liquidev-2021](https://github.com/liquidev/aglet), [treeform-2022](https://github.com/treeform/shady)...
 
@@ -623,7 +642,7 @@ There are not that many [mature static non-GC languages](https://github.com/phil
     - It is very simple to trade quality for performance. You simply change number of voxels. 3d texture filtering will take care of the rest.
     Whatever they do, I doubt it will work for everybody. There is so many different projects out there. I'm curious if they make it integral part of Unity or keep it as a separate asset.
 
-10. **Daniel Salvadori**, g3n and Gokoban projects. This shows how much one can do with a GC language in 3D, and even though I am not much of a gamer, Gokoban is an awesome little 3D puzzle game that so deserves to be better known. It is sort of a prototype or a vast simplification of Stephen's Sausage Roll so appreciated by **Jonathan Blow**. It is too bad that the game requires some knowledge of how to set up 
+10. **Daniel Salvadori**, g3n and Gokoban projects. Gokoban is an awesome 3D puzzle game that deserves to be better known. It can be seen as a prototype or a vast simplification of Stephen's Sausage Roll which is highly valued by **Jonathan Blow**. It is too bad that the game requires some knowledge of how to set up 
 Go and $GOPATH and is thus not available for non-programmers. I helped solving this issue, which I keep as a memo whenever I need to install this game on Ubuntu:
 
     https://github.com/danaugrs/gokoban/issues/14
