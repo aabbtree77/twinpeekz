@@ -492,7 +492,8 @@ There are not that many [mature static non-GC languages](https://github.com/phil
 * Another interesting case is this OpenGL function:
 
     ```c
-    void glVertexAttribPointer(	GLuint index,
+    void glVertexAttribPointer(	
+    GLuint index,
  	  GLint size,
  	  GLenum type,
  	  GLboolean normalized,
@@ -502,9 +503,15 @@ There are not that many [mature static non-GC languages](https://github.com/phil
     
     What is the Go/Nim answer to the type __void*__?
     
-    Go with go-gl bindings: The type becomes __unsafe.Pointer__, clf. [this file](https://raw.githubusercontent.com/go-gl/gl/master/v4.1-core/gl/package.go). [The auxiliary "PtrOffset" function](https://github.com/go-gl/gl/blob/726fda9656d66a68688c09275cd7b8107083bdae/v4.1-core/gl/conversions.go#L62) turns an integer into a required pointer with the "unsafe.Pointer(uintptr(offset)" expression. The Go user code in this repo sets everywhere PtrOffset(0) as an argument to glVertexAttribPointer.
+    Go with go-gl bindings: The type becomes __unsafe.Pointer__, clf. [this file](https://raw.githubusercontent.com/go-gl/gl/master/v4.1-core/gl/package.go). [The auxiliary "PtrOffset" function](https://github.com/go-gl/gl/blob/726fda9656d66a68688c09275cd7b8107083bdae/v4.1-core/gl/conversions.go#L62) turns an integer into a required pointer with the __unsafe.Pointer(uintptr(offset)__ expression. My Go code in this repo sets everywhere __PtrOffset(0)__ as an argument to glVertexAttribPointer.
   
-    Nim: The type is __pointer__, clf. [this file](https://raw.githubusercontent.com/nimgl/opengl/master/src/opengl.nim). [gltfviewer](https://github.com/guzba/gltfviewer/blob/c151dc0df66a7f9730e2f7ad4ee7170504a69864/src/gltfviewer/gltf.nim#L419) uses only __nil__ value, but the case with non-zero offsets can be found in [easygl](https://github.com/jackmott/easygl/blob/9a987b48409875ffb0521f3887ae25571ff60347/src/easygl.nim#L369), e.g. [here](https://github.com/jackmott/easygl/blob/9a987b48409875ffb0521f3887ae25571ff60347/examples/advanced_opengl/blending.nim#L111). The example third argument value is effectively __cast[pointer](3*float32.sizeof())__. Another examples (with the "nim/opengl" package instead of "opengl"): [__ByteAddress__ before casting](https://github.com/elliotwaite/nim-opengl-tutorials-by-the-cherno/blob/cfce01842ef2bf6712747885c620c1f549454f67/ep19/vertex_array.nim#L21).  
+    Nim: The type is __pointer__, clf. [this file](https://raw.githubusercontent.com/nimgl/opengl/master/src/opengl.nim). [gltfviewer](https://github.com/guzba/gltfviewer/blob/c151dc0df66a7f9730e2f7ad4ee7170504a69864/src/gltfviewer/gltf.nim#L419) uses only __nil__ value, but the case with non-zero offsets can be found in [easygl](https://github.com/jackmott/easygl/blob/9a987b48409875ffb0521f3887ae25571ff60347/src/easygl.nim#L369), e.g. [here](https://github.com/jackmott/easygl/blob/9a987b48409875ffb0521f3887ae25571ff60347/examples/advanced_opengl/blending.nim#L111) which boils down to expressions such as 
+    
+    ```nim
+    cast[pointer](3*float32.sizeof())__. 
+    ```
+    
+    Another example (with the "nim/opengl" package instead of "opengl") uses [__ByteAddress__](https://github.com/elliotwaite/nim-opengl-tutorials-by-the-cherno/blob/cfce01842ef2bf6712747885c620c1f549454f67/ep19/vertex_array.nim#L21) type instead of "int" before casting to "pointer", somewhat resembling Go's "uintptr".  
     
 * Multiple hopeless attempts to make OpenGL easier, with Nim: [stisa-2017](https://github.com/stisa/crow), [AlxHnr-2017](https://github.com/AlxHnr/3d-opengl-demo), [floooh-2019](https://github.com/floooh/sokol-nim/issues/5), [jackmott-2019](https://github.com/jackmott/easygl), [krux02-2020](https://github.com/krux02/opengl-sandbox), [liquidev-2021](https://github.com/liquidev/aglet), [treeform-2022](https://github.com/treeform/shady)...
 
