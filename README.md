@@ -428,9 +428,9 @@ MetallicRoughnessTexture in Sponza.gltf.
 
 There are not that many [mature static non-GC languages](https://github.com/phillvancejr/Cpp-Go-Zig-Odin). Consider Nim over Go:
 
-* Faster runtime. Notably, [krux02](https://github.com/krux02/turnt-octo-wallhack) left Go for Nim. [Azul3D](https://github.com/azul3d/engine) abandoned Go for Zig. [jackmott](https://github.com/jackmott/easygl) went from Go to Nim to Rust...
+* Fast C-like runtime, but a complex language. Notably, [krux02](https://github.com/krux02/turnt-octo-wallhack) left Go for Nim. [Azul3D](https://github.com/azul3d/engine) abandoned Go for Zig. [jackmott](https://github.com/jackmott/easygl) went from Go to Nim to Rust...
 
-* Go uses const, var, *, & and unsafe.Pointer to interface with C. We do not know what and when escapes to the heap and * infects everything. 
+* Go uses const, var, *, & and unsafe.Pointer as well as uintptr to interface with C. We do not know what and when escapes to the heap and * infects everything. 
 
 * Nim has const, let, var separated from ref, new and [] for the garbage-collected data on the heap. In addition, there exist ptr, pointer, addr, cast, dealloc, allocCStringArray, deallocCStringArray, allocShared, deallocShared, UncheckedArray, untyped, copyMem, unsafeAddr, unsafeNew and pragmas to handle FFI to C. Pointers are optional. 
 
@@ -460,9 +460,9 @@ There are not that many [mature static non-GC languages](https://github.com/phil
     
     [gcr/turbo-mush](https://github.com/gcr/turbo-mush/blob/0ccdfb09946fcb5c5056b3fd94dd75e00272584a/glfw.nim#L950): __ptr ptr cint__, __ptr cint__.
 
-    Let's hope all of these are correct and tested for the edge cases ;).
+    They are all fine, most likely, but this shows that the C-to-Nim map is one-to-many.  
     
-    Nim is unusually flexible with style and case-insensitivity and this issue remains [controversial](https://github.com/nim-lang/RFCs/issues/456). One example where this feature bites can be seen in the "nimgl" bindings to GLFW. [Check this out](https://github.com/nimgl/nimgl/blob/309d6ed8164ad184ed5bbb171c9f3d9d1c11ff81/src/nimgl/glfw.nim#L857):
+    A minor quibble is [Nim's case/style insensitivity](https://github.com/nim-lang/RFCs/issues/456). [Check this out](https://github.com/nimgl/nimgl/blob/309d6ed8164ad184ed5bbb171c9f3d9d1c11ff81/src/nimgl/glfw.nim#L857):
 
     ```nim
     GLFWCursorSpecial* = 0x00033001 ## Originally GLFW_CURSOR but conflicts with GLFWCursor type
@@ -488,6 +488,23 @@ There are not that many [mature static non-GC languages](https://github.com/phil
     1. **cstringArray** in the package "opengl": [gltfviewer](https://github.com/guzba/gltfviewer/blob/31ea77829426db9c43249362d9ede483a135b864/src/gltfviewer/shaders.nim#L15) uses **cstringArray** with **allocCStringArray** and **dealloc**. Jack Mott does [the same](https://github.com/jackmott/easygl/blob/9a987b48409875ffb0521f3887ae25571ff60347/src/easygl.nim#L294), but with **deallocCStringArray**, see also [Samulus-2017](https://github.com/Samulus/toycaster). [pseudo-random](https://github.com/pseudo-random/geometryutils/blob/553ff09471fd2646aad8443c9639ea7b91fca626/src/geometryutils/shader.nim#L49) and [treeform](https://github.com/treeform/shady/blob/51c59c5764b30a2c404c162caa5a7c72d50f97d6/src/shady/demo.nim#L48) skip deallocations. [Jason Beetham](https://github.com/beef331/truss3d/blob/5ca3eafcdc3d769f25a6555efc214a2bed7d0127/src/truss3D/shaders.nim#L38) gets by with casting. [Arne Döring](https://github.com/krux02/opengl-sandbox/blob/7d55a0b9368f8f1dcda7140c251e724c93af46a3/fancygl/glwrapper.nim#L888) does the same with self-hosted [bindings](https://github.com/krux02/opengl-sandbox/blob/7d55a0b9368f8f1dcda7140c251e724c93af46a3/glad/gl.nim#L1634) which have the same "glShaderSource" signature.
     
     2. **ptr cstring** in the package "nimgl/opengl": [Elliot Waite](https://github.com/elliotwaite/nim-opengl-tutorials-by-the-cherno/blob/cfce01842ef2bf6712747885c620c1f549454f67/ep15/shader.nim#L49) simply casts Nim's string to **cstring** and takes **addr**, without deallocations. [anon767](https://github.com/anon767/nimgl-breakout/blob/19d4b7638d26432a0daccce3433ea06f80ac3cdc/src/shader.nim#L23) does the same.
+
+* Another interesting case is this OpenGL function:
+
+    ```c
+    void glVertexAttribPointer(	GLuint index,
+ 	  GLint size,
+ 	  GLenum type,
+ 	  GLboolean normalized,
+ 	  GLsizei stride,
+ 	  const void * pointer);
+    ```
+    
+    What is the Go/Nim answer to the type __void*__?
+    
+    Go with go-gl bindings: The type becomes __unsafe.Pointer__, clf. [this file](https://raw.githubusercontent.com/go-gl/gl/master/v4.1-core/gl/package.go). [The auxiliary "PtrOffset" function](https://github.com/go-gl/gl/blob/726fda9656d66a68688c09275cd7b8107083bdae/v4.1-core/gl/conversions.go#L62) turns an integer into a required pointer with the "unsafe.Pointer(uintptr(offset)" expression. The Go user code in this repo sets everywhere PtrOffset(0) as an argument to glVertexAttribPointer.
+  
+    Nim: The type is __pointer__, clf. [this file](https://raw.githubusercontent.com/nimgl/opengl/master/src/opengl.nim). [gltfviewer](https://github.com/guzba/gltfviewer/blob/c151dc0df66a7f9730e2f7ad4ee7170504a69864/src/gltfviewer/gltf.nim#L419) uses only __nil__ value, but the case with non-zero offsets can be found in [easygl](https://github.com/jackmott/easygl/blob/9a987b48409875ffb0521f3887ae25571ff60347/src/easygl.nim#L369), e.g. [here](https://github.com/jackmott/easygl/blob/9a987b48409875ffb0521f3887ae25571ff60347/examples/advanced_opengl/blending.nim#L111). The example third argument value is effectively __cast[pointer](3*float32.sizeof())__. Another examples (with the "nim/opengl" package instead of "opengl"): [__ByteAddress__ before casting](https://github.com/elliotwaite/nim-opengl-tutorials-by-the-cherno/blob/cfce01842ef2bf6712747885c620c1f549454f67/ep19/vertex_array.nim#L21).  
     
 * Multiple hopeless attempts to make OpenGL easier, with Nim: [stisa-2017](https://github.com/stisa/crow), [AlxHnr-2017](https://github.com/AlxHnr/3d-opengl-demo), [floooh-2019](https://github.com/floooh/sokol-nim/issues/5), [jackmott-2019](https://github.com/jackmott/easygl), [krux02-2020](https://github.com/krux02/opengl-sandbox), [liquidev-2021](https://github.com/liquidev/aglet), [treeform-2022](https://github.com/treeform/shady)...
 
