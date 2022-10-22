@@ -508,10 +508,10 @@ There are not that many [mature static non-GC languages](https://github.com/phil
     Nim: The type is __pointer__, clf. [this file](https://raw.githubusercontent.com/nimgl/opengl/master/src/opengl.nim). [gltfviewer](https://github.com/guzba/gltfviewer/blob/c151dc0df66a7f9730e2f7ad4ee7170504a69864/src/gltfviewer/gltf.nim#L419) uses only __nil__ value, but the case with non-zero offsets can be found in [easygl](https://github.com/jackmott/easygl/blob/9a987b48409875ffb0521f3887ae25571ff60347/src/easygl.nim#L369), e.g. [here](https://github.com/jackmott/easygl/blob/9a987b48409875ffb0521f3887ae25571ff60347/examples/advanced_opengl/blending.nim#L111) which boils down to expressions such as 
     
     ```nim
-    cast[pointer](3*float32.sizeof())__. 
+    cast[pointer](3*float32.sizeof()). 
     ```
     
-    Another example (with the "nim/opengl" package instead of "opengl") uses [__ByteAddress__](https://github.com/elliotwaite/nim-opengl-tutorials-by-the-cherno/blob/cfce01842ef2bf6712747885c620c1f549454f67/ep19/vertex_array.nim#L21) type instead of "int" before casting to "pointer", somewhat resembling Go's "uintptr".  
+    [Another example](https://github.com/elliotwaite/nim-opengl-tutorials-by-the-cherno/blob/cfce01842ef2bf6712747885c620c1f549454f67/ep19/vertex_array.nim#L21) (with the "nim/opengl" package instead of "opengl") emphasizes the __ByteAddress__ type instead of "int" before casting to Nim's "pointer", somewhat resembling Go's "uintptr".  
     
 * Multiple hopeless attempts to make OpenGL easier, with Nim: [stisa-2017](https://github.com/stisa/crow), [AlxHnr-2017](https://github.com/AlxHnr/3d-opengl-demo), [floooh-2019](https://github.com/floooh/sokol-nim/issues/5), [jackmott-2019](https://github.com/jackmott/easygl), [krux02-2020](https://github.com/krux02/opengl-sandbox), [liquidev-2021](https://github.com/liquidev/aglet), [treeform-2022](https://github.com/treeform/shady)...
 
