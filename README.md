@@ -462,13 +462,27 @@ There are not that many [mature static non-GC languages](https://github.com/phil
 
     They are all fine, most likely, but this shows that the C-to-Nim map is one-to-many.  
     
-    A minor quibble is [Nim's case/style insensitivity](https://github.com/nim-lang/RFCs/issues/456). [Check this out](https://github.com/nimgl/nimgl/blob/309d6ed8164ad184ed5bbb171c9f3d9d1c11ff81/src/nimgl/glfw.nim#L857):
+* A minor quibble is [Nim's case/style insensitivity](https://github.com/nim-lang/RFCs/issues/456). [Check this out](https://github.com/nimgl/nimgl/blob/309d6ed8164ad184ed5bbb171c9f3d9d1c11ff81/src/nimgl/glfw.nim#L857):
 
     ```nim
     GLFWCursorSpecial* = 0x00033001 ## Originally GLFW_CURSOR but conflicts with GLFWCursor type
     ``` 
     
-    In the original OpenGL C interface we have the GLFW_CURSOR constant and the GLFWCursor structure. In Nim these two become the same due its style rules.
+    In the original GLFW C interface we have the GLFW_CURSOR constant and the GLFWCursor structure. In Nim these two become the same due its style rules.
+    
+    Here is another "ouch" situation in the "opengl" Nim package. Assume a perfectly normal-looking OpenGL function call somewhere in the user code:
+    
+    ```nim
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F.GLint, width.GLint, height.GLint, 0, GL_RGBA.GLenum, GL_FLOAT, nil)
+    ```
+    
+    It does not compile however. The problem is that GL_FLOAT constant maps to "GLfloat* = float32" in [opengl/private/types.nim](https://github.com/nim-lang/opengl/blob/e53096f4e7f581b5c90c1912441f3059be97e0d9/src/opengl/private/types.nim#L15). A fix is to set the 8th argument to
+    
+    ```nim
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F.GLint, width.GLint, height.GLint, 0, GL_RGBA.GLenum, cGL_FLOAT, nil)
+    ```
+    
+    It maps to the correct "cGL_FLOAT* = 0x1406.GLenum" constant in [opengl/private/constants.nim]. 
     
 * Let's examine the OpenGL function
  
