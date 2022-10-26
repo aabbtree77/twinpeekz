@@ -40,7 +40,17 @@ func init() {
 func (winState *windowState) KeyHandler(ww *glfw.Window, key glfw.Key, scan int, action glfw.Action, mods glfw.ModifierKey) {
 
 	if key == glfw.KeyEscape && action == glfw.Press {
-		fmt.Println("Escape pressed")
+		if false {
+			fmt.Println("Escape pressed")
+			fmt.Printf("proj: \n")
+			fmt.Printf("%v\n", winState.cam.proj)
+			fmt.Printf("view: \n")
+			fmt.Printf("%v\n", winState.cam.view)
+			fmt.Printf("projView: \n")
+			fmt.Printf("%v\n", winState.cam.projView)
+			fmt.Printf("invProjView: \n")
+			fmt.Printf("%v\n", winState.cam.invProjView)
+		}
 		ww.SetShouldClose(true)
 	}
 
@@ -141,7 +151,17 @@ func main() {
 	window.SetFramebufferSizeCallback(winState.FbResize)
 	window.SetCursorPosCallback(glfw.CursorPosCallback(winState.cam.mouseCamRotate))
 	window.SetScrollCallback(glfw.ScrollCallback(winState.cam.mouseZoom))
-
+	if false {
+		fmt.Println("Cam matrices before Rendering Loop:")
+		fmt.Printf("proj: \n")
+		fmt.Printf("%v\n", winState.cam.proj)
+		fmt.Printf("view: \n")
+		fmt.Printf("%v\n", winState.cam.view)
+		fmt.Printf("projView: \n")
+		fmt.Printf("%v\n", winState.cam.projView)
+		fmt.Printf("invProjView: \n")
+		fmt.Printf("%v\n", winState.cam.invProjView)
+	}
 	//Rendering loop
 	//-------------------------------------------------------------------------------------------------------------------------
 	/*Enable VSync (0-off, 1-on in glfw.SwapInterval)
@@ -181,7 +201,7 @@ func main() {
 		deltaT = frameCurrSec - framePrevSec
 		framePrevSec = frameCurrSec
 		winState.cam.updateViaKeyboard(window, deltaT)
-		fmt.Printf("deltaT = %.2fms\n", deltaT*1000.0)
+		//fmt.Printf("deltaT = %.2fms\n", deltaT*1000.0)
 
 		//gl.ClearColor(0.2, 0.3, 0.3, 1.0)
 		//gl.Clear(gl.COLOR_BUFFER_BIT)
@@ -206,7 +226,7 @@ func main() {
 		}
 
 		timeOpenGLms = scene.mainRendering(winState.rengine, winState.cam)
-		fmt.Println("timeOpenGLms=", timeOpenGLms)
+		//fmt.Println("timeOpenGLms=", timeOpenGLms)
 
 		window.SwapBuffers()
 		glfw.PollEvents()

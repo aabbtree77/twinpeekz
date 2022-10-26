@@ -11,7 +11,6 @@ import (
 
 	"github.com/qmuntal/gltf"
 	"github.com/qmuntal/gltf/modeler"
-	
 	//"bufio"
 	//"os"
 )
@@ -69,9 +68,20 @@ func initScene() Scene {
 	//folderPath := "/home/tokyo/boomboxGLTF/BoomBox/glTF/"
 	//gltfFileToLoad := folderPath + "BoomBox.gltf"
 
-	//folderPath := "/home/tokyo/sponzaGLTFResc/"
 	folderPath := "/home/tokyo/Sponza_GLTF2/"
 	gltfFileToLoad := folderPath + "Sponza.gltf"
+
+	//folderPath := "/home/tokyo/Cube/glTF/"
+	//gltfFileToLoad := folderPath + "Cube.gltf"
+
+	//folderPath := "/home/tokyo/Sponza_GLTF2_png/"
+	//gltfFileToLoad := folderPath + "Sponza.gltf"
+
+	//folderPath := "/home/tokyo/SciFiHelmet/glTF/"
+	//gltfFileToLoad := folderPath + "SciFiHelmet.gltf"
+
+	//folderPath := "/home/tokyo/Cube/glTF/"
+	//gltfFileToLoad := folderPath + "Cube.gltf"
 
 	doc, err := gltf.Open(gltfFileToLoad)
 	if err != nil {
@@ -119,12 +129,12 @@ func initScene() Scene {
 		loadedTextureBaseColorIDs = append(loadedTextureBaseColorIDs, textureBaseColorID)
 		loadedTextureMetallicRoughnessIDs = append(loadedTextureMetallicRoughnessIDs, textureMetallicRoughnessID)
 		fmt.Printf("Loaded.\n")
-		
+
 		//fmt.Print("Press 'Enter' to continue...")
-    //bufio.NewReader(os.Stdin).ReadBytes('\n') 
+		//bufio.NewReader(os.Stdin).ReadBytes('\n')
 	}
 
-	//fmt.Printf("Loaded %d instances out of %d Sponza assets.\n", len(loadedMeshPtrs), len(fnames))
+	//fmt.Printf("Loaded %d instances out of %d Sponza assets.\n", len(loadedMeshPtrs), len(doc.Meshes[0].Primitives))
 
 	mWorldCommon := mgl32.Ident4()
 
@@ -147,19 +157,20 @@ func initScene() Scene {
 		shMapHeight: 4096,
 		rerender:    true}
 
-	light1 := Light{
-		dir:         mgl32.Vec3{1, -0.25, -0.25},
-		color:       mgl32.Vec3{1.0 * 2.0, 0.8 * 2.0, 0.6 * 2.0},
-		intensity:   900.0,
-		shMapWidth:  4096,
-		shMapHeight: 4096,
-		rerender:    true}
-
+	/*
+		light1 := Light{
+			dir:         mgl32.Vec3{1, -0.25, -0.25},
+			color:       mgl32.Vec3{1.0 * 2.0, 0.8 * 2.0, 0.6 * 2.0},
+			intensity:   900.0,
+			shMapWidth:  4096,
+			shMapHeight: 4096,
+			rerender:    true}
+	*/
 	light0.initShadowMap()
-	light1.initShadowMap()
+	//light1.initShadowMap()
 
-	lights = append(lights, light0, light1)
-	//lights = append(lights, light0)
+	//lights = append(lights, light0, light1)
+	lights = append(lights, light0)
 
 	return Scene{drawables: instances, lights: lights}
 }
@@ -172,9 +183,12 @@ func loadMeshFromGLTF(doc *gltf.Document, primitive *gltf.Primitive) (MeshGeomet
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("Positions:")
-	fmt.Printf("%#v", positions)
-	fmt.Println("\nDone.")
+
+	/*
+		fmt.Println("Positions:")
+		fmt.Printf("%#v", positions)
+		fmt.Println("\nDone.")
+	*/
 
 	normalIndex := primitive.Attributes["NORMAL"]
 	normalAccessor := doc.Accessors[normalIndex]
@@ -222,12 +236,14 @@ func uploadMeshToGPU(mshIN MeshGeometry) MeshGPUBufferIDs {
 	gl.BindVertexArray(mshOUT.vaoID)
 
 	// Buffer for vertices
+	fmt.Printf("len(mshIN.vertArray): %v\n", len(mshIN.vertArray))
 	gl.GenBuffers(1, &mshOUT.vertexBufferID)
 	gl.BindBuffer(gl.ARRAY_BUFFER, mshOUT.vertexBufferID)
 	gl.BufferData(gl.ARRAY_BUFFER, len(mshIN.vertArray)*int(reflect.TypeOf(mshIN.vertArray).Elem().Size()),
 		gl.Ptr(mshIN.vertArray), gl.STATIC_DRAW)
 
 	// Buffer for uvs
+	fmt.Printf("len(mshIN.uvArray): %v\n", len(mshIN.uvArray))
 	if len(mshIN.uvArray) > 0 {
 		gl.GenBuffers(1, &mshOUT.uvBufferID)
 		gl.BindBuffer(gl.ARRAY_BUFFER, mshOUT.uvBufferID)
@@ -236,13 +252,14 @@ func uploadMeshToGPU(mshIN MeshGeometry) MeshGPUBufferIDs {
 	}
 
 	// Buffer for normals
+	fmt.Printf("len(mshIN.normArray): %v\n", len(mshIN.normArray))
 	if len(mshIN.normArray) > 0 {
 		gl.GenBuffers(1, &mshOUT.normalBufferID)
 		gl.BindBuffer(gl.ARRAY_BUFFER, mshOUT.normalBufferID)
 		gl.BufferData(gl.ARRAY_BUFFER, len(mshIN.normArray)*int(reflect.TypeOf(mshIN.normArray).Elem().Size()),
 			gl.Ptr(mshIN.normArray), gl.STATIC_DRAW)
 	}
-
+	fmt.Printf("len(mshIN.indArray): %v\n", len(mshIN.indArray))
 	// Buffer for vertex indecies
 	gl.GenBuffers(1, &mshOUT.indexBufferID)
 	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, mshOUT.indexBufferID)
@@ -285,7 +302,7 @@ func loadTextureGLTFBaseColor(doc *gltf.Document, primitive *gltf.Primitive, fol
 	desiredChannels := 0 // leave 0 for it to decide
 
 	data, width, height, nChannels, cleanup, err := stbi.Load(textureFileToLoad, flipVertical, desiredChannels)
-	//fmt.Println("width=", width, "height=", height, "nchannels=", nChannels)
+	fmt.Println("width=", width, "height=", height, "nchannels=", nChannels)
 	check(err)
 	defer cleanup()
 

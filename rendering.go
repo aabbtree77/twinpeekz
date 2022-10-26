@@ -192,6 +192,9 @@ func (scn *Scene) mainRendering(rengine RenderEngine, cam Camera) [5]float64 {
 		up := mgl32.Vec3{1.0, 0.0, 1.0}
 		projView := proj.Mul4(mgl32.LookAtV(pos, pos.Add(lht.dir), up))
 
+		//fmt.Printf("Lights projView:\n")
+		//fmt.Printf("%v", projView)
+
 		gl.UseProgram(rengine.dirLightProg.ID)
 		rengine.dirLightProg.SetMat4("projView", projView)
 
