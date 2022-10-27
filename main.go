@@ -56,9 +56,12 @@ func (winState *windowState) KeyHandler(ww *glfw.Window, key glfw.Key, scan int,
 
 	if key == glfw.KeyF11 && action == glfw.Press {
 		fmt.Println("F11 pressed")
+		// If this callback was not defined as windowState method, but just a function KeyHandler, then this could be the way 
+		// to pass data into this callback:
 		//var ptr unsafe.Pointer
 		//ptr := w.GetUserPointer()
 		//winState := (*(*windowState)(ptr))
+		// Or just use a static/global variable, anything above this function should be visible anyway.
 		winState.fullScrChange = true
 	}
 	//winState.cam = updateCameraFromKeyboard(winState.cam, winState.deltaT, key, action)

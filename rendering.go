@@ -183,13 +183,24 @@ func (scn *Scene) mainRendering(rengine RenderEngine, cam Camera) [5]float64 {
 		gl.Clear(gl.DEPTH_BUFFER_BIT)
 
 		var proj mgl32.Mat4
-		zNear := float32(0.0) //should these be different per light, adaptive?
+		zNear := float32(0.1) //should these be different per light, adaptive?
 		zFar := float32(100.0)
+		/* This setup is wrong, but pretty/intense with light
+		// and lits up Sponza in ways that would never happen in reality as its sky dome is too narrow.
+		// Light leaks from the wall because the light reference frame does not
+		//capture the whole Sponza scene, what is not rendered in the depth buffer
+		// cannot cast a shadow.
+		// Try this with lht.dir set to mgl32.Vec3{1, -0.5, -0.5} in scene.go
 		proj = mgl32.Ortho(-20.0, 20.0, -15.0, 15.0, zNear, zFar)
 		//If dir and up are aligned LookAtV will output NaN matrices!!!
-		//Here pos dpes not matter, test that
 		pos := mgl32.Vec3{-4.0, 2.0, 5.0}
 		up := mgl32.Vec3{1.0, 0.0, 1.0}
+		*/
+		proj = mgl32.Ortho(-30.0, 30.0, -30.0, 30.0, zNear, zFar)
+		//If dir and up are aligned LookAtV will output NaN matrices!!!
+		pos := mgl32.Vec3{1, -0.5, -0.5}.Add(lht.dir.Normalize().Mul(-50.0))
+		up := Z_AXIS
+
 		projView := proj.Mul4(mgl32.LookAtV(pos, pos.Add(lht.dir), up))
 
 		//fmt.Printf("Lights projView:\n")

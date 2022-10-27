@@ -150,7 +150,7 @@ func initScene() Scene {
 	var lights []Light
 
 	light0 := Light{
-		dir:         mgl32.Vec3{1, -0.5, -0.5},
+		dir:         mgl32.Vec3{0.1, -0.6, -1.0},
 		color:       mgl32.Vec3{1.0 * 2.0, 0.8 * 2.0, 0.6 * 2.0},
 		intensity:   900.0,
 		shMapWidth:  4096,
