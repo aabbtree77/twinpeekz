@@ -99,7 +99,7 @@ There are four layers of code:
 
 3. **rendering.go**, **shader.go** - the rendering pipeline follows the C++ code of Tomas Öhberg. "shader.go" is the work by Nicholas Blaskey (MIT license), I leave the geometry shader compilation there in case the point lights would need to be added later (they are very expensive, around 2-3ms per light on GTX 760). 
 
-    Notably, that directional lights do not have positions in the shader calculations (only directions), but they do have positions since the light view needs to be rendered into the depth buffer in such a way that an entire scene is covered within each light's ortho-box. The meshes outside the light space clipping box will not cast shadows, light will leak through the walls. At the moment, the box sizes are hard-coded and constant per light. The light's position is chosen by simply emanating the ray in the light's direction from the scene's center which is roughly the origin in Sponza. The ray is multiplied by a large scalar value so that the light's "camera" is outside the scene, ready to cover/render it into the depth buffer in the shadow mapping stage. 
+    Notably, the directional lights do not have positions in the shader calculations (only directions), but they do have positions since the light view needs to be rendered into the depth buffer in such a way that an entire scene is covered within each light's mgl32.Ortho(...) box. The meshes outside the light space clipping box will not cast shadows, light will leak through the walls. At the moment, the box sizes are hard-coded and constant per light. The light's position is chosen by simply emanating the ray in the light's direction from the scene's center which is roughly the origin in Sponza. The ray is multiplied by a large scalar value so that the light's "camera" is outside the scene, ready to cover/render it into the depth buffer in the shadow mapping stage. 
 
 4. Shaders:
 
@@ -439,6 +439,8 @@ There are not that many [mature static non-GC languages](https://github.com/phil
 You can find my Nim rewrite [here](https://github.com/aabbtree77/twinpeekz2), but I tend to still favor Go. "Less is more" and all that.  
      
 ## Credits, Rendering Frameworks I Have Tried, Many Thanks To:
+
+0. **Joey de Vries**. [Learn OpenGL](https://learnopengl.com/). 
 
 1. **Tomas Öhberg**. Initially I was simply translating his marvelous C++ work written in the Autumn of 2017:
 
