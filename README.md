@@ -440,7 +440,7 @@ You can find my Nim rewrite [here](https://github.com/aabbtree77/twinpeekz2), bu
      
 ## Credits, Rendering Frameworks I Have Tried, Many Thanks To:
 
-0. **Joey de Vries**. [Learn OpenGL](https://learnopengl.com/). 
+0. **Joey de Vries**. [Learn OpenGL](https://learnopengl.com/), 2014.
 
 1. **Tomas Öhberg**. Initially I was simply translating his marvelous C++ work written in the Autumn of 2017:
 
