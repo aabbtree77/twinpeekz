@@ -385,7 +385,7 @@ gc 46 @353.542s 0%: 0.045+15+0.006 ms clock, 0.36+0.25/0.58/0.27+0.051 ms cpu, 4
 
 Pointers bring [troubles](https://github.com/g3n/engine/issues/163), and we get them without the ability to control stack vs heap 
 allocations. They also overlap with some other purposes: A mutable function argument qualifier, or a test if the structure field exists after loading 
-a struct from *.json, by checking for the nil value if the structure element has been defined as a pointer. Pointers are also in the type specifiers, the Go slice semantics, they also decay, make stack entities escape to the heap, create bugs with shallow vs deep copying...
+a struct from *.json, by checking for the nil value if the structure element has been defined as a pointer. Pointers are also in the type specifiers, Go slice semantics, they also decay. Bugs appear in shallow vs deep copying, [interfaces and nil](http://www.jerf.org/iri/post/2957).
 
 The tools are OK. I could use go-vim, and mostly just :GoDef and ctrl+O to get back, sometimes :GoRename. The GLTF code was written just by exploring Quim Muntal's GLTF library with :GoDef. No luxury with "import pdb; pdb.set_trace()" as with Python's REPL. Perhaps [gdbgui](https://www.gdbgui.com/) or [gdlv](https://github.com/aarzilli/gdlv/issues/20) could be useful. I relied on go-vim and :GoDef with printf, and RenderDoc. gofmt is great.
 
@@ -407,16 +407,16 @@ Instead of the variable location in code we get the day of the month.
 
 Tricky: Reading fragment's world position from the depth buffer of the hdr stage in the volumetric ligthing shader.
 
-Implicit behaviour. [This code](https://github.com/guzba/gltfviewer) does not use "glActiveTexture()" to activate the texture unit, yet the rendering still works even without setting up a certain sampler2D uniform to render the mesh colors. It turns out that a single sampler2D uniform in the fragment shader gets implicitly linked to the default zero texture unit, i.e. see [this SO](https://stackoverflow.com/questions/10868958/what-does-sampler2d-store). Texture units vs texture ids... 
+Implicit behaviour. [This code](https://github.com/guzba/gltfviewer) does not use "glActiveTexture()" to activate the texture unit, yet the rendering still works even without setting up a certain sampler2D uniform to render the mesh colors. It turns out that a single sampler2D uniform in the fragment shader gets implicitly linked to the default zero texture unit, i.e. see [this SO](https://stackoverflow.com/questions/10868958/what-does-sampler2d-store). Texture units are not texture ids. 
 
 ## What (Not) To Do Next
 
 * Rewrite everything in Nim, focus on mesh instancing and complete scene export from Blender, in GLTF 2.0.
 
-* Reliable loading: Automatic mesh scale, failback/failover w.r.t. broken file paths and assets, e.g. Sponza primitive No. 12 (rusty chain) has no 
-MetallicRoughnessTexture in Sponza.gltf.
+* Reliable GLTF: failback/failover w.r.t. broken file paths and assets, e.g. Sponza primitive No. 12 (rusty chain) has no 
+MetallicRoughnessTexture in Sponza.gltf. Fall back to pseudo-PBR. Warn/adjust unusual mesh scales.
 
-* CSM, AA, baking, culling, LOD popping? Unlikely, but one needs a tighter frustum. Track its dimensions.
+* CSM, AA, baking, culling, LOD popping? Unlikely, but one needs a tighter adaptive frustum for each light and a camera.
 
 * [Vulkan](https://github.com/oakes/vulkan_triangle_nim/blob/master/src/core.nim)? Let's stick to OpenGL and Ubuntu.
 
@@ -426,17 +426,25 @@ MetallicRoughnessTexture in Sponza.gltf.
 
 * [Forward vs Deferred vs Forward+](https://www.3dgep.com/forward-plus/). Forward, most likely, but it does not matter. INSIDE 2016 used deferred rendering. Forward+? Tiling/voxelization, 3D textures. No. 
 
+* Animations.
+
+* Integrate with ImGui, a frame inside frame?
+
+* Add a yaml config at least for lights and camera, or store/import them in GLTF from Blender?
+
 ## Nim or Go?
 
 There are not that many [mature static non-GC languages](https://github.com/phillvancejr/Cpp-Go-Zig-Odin). Consider Nim over Go:
 
-* Fast C-like runtime. Notably, [krux02](https://github.com/krux02/turnt-octo-wallhack) left Go for Nim. [Azul3D](https://github.com/azul3d/engine) abandoned Go for Zig. [jackmott](https://github.com/jackmott/easygl) went from Go to Nim to Rust...
+* Fast C runtime with probably the same productivity as in Go. Notably, [krux02](https://github.com/krux02/turnt-octo-wallhack) left Go for Nim. [Azul3D](https://github.com/azul3d/engine) abandoned Go for Zig. [jackmott](https://github.com/jackmott/easygl) went from Go to Nim to Rust...
 
 * Go uses const, var, *, & and unsafe.Pointer as well as uintptr to interface with C. We do not know what and when escapes to the heap and * infects everything. 
 
-* Nim has const, let, var separated from ref, new and [] for the garbage-collected data on the heap. In addition, there exist ptr, pointer, addr, cast, dealloc, allocCStringArray, deallocCStringArray, allocShared, deallocShared, UncheckedArray, untyped, copyMem, unsafeAddr, unsafeNew and pragmas to handle FFI to C. Pointers are optional. 
+* Nim has const, let, var separated from ref, new and [] for the garbage-collected data on the heap. In addition, there exist ptr, pointer, addr, cast, dealloc, allocCStringArray, deallocCStringArray, allocShared, deallocShared, UncheckedArray, untyped, copyMem, unsafeAddr, unsafeNew, ByteAddress and pragmas to handle FFI to C. Pointers are optional. 
 
-You can find my Nim rewrite [here](https://github.com/aabbtree77/twinpeekz2), but I tend to still favor Go. "Less is more" and all that.  
+* Both PLs have tiny 3D communities, but there is enough OpenGL activity. [glm](https://github.com/stavenko/nim-glm) is a lot nicer in Nim due to generics and operator overloading. One can use common arithmetic with vectors and matrices, negate them. This is a double-edged sword though, might not be easy to debug.
+
+You can find my Nim rewrite [here](https://github.com/aabbtree77/twinpeekz2). Nim for 3D, Go for non-sequential execution (Erlang-type domains).
      
 ## Credits, Rendering Frameworks I Have Tried, Many Thanks To:
 
