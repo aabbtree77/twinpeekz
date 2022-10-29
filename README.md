@@ -416,7 +416,7 @@ Implicit behaviour. [This code](https://github.com/guzba/gltfviewer) does not us
 * Reliable GLTF: failback/failover w.r.t. broken file paths and assets, e.g. Sponza primitive No. 12 (rusty chain) has no 
 MetallicRoughnessTexture in Sponza.gltf. Fall back to pseudo-PBR. Warn/adjust unusual mesh scales.
 
-* CSM, AA, baking, culling, LOD popping? Unlikely, but one needs a tighter adaptive frustum for each light and a camera.
+* CSM, AA, baking, culling, LOD popping? Unlikely, but one needs a tighter adaptive frustum for each light and camera.
 
 * [Vulkan](https://github.com/oakes/vulkan_triangle_nim/blob/master/src/core.nim)? Let's stick to OpenGL and Ubuntu.
 
@@ -428,9 +428,11 @@ MetallicRoughnessTexture in Sponza.gltf. Fall back to pseudo-PBR. Warn/adjust un
 
 * Animations.
 
-* Integrate with ImGui, a frame inside frame?
+* Integrate with ImGui, study OpenGL state/context more, a frame inside a frame?
 
-* Add a yaml config at least for lights and camera, or store/import them in GLTF from Blender?
+* Add yaml config to set all the parameters. Should lights/camera be read from GLTF/Blender?
+
+* Make some kind of an ECS, integrate with a physics engine. See [David H. Eberly, 2010](https://www.amazon.com/Game-Physics-David-H-Eberly/dp/0123749034), [qu3e](https://github.com/RandyGaul/qu3e)...
 
 ## Nim or Go?
 
