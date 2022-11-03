@@ -409,6 +409,15 @@ Tricky: Reading fragment's world position from the depth buffer of the hdr stage
 
 Implicit behaviour. [This code](https://github.com/guzba/gltfviewer) does not use "glActiveTexture()" to activate the texture unit, yet the rendering still works even without setting up a certain sampler2D uniform to render the mesh colors. It turns out that a single sampler2D uniform in the fragment shader gets implicitly linked to the default zero texture unit, i.e. see [this SO](https://stackoverflow.com/questions/10868958/what-does-sampler2d-store). Texture units are not texture ids. 
 
+## cloc and [clocrt](https://github.com/michalspano/clocrt)
+
+| Language | files | blank | comment | code |
+| :------: | :---: | :---: | :-----: | :--: |
+| Go       | 5     | 238   | 227     | 961  |
+| Markdown | 1     | 184   | 0       | 379  |
+| GLSL     | 7     | 107   | 89      | 261  |
+| SUM:     | 13    | 529   | 316     | 1601 |
+
 ## What (Not) To Do Next
 
 * Rewrite everything in Nim, focus on mesh instancing and complete scene export from Blender, in GLTF 2.0.
