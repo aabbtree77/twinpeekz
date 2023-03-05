@@ -1,10 +1,4 @@
-<table align="center">
-    <tr>
-    <td>
-    <img src="./screenshots_volumetrics/screentwodirlightsSept2022.png"  alt="Sponza with two dir lights" width="100%" >
-    </td>
-    </tr>
-</table>
+<img src="./screenshots_volumetrics/screentwodirlightsSept2022.png"  alt="Sponza with two dir lights" width="100%" >
 
 ## Introduction
 
@@ -28,7 +22,7 @@ which should have been just "String"?!
 
 It is one of the post 2013 graphics effects that vastly advances immersion and realism. It is also a very smart approximation to [the rendering equation](https://en.wikipedia.org/wiki/Rendering_equation) which connects programming with geometric optics without brute force ray tracing. 
 
-What else got interesting after say 2013? Rendering water in INSIDE 2016, skyscapes in Red Dead Redemption 2 2018.
+What else is an exponential improvement after say 2013? Rendering [water in INSIDE 2016](https://www.youtube.com/watch?v=RdN06E6Xn9E&t=2755s), [skyscapes in Red Dead Redemption 2 2018](https://www.youtube.com/watch?v=9-HTvoBi0Iw&t=7100s).
 
 ## Setup
 
@@ -415,7 +409,7 @@ Implicit behaviour. [This code](https://github.com/guzba/gltfviewer) does not us
 
 ## What (Not) To Do Next
 
-* Rewrite everything in Nim, focus on mesh instancing and complete scene export from Blender, in GLTF 2.0.
+* [Rewrite everything in Nim](https://github.com/aabbtree77/twinpeekz2), focus on mesh instancing and complete scene export from Blender, in GLTF 2.0.
 
 * Reliable GLTF: failback/failover w.r.t. broken file paths and assets, e.g. Sponza primitive No. 12 (rusty chain) has no 
 MetallicRoughnessTexture in Sponza.gltf. Fall back to pseudo-PBR. Warn/adjust unusual mesh scales.
@@ -450,7 +444,7 @@ There are not that many [mature static non-GC languages](https://github.com/phil
 
 * Both PLs have tiny 3D communities, but there is enough OpenGL activity. [glm](https://github.com/stavenko/nim-glm) is a lot nicer in Nim due to generics and operator overloading. One can use common arithmetic with vectors and matrices, negate them. This is a double-edged sword though, might not be easy to debug.
 
-You can find my Nim rewrite [here](https://github.com/aabbtree77/twinpeekz2). Nim for 3D, Go for non-sequential execution (Erlang-type domains).
+You can find my Nim rewrite [here](https://github.com/aabbtree77/twinpeekz2). Nim for 3D, Go for non-sequential execution ([networking mostly](https://github.com/mudler/edgevpn/issues/25)).
      
 ## Credits, Rendering Frameworks I Have Tried, Many Thanks To:
 
