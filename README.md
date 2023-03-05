@@ -1,9 +1,4 @@
-> “Different is better than better.”<br>
-
 <table align="center">
-    <tr>
-    <th align="center">Sponza under Two Suns</th>
-    </tr>
     <tr>
     <td>
     <img src="./screenshots_volumetrics/screentwodirlightsSept2022.png"  alt="Sponza with two dir lights" width="100%" >
@@ -19,9 +14,9 @@ This code renders Sponza in real time. Details:
 
 2. Forward rendering, directional lights, shadow mapping (PCF 3x3), basic PBR (no baking, no ambient term), 3D ray marched volumetric lighting.
 
-[Why yet another rendering code?](https://github.com/paranim/paranim) Why Go? Why OpenGL? Why not Unreal/Unity/Godot... 
+[Why yet another rendering code?](https://github.com/paranim/paranim) Why Go? Why OpenGL? Why not Vulkan, Unreal, C++? 
 
-One needs a 3D rendering pipeline that one can actually control. A graphics API alone brings so much complexity, why waste time deciphering
+"Different is better than better." A graphics API alone brings so much complexity, why waste time deciphering
 
 ```cpp
 std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&
