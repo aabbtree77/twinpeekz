@@ -382,11 +382,11 @@ data with GLFW callbacks. I would just pass a struct/object method using an obje
 Pointers bring [troubles](https://github.com/g3n/engine/issues/163), and we get them without the ability to control stack vs heap 
 allocations. They also overlap with some other purposes: Passing around mutable arguments, and a pointer nil-value check if the structure field exists after loading a struct from *.json. Pointers are also in the type specifiers, Go slice semantics, they also decay. Bugs appear in shallow vs deep copying, [interfaces and nil](http://www.jerf.org/iri/post/2957).
 
-I did not suffer from a notorious json deserialization and nil dereferencing, but the problem is there, and the pointer codes do not inspire confidence. They simply make you think more than you have to in a GC-language, without any advantage to the language user.
+I did not suffer from notorious json deserialization or nil dereferencing, but the problems are there, and the pointer codes do not inspire confidence. They simply make you think more than you have to in a GC-language, without any advantage to the language user.
 
 ### Tools and Golang Space-Time
 
-Golang provides a solid "space-time": The types and constructs are flat enough to reach anything with printf. I relied on go-vim and its :GoDef with ctrl+O to get back. These two commands helped to navigate 3rd party codes so much that I could apply Quim Muntal's GLTF library with its virtually nonexisting docs only by reading [Issue #26](https://github.com/qmuntal/gltf/issues/26). 
+The types and constructs are flat enough to reach anything with printf. I relied on go-vim and its :GoDef with ctrl+O to get back. These two commands helped to navigate 3rd party codes. However, I could start working with Quim Muntal's GLTF library with its virtually nonexisting docs only by reading [Issue #26](https://github.com/qmuntal/gltf/issues/26). Still, a huge plus for Golang in that codes do not tend to be overengineered with generic type nonsense. 
 
 We have no luxury with "import pdb; pdb.set_trace()" and Python's REPL, but that is not a problem. Perhaps [gdbgui](https://www.gdbgui.com/) or [gdlv](https://github.com/aarzilli/gdlv/issues/20) could be useful, but I did not need them at all.
 
@@ -394,16 +394,13 @@ We have no luxury with "import pdb; pdb.set_trace()" and Python's REPL, but that
 
 Unfortunately, Go v1.18 introduced [generic types](https://planetscale.com/blog/generics-can-make-your-go-code-slower) and Go v1.23 - [iterators](https://www.gingerbill.org/article/2024/06/17/go-iterator-design/), without fixing [the trillion dollar mistake](https://github.com/tcard/sgo). Golang is now just like C#, TypeScript, Kotlin, Swift, or Dart, but without their null safety and GUI frameworks, and with pointers and locks instead of higher level language features.
 
-For a casual user outside of corporate Erlang/JVM/.Net distributed middleware spaces, there is very little reason to ever touch Golang. That domain will also seldom have any junior roles.
+For a casual user outside of corporate Erlang/JVM/.Net distributed container spaces, there is little reason to worry about Golang.
 
-I would not rule out Golang entirely though. Its runtime may serve as a lightweight JVM for the next generation programming languages ([Starlark-Go](https://github.com/google/starlark-go), see also this ["branch"](https://github.com/aabbtree77/determinism), [Borgo?](https://github.com/borgo-lang/borgo), more will emerge eventually). However, this domain and many others are now frequently covered by Rust. Borgo is actually written in Rust, and so are [Inko](https://github.com/inko-lang/inko), [Roc](https://github.com/roc-lang/roc), and [Gleam](https://github.com/gleam-lang/gleam), if you are into new languages with null-safety and sum types in a spherical vacuum.
+I would not rule it out entirely though. Its runtime may serve as a lightweight JVM for the next generation programming languages: [Starlark-Go](https://github.com/google/starlark-go), [Borgo?](https://github.com/borgo-lang/borgo) Note that Borgo is written in Rust, and so are [Inko](https://github.com/inko-lang/inko), [Roc](https://github.com/roc-lang/roc), and [Gleam](https://github.com/gleam-lang/gleam).
 
-Golang still leads [libp2p](https://libp2p.io/implementations/), see also [my own uses](https://github.com/mudler/edgevpn/issues/25).
-Also, it is less schizoidal between the OO/FP than say TypeScript or C#/F#. F# feels like the best programming languages ever created, if you read the blog [F# for Fun and Profit](https://fsharpforfunandprofit.com/), or experience [the ability to toggle types](https://github.com/ionide/ionide-vscode-fsharp/issues/2056) for the first time. Its 3rd party codes are harder to follow though, provided you find any. Idiomatic FP is also harder to write. A lot of it is quite pointless and overly academic. Golang does not suffer from that. 
+Golang still leads [libp2p](https://libp2p.io/implementations/) (see e.g. [my uses of it](https://github.com/mudler/edgevpn/issues/25)), but Rust is close there too.
 
-Kotlin and Dart could easily be a new better Go now, but there are also counter arguments to that. Kotlin's tooling revolves around IntelliJ IDEA by JetBrains which is a paid IDE, not even VS Code, which is annoying. Dart's focus on Flutter and cross platform GUIs is also hard to take seriously after Airbnb's story with React Native and Kotlin's growth on Android. Dart also barely exists outside Flutter.
-
-Endless pros and cons with no clear winner for a [1x engineer](https://www.reddit.com/r/webdev/comments/jw00eb/what_is_a_1x_engineer/). I think Golang and Rust are very niche languages which should not occupy so many minds and discussion forums. This code is also a misuse of Golang. It might be better to rewrite this code in C# w/wo Unity. F#?!
+In my opinion, Golang and Rust are very niche corporate languages which are not good for [1x engineering](https://www.reddit.com/r/webdev/comments/jw00eb/what_is_a_1x_engineer/). This repository is my example of Golang misused, unfortunately.
 
 ## OpenGL Experience Report
 
@@ -467,15 +464,21 @@ In my experience, [static non-GC languages](https://github.com/phillvancejr/Cpp-
 
 * Nim has const, let, var somewhat separated from ref, new and [] for the garbage-collected data on the heap. In addition, there exist ptr, pointer, addr, cast, dealloc, allocCStringArray, deallocCStringArray, allocShared, deallocShared, UncheckedArray, untyped, copyMem, unsafeAddr, unsafeNew, ByteAddress and pragmas to handle FFI to C. Pointers are optional.
 
-* Nim's major weakness, I think, is polymorphism. No clear sum types, only their multiple ongoing editions in some library form or inside a language which you have to follow through forums and github issues. [ref object vs object](https://forum.nim-lang.org/t/1207) is confusing and often misused which can also slow down runtime, say, 3x. I have no clue when it is needed or not in, say, virtual dispatch.
+* Nim's major weakness is basic polymorphism. No clear sum types, only their multiple ongoing editions. [ref object vs object](https://forum.nim-lang.org/t/1207) is confusing and often misused which can also slow down runtime 3x. I have no clue when ref object is needed in, say, a virtual dispatch.
 
-* There is enough OpenGL activity. [glm](https://github.com/stavenko/nim-glm) is nicer in Nim due to generics and operator overloading. One can use common arithmetic with vectors and matrices, negate them. This is a double-edged sword though, might not be easy to debug.
+You can find my Nim rewrite [here](https://github.com/aabbtree77/twinpeekz2), but I am not too excited about it. Nim suffers from the same problems as [Dlang](https://forum.dlang.org/thread/knidfnxodhplhgoxmilb@forum.dlang.org). I view these projects as experiments which have escaped a research lab for no reason. Both languages have forums and docs with a lot of educational value, if one is into "better C" and a belief that a single language can do everything. [Generic types](https://nim-lang.org/docs/tut2.html#generics), [templates](https://nim-lang.org/docs/tut2.html#templates), [macros](https://nim-lang.org/docs/tut3.html), [Better C](https://dlang.org/spec/betterc.html)...
 
-You can find my Nim rewrite [here](https://github.com/aabbtree77/twinpeekz2), but I am not too excited about it. Nim suffers from the same problems as [Dlang](https://forum.dlang.org/thread/knidfnxodhplhgoxmilb@forum.dlang.org). I view these projects as research lab experiments rather than programming languages with healthy ecosystems. Their main forums and docs provide a lot of educational value, if you are into a design around "better C". [Generic types](https://nim-lang.org/docs/tut2.html#generics), [templates](https://nim-lang.org/docs/tut2.html#templates), [macros](https://nim-lang.org/docs/tut3.html)...
+Ironically, it took me much longer to find ways around loading the GLTF assets in Nim than in Go, but some Nim GLTF codes looked almost like a GLTF spec, so readable and noise-free. Unlike Go, or even Js/Python. 
 
-Ironically, it took me much longer to find ways around loading the GLTF in Nim than in Go, but some Nim GLTF codes looked almost like a GLTF spec, so readable and noise-free. Unlike Go, or even Js/Python. 
+If you can understand Russian, these two podcasts about Nim are very thorough and provide experience/insights not present in the docs: [Youtube Podlodka #282](https://www.youtube.com/watch?v=R26qjXib5i0&t=1s&ab_channel=Podlodka) and [Youtube Podlodka #288](https://www.youtube.com/watch?v=Lz3ZA7Jz6pw&t=6603s&ab_channel=Podlodka). I have learned that Nim is also popular in writing viruses as it allows one to tap deeper into C and executables.
 
-If you can understand Russian, these two podcasts about Nim are very thorough and provide experience/insights not present in the docs: [Youtube Podlodka #282](https://www.youtube.com/watch?v=R26qjXib5i0&t=1s&ab_channel=Podlodka) and [Youtube Podlodka #288](https://www.youtube.com/watch?v=Lz3ZA7Jz6pw&t=6603s&ab_channel=Podlodka). I learned that Nim is also popular in writing viruses as it allows one to tap deeper into executables than most.
+## What Language Would I Use to Rewrite This Now (2025)?
+
+F# feels like the best programming language ever created, if you read the blog [F# for Fun and Profit](https://fsharpforfunandprofit.com/), or experience [the ability to toggle types](https://github.com/ionide/ionide-vscode-fsharp/issues/2056) for the first time. Its 3rd party codes are harder to follow though, provided you find any. Idiomatic FP is also harder to write. A lot of FP is quite pointless and overly academic. 
+
+Kotlin and Dart could easily be a new better Go now, but there are also counter arguments to that. Kotlin's tooling revolves around IntelliJ IDEA by JetBrains which is a paid IDE, not even VS Code, which is annoying, like the whole mobile phone industry. Dart's focus on Flutter and cross platform GUIs is hard to take seriously after Airbnb's story with React Native and Kotlin's growth on Android. Dart also barely exists outside Flutter.
+
+I would seriously consider C# w/wo Unity, or maybe even F#. None of this would make a difference...
      
 ## Credits, Rendering Frameworks I Have Tried, Many Thanks To:
 
