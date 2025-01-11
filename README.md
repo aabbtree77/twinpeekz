@@ -319,10 +319,10 @@ The timings are provided for each rendering stage separately, supplied with the 
 
 ## Golang Experience Report
 
-Golang is great at the level of main.go, no need to use unsafe pointers to pass user 
-data with GLFW callbacks, just pass a struct/object method using an object as an implicit first argument (as in UFCS).
+### Garbage Collector (GC)
 
 Here is the log of Golang's GC:
+
 ```console
 gc 3 @7.479s 0%: 0.051+24+0.004 ms clock, 0.41+0.47/0.22/0.14+0.036 ms cpu, 17->17->0 MB, 18 MB goal, 8 P
 gc 4 @15.446s 0%: 0.042+0.73+0.047 ms clock, 0.34+0.18/0.60/0+0.38 ms cpu, 4->4->0 MB, 5 MB goal, 8 P
@@ -370,15 +370,40 @@ gc 45 @345.492s 0%: 0.037+14+0.007 ms clock, 0.30+0.41/0.31/0.29+0.057 ms cpu, 4
 gc 46 @353.542s 0%: 0.045+15+0.006 ms clock, 0.36+0.25/0.58/0.27+0.051 ms cpu, 4->4->0 MB, 5 MB goal, 8 P
 ```
 
-**The default GC setup does not consume more than 1ms. and it gets invoked every 8s. or so. However, a spike wasting whole 24ms. may occur once a minute or so. Dropping a frame or two per minute does not break any smooth 3D experience. Considering that the Go code barely adds 1ms. to the overall OpenGL time per frame, Go's runtime is perfectly adequate for real time 3D applications with the scenes of Sponza's complexity.**
+*The default GC setup does not consume more than 1ms. and it gets invoked every 8s. or so. However, a spike wasting whole 24ms. may occur once a minute or so. Dropping a frame or two per minute does not break any smooth 3D experience. Considering that the Go code barely adds 1ms. to the overall OpenGL time per frame, Go's runtime is perfectly adequate for real time 3D applications with the scenes of Sponza's complexity.*
+
+### Lambda Functions
+
+Golang is great with such nonintrusive nonabused abstractions. In main.go, there was no need to use unsafe pointers to pass user 
+data with GLFW callbacks. I would just pass a struct/object method using an object as an implicit first argument (as if in UFCS).
+
+### Pointers
 
 Pointers bring [troubles](https://github.com/g3n/engine/issues/163), and we get them without the ability to control stack vs heap 
-allocations. They also overlap with some other purposes: A mutable function argument qualifier, or a test if the structure field exists after loading 
-a struct from *.json, by checking for the nil value if the structure element has been defined as a pointer. Pointers are also in the type specifiers, Go slice semantics, they also decay. Bugs appear in shallow vs deep copying, [interfaces and nil](http://www.jerf.org/iri/post/2957).
+allocations. They also overlap with some other purposes: Passing around mutable arguments, and a pointer nil-value check if the structure field exists after loading a struct from *.json. Pointers are also in the type specifiers, Go slice semantics, they also decay. Bugs appear in shallow vs deep copying, [interfaces and nil](http://www.jerf.org/iri/post/2957).
 
-The tools are OK. I could use go-vim, and mostly just :GoDef and ctrl+O to get back, sometimes :GoRename. The GLTF code was written just by exploring Quim Muntal's GLTF library with :GoDef. No luxury with "import pdb; pdb.set_trace()" as with Python's REPL. Perhaps [gdbgui](https://www.gdbgui.com/) or [gdlv](https://github.com/aarzilli/gdlv/issues/20) could be useful. I relied on go-vim and :GoDef with printf, and RenderDoc. gofmt is great.
+I did not suffer from a notorious json deserialization and nil dereferencing, but the problem is there, and the pointer codes do not inspire confidence. They simply make you think more than you have to in a GC-language, without any advantage to the language user.
 
-The code here was written prior to Go version 1.18. The math parts could now use [generic types](https://planetscale.com/blog/generics-can-make-your-go-code-slower) in a few places, though this is hardly worth it.
+### Tools and Golang Space-Time
+
+Golang provides a solid "space-time": The types and constructs are flat enough to reach anything with printf. I relied on go-vim and its :GoDef with ctrl+O to get back. These two commands helped to navigate 3rd party codes so much that I could apply Quim Muntal's GLTF library with its virtually nonexisting docs only by reading [Issue #26](https://github.com/qmuntal/gltf/issues/26). 
+
+We have no luxury with "import pdb; pdb.set_trace()" and Python's REPL, but that is not a problem. Perhaps [gdbgui](https://www.gdbgui.com/) or [gdlv](https://github.com/aarzilli/gdlv/issues/20) could be useful, but I did not need them at all.
+
+### The Bad and the Ugly
+
+Unfortunately, Go v1.18 introduced [generic types](https://planetscale.com/blog/generics-can-make-your-go-code-slower) and Go v1.23 - [iterators](https://www.gingerbill.org/article/2024/06/17/go-iterator-design/), without fixing [the trillion dollar mistake](https://github.com/tcard/sgo). Golang is now just like C#, TypeScript, Kotlin, Swift, or Dart, but without their null safety and GUI frameworks, and with pointers and locks instead of higher level language features.
+
+For a casual user outside of corporate Erlang/JVM/.Net distributed middleware spaces, there is very little reason to ever touch Golang. That domain will also seldom have any junior roles.
+
+I would not rule out Golang entirely though. Its runtime may serve as a lightweight JVM for the next generation programming languages ([Starlark-Go](https://github.com/google/starlark-go), see also this ["branch"](https://github.com/aabbtree77/determinism), [Borgo?](https://github.com/borgo-lang/borgo), more will emerge eventually). However, this domain and many others are now frequently covered by Rust. Borgo is actually written in Rust, and so are [Inko](https://github.com/inko-lang/inko), [Roc](https://github.com/roc-lang/roc), and [Gleam](https://github.com/gleam-lang/gleam), if you are into new languages with null-safety and sum types in a spherical vacuum.
+
+Golang still leads [libp2p](https://libp2p.io/implementations/), see also [my own uses](https://github.com/mudler/edgevpn/issues/25).
+Also, it is less schizoidal between the OO/FP than say TypeScript or C#/F#. F# feels like the best programming languages ever created, if you read the blog [F# for Fun and Profit](https://fsharpforfunandprofit.com/), or experience [the ability to toggle types](https://github.com/ionide/ionide-vscode-fsharp/issues/2056) for the first time. Its 3rd party codes are harder to follow though, provided you find any. Idiomatic FP is also harder to write. A lot of it is quite pointless and overly academic. Golang does not suffer from that. 
+
+Kotlin and Dart could easily be a new better Go now, but there are also counter arguments to that. Kotlin's tooling revolves around IntelliJ IDEA by JetBrains which is a paid IDE, not even VS Code, which is annoying. Dart's focus on Flutter and cross platform GUIs is also hard to take seriously after Airbnb's story with React Native and Kotlin's growth on Android. Dart also barely exists outside Flutter.
+
+Endless pros and cons with no clear winner for a [1x engineer](https://www.reddit.com/r/webdev/comments/jw00eb/what_is_a_1x_engineer/). I think Golang and Rust are very niche languages which should not occupy so many minds and discussion forums. This code is also a misuse of Golang. It might be better to rewrite this code in C# w/wo Unity. F#?!
 
 ## OpenGL Experience Report
 
@@ -428,23 +453,29 @@ MetallicRoughnessTexture in Sponza.gltf. Fall back to pseudo-PBR. Warn/adjust un
 
 * Integrate with ImGui, study OpenGL state/context more, a frame inside a frame?
 
-* Add yaml config to set all the parameters. Should lights/camera be read from GLTF/Blender?
+* Add TOML to set all the parameters. Should lights/camera be read from GLTF/Blender?
 
-* Make some kind of an ECS, integrate with a physics engine. See [David H. Eberly, 2010](https://www.amazon.com/Game-Physics-David-H-Eberly/dp/0123749034), [qu3e](https://github.com/RandyGaul/qu3e)...
+* Build the ECS, integrate with a physics engine. See [David H. Eberly, 2010](https://www.amazon.com/Game-Physics-David-H-Eberly/dp/0123749034), [qu3e](https://github.com/RandyGaul/qu3e)...
 
-## Nim or Go?
+## Nim or Go? Neither of Them...
 
-There are not that many [mature static non-GC languages](https://github.com/phillvancejr/Cpp-Go-Zig-Odin). Consider Nim over Go:
+In my experience, [static non-GC languages](https://github.com/phillvancejr/Cpp-Go-Zig-Odin) and productivity do not go hand in hand, but consider Nim over Go:
 
-* Fast C runtime with probably the same productivity as in Go. Notably, [krux02](https://github.com/krux02/turnt-octo-wallhack) left Go for Nim. [Azul3D](https://github.com/azul3d/engine) abandoned Go for Zig. [jackmott](https://github.com/jackmott/easygl) went from Go to Nim to Rust...
+* Fast C runtime. Notably, [krux02](https://github.com/krux02/turnt-octo-wallhack) left Go for Nim. [Azul3D](https://github.com/azul3d/engine) abandoned Go for Zig. [jackmott](https://github.com/jackmott/easygl) went from Go to Nim to Rust...
 
 * Go uses const, var, *, & and unsafe.Pointer as well as uintptr to interface with C. We do not know what and when escapes to the heap and * infects everything. 
 
-* Nim has const, let, var separated from ref, new and [] for the garbage-collected data on the heap. In addition, there exist ptr, pointer, addr, cast, dealloc, allocCStringArray, deallocCStringArray, allocShared, deallocShared, UncheckedArray, untyped, copyMem, unsafeAddr, unsafeNew, ByteAddress and pragmas to handle FFI to C. Pointers are optional. 
+* Nim has const, let, var somewhat separated from ref, new and [] for the garbage-collected data on the heap. In addition, there exist ptr, pointer, addr, cast, dealloc, allocCStringArray, deallocCStringArray, allocShared, deallocShared, UncheckedArray, untyped, copyMem, unsafeAddr, unsafeNew, ByteAddress and pragmas to handle FFI to C. Pointers are optional.
 
-* Both PLs have tiny 3D communities, but there is enough OpenGL activity. [glm](https://github.com/stavenko/nim-glm) is a lot nicer in Nim due to generics and operator overloading. One can use common arithmetic with vectors and matrices, negate them. This is a double-edged sword though, might not be easy to debug.
+* Nim's major weakness, I think, is polymorphism. No clear sum types, only their multiple ongoing editions in some library form or inside a language which you have to follow through forums and github issues. [ref object vs object](https://forum.nim-lang.org/t/1207) is confusing and often misused which can also slow down runtime, say, 3x. I have no clue when it is needed or not in, say, virtual dispatch.
 
-You can find my Nim rewrite [here](https://github.com/aabbtree77/twinpeekz2). Nim for 3D, Go for non-sequential execution ([networking mostly](https://github.com/mudler/edgevpn/issues/25)).
+* There is enough OpenGL activity. [glm](https://github.com/stavenko/nim-glm) is nicer in Nim due to generics and operator overloading. One can use common arithmetic with vectors and matrices, negate them. This is a double-edged sword though, might not be easy to debug.
+
+You can find my Nim rewrite [here](https://github.com/aabbtree77/twinpeekz2), but I am not too excited about it. Nim suffers from the same problems as [Dlang](https://forum.dlang.org/thread/knidfnxodhplhgoxmilb@forum.dlang.org). I view these projects as research lab experiments rather than programming languages with healthy ecosystems. Their main forums and docs provide a lot of educational value, if you are into a design around "better C". [Generic types](https://nim-lang.org/docs/tut2.html#generics), [templates](https://nim-lang.org/docs/tut2.html#templates), [macros](https://nim-lang.org/docs/tut3.html)...
+
+Ironically, it took me much longer to find ways around loading the GLTF in Nim than in Go, but some Nim GLTF codes looked almost like a GLTF spec, so readable and noise-free. Unlike Go, or even Js/Python. 
+
+If you can understand Russian, these two podcasts about Nim are very thorough and provide experience/insights not present in the docs: [Youtube Podlodka #282](https://www.youtube.com/watch?v=R26qjXib5i0&t=1s&ab_channel=Podlodka) and [Youtube Podlodka #288](https://www.youtube.com/watch?v=Lz3ZA7Jz6pw&t=6603s&ab_channel=Podlodka). I learned that Nim is also popular in writing viruses as it allows one to tap deeper into executables than most.
      
 ## Credits, Rendering Frameworks I Have Tried, Many Thanks To:
 
