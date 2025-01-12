@@ -380,27 +380,25 @@ data with GLFW callbacks. I would just pass a struct/object method using an obje
 ### Pointers
 
 Pointers bring [troubles](https://github.com/g3n/engine/issues/163), and we get them without the ability to control stack vs heap 
-allocations. They also overlap with some other purposes: Passing around mutable arguments, and a pointer nil-value check if the structure field exists after loading a struct from *.json. Pointers are also in the type specifiers, Go slice semantics, they also decay. Bugs appear in shallow vs deep copying, [interfaces and nil](http://www.jerf.org/iri/post/2957).
+allocations. They also overlap with some other purposes: Passing around mutable data, and a pointer nil-value check if the structure field exists after loading a struct from *.json. Pointers are also in the type specifiers, Go slice semantics, they also decay. Bugs appear in shallow vs deep copying, [interfaces and nil](http://www.jerf.org/iri/post/2957).
 
-I did not suffer from notorious json deserialization or nil dereferencing, but the problems are there, and the pointer codes do not inspire confidence. They simply make you think more than you have to in a GC-language, without any advantage to the language user.
+I did not suffer from notorious json deserialization or nil dereferencing, but the problems are there, and the pointer codes do not inspire confidence. They also make you think more than you have to in a GC-language, without any advantage to the language user.
 
 ### Tools and Golang Space-Time
 
-The types and constructs are flat enough to reach anything with printf. I relied on go-vim and its :GoDef with ctrl+O to get back. These two commands helped to navigate 3rd party codes. However, I could start working with Quim Muntal's GLTF library with its virtually nonexisting docs only by reading [Issue #26](https://github.com/qmuntal/gltf/issues/26). Still, a huge plus for Golang in that codes do not tend to be overengineered with generic type nonsense. 
+The types and constructs are flat enough to reach anything with printf. I relied on go-vim and its :GoDef with ctrl+O to get back. These two commands helped to navigate 3rd party codes. However, I could start working with Quim Muntal's GLTF library with its virtually nonexisting docs only by reading [Issue #26](https://github.com/qmuntal/gltf/issues/26). Still, a huge plus for Golang in that 3rd party codes have the chance to be grokked without too much suffering, at least prior to v1.18 and v1.23.
 
-We have no luxury with "import pdb; pdb.set_trace()" and Python's REPL, but that is not a problem. Perhaps [gdbgui](https://www.gdbgui.com/) or [gdlv](https://github.com/aarzilli/gdlv/issues/20) could be useful, but I did not need them at all.
+We have no luxury with "import pdb; pdb.set_trace()" and Python's REPL, but that is not a problem. Perhaps [gdbgui](https://www.gdbgui.com/), [gdlv](https://github.com/aarzilli/gdlv/issues/20), or VS Code could be useful, but I did not need them at all.
 
 ### The Bad and the Ugly
 
 Unfortunately, Go v1.18 introduced [generic types](https://planetscale.com/blog/generics-can-make-your-go-code-slower) and Go v1.23 - [iterators](https://www.gingerbill.org/article/2024/06/17/go-iterator-design/), without fixing [the trillion dollar mistake](https://github.com/tcard/sgo). Golang is now just like C#, TypeScript, Kotlin, Swift, or Dart, but without their null safety and GUI frameworks, and with pointers and locks instead of higher level language features.
 
-For a casual user outside of corporate Erlang/JVM/.Net distributed container spaces, there is little reason to worry about Golang.
+For a casual user outside of corporate Erlang/JVM/.Net distributed container spaces, there is little reason to worry about Golang. If you keep hearing those "how I replaced React with Go+Templ+HTMX" stories, see ["hello Javascript, oh how I've missed you](https://www.youtube.com/watch?v=mt1ZCai1G-I&ab_channel=WebDevCody) by Web Dev Cody.
 
 I would not rule it out entirely though. Its runtime may serve as a lightweight JVM for the next generation programming languages: [Starlark-Go](https://github.com/google/starlark-go), [Borgo?](https://github.com/borgo-lang/borgo) Note that Borgo is written in Rust, and so are [Inko](https://github.com/inko-lang/inko), [Roc](https://github.com/roc-lang/roc), and [Gleam](https://github.com/gleam-lang/gleam).
 
 Golang still leads [libp2p](https://libp2p.io/implementations/) (see e.g. [my uses of it](https://github.com/mudler/edgevpn/issues/25)), but Rust is close there too.
-
-In my opinion, Golang and Rust are very niche corporate languages which are not good for [1x engineering](https://www.reddit.com/r/webdev/comments/jw00eb/what_is_a_1x_engineer/). This repository is my example of Golang misused, unfortunately.
 
 ## OpenGL Experience Report
 
@@ -448,9 +446,11 @@ MetallicRoughnessTexture in Sponza.gltf. Fall back to pseudo-PBR. Warn/adjust un
 
 * Animations.
 
+* Hot reloading.
+
 * Integrate with ImGui, study OpenGL state/context more, a frame inside a frame?
 
-* Add TOML to set all the parameters. Should lights/camera be read from GLTF/Blender?
+* Add TOML to set all the parameters. Should lights/camera be read from the GLTF/Blender?
 
 * Build the ECS, integrate with a physics engine. See [David H. Eberly, 2010](https://www.amazon.com/Game-Physics-David-H-Eberly/dp/0123749034), [qu3e](https://github.com/RandyGaul/qu3e)...
 
@@ -466,7 +466,7 @@ In my experience, [static non-GC languages](https://github.com/phillvancejr/Cpp-
 
 * Nim's major weakness is basic polymorphism. No clear sum types, only their multiple ongoing editions. [ref object vs object](https://forum.nim-lang.org/t/1207) is confusing and often misused which can also slow down runtime 3x. I have no clue when ref object is needed in, say, a virtual dispatch.
 
-You can find my Nim rewrite [here](https://github.com/aabbtree77/twinpeekz2), but I am not too excited about it. Nim suffers from the same problems as [Dlang](https://forum.dlang.org/thread/knidfnxodhplhgoxmilb@forum.dlang.org). I view these projects as experiments which have escaped a research lab for no reason. Both languages have forums and docs with a lot of educational value, if one is into "better C" and a belief that a single language can do everything. [Generic types](https://nim-lang.org/docs/tut2.html#generics), [templates](https://nim-lang.org/docs/tut2.html#templates), [macros](https://nim-lang.org/docs/tut3.html), [Better C](https://dlang.org/spec/betterc.html)...
+You can find my Nim rewrite [here](https://github.com/aabbtree77/twinpeekz2), but I am not too excited about it. Nim suffers from the same problems as [Dlang](https://forum.dlang.org/thread/knidfnxodhplhgoxmilb@forum.dlang.org). I view these projects as experiments which have escaped a research lab for no reason. Both languages have forums and docs with a lot of educational value, if one is into "better C" and a belief that a single language can do everything. [Generic types](https://nim-lang.org/docs/tut2.html#generics), [templates](https://nim-lang.org/docs/tut2.html#templates), [macros](https://nim-lang.org/docs/tut3.html). [Better C](https://dlang.org/spec/betterc.html).
 
 Ironically, it took me much longer to find ways around loading the GLTF assets in Nim than in Go, but some Nim GLTF codes looked almost like a GLTF spec, so readable and noise-free. Unlike Go, or even Js/Python. 
 
