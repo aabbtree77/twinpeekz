@@ -439,17 +439,30 @@ MetallicRoughnessTexture in Sponza.gltf. Fall back to pseudo-PBR. Warn/adjust un
 
 If anything GC-based is not that good for 3D, consider Nim over Go:
 
-* Fast C-like runtime with some deep possibilities (Nim is popular in writing viruses). Notably, [krux02](https://github.com/krux02/turnt-octo-wallhack) left Go for Nim. [Azul3D](https://github.com/azul3d/engine) abandoned Go for Zig. [jackmott](https://github.com/jackmott/easygl) went from Go to Nim to Rust...
+* Fast C-like runtime with some deeper possibilities (Nim is popular in writing viruses). Notably, [krux02](https://github.com/krux02/turnt-octo-wallhack) left Go for Nim. [Azul3D](https://github.com/azul3d/engine) abandoned Go for Zig. [jackmott](https://github.com/jackmott/easygl) went from Go to Nim to Rust...
 
-* Messy polymorphism and confusing [ref object vs object](https://forum.nim-lang.org/t/1207).
-
-You can find my Nim rewrite [here](https://github.com/aabbtree77/twinpeekz2), but I am not too excited about it. Nim lacks stability and minimalism, same as [Dlang](https://forum.dlang.org/thread/knidfnxodhplhgoxmilb@forum.dlang.org). 
-
-It took me longer to find ways around loading the GLTF assets in Nim than in Go, but some Nim GLTF codes looked almost like a GLTF spec, so readable and noise-free. Unlike Go, or even Js/Python. 
+* Still [no proper sum types](https://github.com/nim-lang/RFCs/issues/548) and confusing [ref object vs object](https://forum.nim-lang.org/t/1207).
 
 If you can understand Russian, these two podcasts about Nim are very thorough: [Youtube Podlodka #282](https://www.youtube.com/watch?v=R26qjXib5i0&t=1s&ab_channel=Podlodka) and [Youtube Podlodka #288](https://www.youtube.com/watch?v=Lz3ZA7Jz6pw&t=6603s&ab_channel=Podlodka).
 
 Andre von Houck aka [treeform](https://github.com/treeform) [nearly solved](https://github.com/treeform/fidget) with Nim the major problem of writing HTML/CSS manually, but his project seems to be abandoned as the problem is likely to be hopeless.
+
+It took me longer to find ways around loading the GLTF assets in Nim than in Go, but some Nim GLTF codes looked almost like a GLTF spec, so readable and noise-free. Unlike Go, or even Js/Python. 
+
+You can find my Nim rewrite [here](https://github.com/aabbtree77/twinpeekz2), but I am not too excited about it. Nim lacks the minimal sufficient stable core (unlike Rust with sum types, done, you can rely on them). Remarkably, the same problem persists in D ([Dlang](https://forum.dlang.org/thread/knidfnxodhplhgoxmilb@forum.dlang.org)). Nim and D are like the twin brothers.
+
+ChatGPT (January 2025) about the sum types in D, Rust, and Nim:
+
+| Feature                          | D (`Algebraic` or Tagged Union)      | Rust (`enum`)            | Nim (`case`)             |
+|----------------------------------|--------------------------------------|--------------------------|--------------------------|
+| **Safety**                       | Manual checks required, partial runtime safety | Fully compile-time safe  | Manual checks required   |
+| **Exhaustiveness Check**         | No compile-time exhaustiveness       | Enforced by compiler     | Enforced for enums       |
+| **Invalid Field Access**         | Possible undefined behavior          | Impossible               | Undefined behavior       |
+| **Flexibility**                  | Flexible but less safe               | Stricter, fully safe     | Flexible but less safe   |
+| **Pattern Matching**             | No native pattern matching           | Full pattern matching    | Limited via `case`       |
+| **Ease of Use**                  | Medium, runtime checks are common    | Easy, compile-time checks | Medium, manual checks needed |
+
+Rust is a clear winner here. Ugly, complex, but more precise, and less experimental.
      
 ## Credits, Rendering Frameworks I Have Tried, Many Thanks To:
 
