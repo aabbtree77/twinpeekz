@@ -368,9 +368,9 @@ gc 45 @345.492s 0%: 0.037+14+0.007 ms clock, 0.30+0.41/0.31/0.29+0.057 ms cpu, 4
 gc 46 @353.542s 0%: 0.045+15+0.006 ms clock, 0.36+0.25/0.58/0.27+0.051 ms cpu, 4->4->0 MB, 5 MB goal, 8 P
 ```
 
-*The default GC setup does not consume more than 1ms. and it gets invoked every 8s. or so. However, a spike wasting whole 24ms. may occur once a minute or so. Dropping a frame or two per minute does not break any smooth 3D experience. Considering that the Go code barely adds 1ms. to the overall OpenGL time per frame, Go's runtime is adequate for real time 3D applications with the scenes of Sponza's complexity.*
+The default GC setup does not consume more than 1ms every 8s or so. However, a spike wasting whole 24ms may occur once a minute. Dropping a frame or two per minute does not break any smooth 3D experience. Still, the GC is already intruding despite that this is a small static scene with a single camera movement and no mesh updates between the CPU and GPU, which are inevitable in 3D. 
 
-Still, there is no simulation or Go loops, and yet the GC is already intruding. Considering 3x slower than C loops, this is a nogo. Sadly, the same will likely hold for Dart, Kotlin, Swift, C#, F#, Roc, Gleam...
+Sadly, this is a nogo. The same will likely hold for Java, Kotlin, Dart, TypeScript, C#, F#, Swift, Roc, Gleam... Minecraft was originally Java, then C++. Java worked magically for Markus Alexej Persson, but the rewrite that followed shows that the GC is a serious impediment in this space.
 
 One interesting feature about Go here was that inside main.go, there was no need to use unsafe pointers to pass user 
 data to the GLFW callbacks. By setting a struct method as a callback, the callback had access to the data of the structure.
@@ -421,7 +421,7 @@ MetallicRoughnessTexture in Sponza.gltf. Fall back to pseudo-PBR. Warn/adjust un
 
 * A tighter adaptive frustum for each light and camera.
 
-* [Vulkan](https://github.com/oakes/vulkan_triangle_nim/blob/master/src/core.nim)?
+* [Vulkan?](https://github.com/oakes/vulkan_triangle_nim/blob/master/src/core.nim)
 
 * Bloom/glow, water-underwater transitions as in [INSIDE 2016](https://youtu.be/RdN06E6Xn9E?t=2755).
 
@@ -439,15 +439,15 @@ MetallicRoughnessTexture in Sponza.gltf. Fall back to pseudo-PBR. Warn/adjust un
 
 If anything GC-based is not that good for 3D, consider Nim over Go:
 
-* Fast C-like runtime with some deeper possibilities (Nim is popular in writing viruses). Notably, [krux02](https://github.com/krux02/turnt-octo-wallhack) left Go for Nim. [Azul3D](https://github.com/azul3d/engine) abandoned Go for Zig. [jackmott](https://github.com/jackmott/easygl) went from Go to Nim to Rust...
+* A lot of granularity for the C/C++ interop and optimizations. Notably, [krux02](https://github.com/krux02/turnt-octo-wallhack) left Go for Nim. [Azul3D](https://github.com/azul3d/engine) abandoned Go for Zig. [jackmott](https://github.com/jackmott/easygl) went from Go to Nim to Rust. [Status crypto wallet]((https://our.status.im/status-desktop-why-and-what/)) is replacing Go with Nim, but there are a lot of pros and cons to that and Rust is always looming there: [1](https://forum.vac.dev/t/the-cost-of-multiple-waku-implementations/228), [2](https://docs.google.com/spreadsheets/d/1JCrYrEWtdAyjOoWiW13D3y-jwM4zUShN9OSUDd4Xu9Q/edit?pli=1&gid=1396213675#gid=1396213675), [3](https://forum.vac.dev/t/how-to-sunset-go-waku/308)...
 
-* Still [no proper sum types](https://github.com/nim-lang/RFCs/issues/548) and confusing [ref object vs object](https://forum.nim-lang.org/t/1207).
+* Still a mess. Tiny, largely DIY, community. Deeper important stuff is on Github issues or inside Araq's brain. [Half-done sum types](https://github.com/nim-lang/RFCs/issues/548), confusing [ref object vs object](https://forum.nim-lang.org/t/1207), macros...
 
 If you can understand Russian, these two podcasts about Nim are very thorough: [Youtube Podlodka #282](https://www.youtube.com/watch?v=R26qjXib5i0&t=1s&ab_channel=Podlodka) and [Youtube Podlodka #288](https://www.youtube.com/watch?v=Lz3ZA7Jz6pw&t=6603s&ab_channel=Podlodka).
 
-Andre von Houck aka [treeform](https://github.com/treeform) [nearly solved](https://github.com/treeform/fidget) with Nim the major problem of writing HTML/CSS manually, but his project seems to be abandoned as the problem is likely to be hopeless.
+Andre von Houck aka [treeform](https://github.com/treeform) [nearly solved](https://github.com/treeform/fidget) with Nim the major problem of writing HTML/CSS manually, but his project seems to be abandoned. It is not clear whether the problem is Nim, or the whole idea.
 
-It took me longer to find ways around loading the GLTF assets in Nim than in Go, but some Nim GLTF codes looked almost like a GLTF spec, so readable and noise-free. Unlike Go, or even Js/Python. 
+It took me longer to find ways around loading the GLTF assets in Nim than in Go, but the Nim GLTF code looked almost like a GLTF spec, readable and noise-free. Unlike the GLTF parsing in Go, Js, Python. 
 
 You can find my Nim rewrite [here](https://github.com/aabbtree77/twinpeekz2), but I am not too excited about it. Nim lacks the minimal sufficient stable core (unlike Rust with sum types, done, you can rely on them). Remarkably, the same problem persists in D ([Dlang](https://forum.dlang.org/thread/knidfnxodhplhgoxmilb@forum.dlang.org)). Nim and D are like the twin brothers.
 
@@ -462,7 +462,7 @@ ChatGPT (January 2025) about the sum types in D, Rust, and Nim:
 | **Pattern Matching**             | No native pattern matching           | Full pattern matching    | Limited via `case`       |
 | **Ease of Use**                  | Medium, runtime checks are common    | Easy, compile-time checks | Medium, manual checks needed |
 
-Rust is a clear winner here. Ugly, complex, but more precise, and less experimental.
+Rust is a clear winner here. Ugly, complex, but more precise, and less experimental. This leads to critical mass, and even more suffering for the direct competitors: Nim, D, Zig, Odin, V, C2, C3, Cyclone, Carbon, ATS, Carp, Inko, Cone, Kit, Jiyu, Ion, Quaint, Ark, Terra, Beef, Myrddin, Jai...
      
 ## Credits, Rendering Frameworks I Have Tried, Many Thanks To:
 
