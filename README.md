@@ -439,13 +439,13 @@ MetallicRoughnessTexture in Sponza.gltf. Fall back to pseudo-PBR. Warn/adjust un
 
 If anything GC-based is not that good for 3D, consider Nim over Go:
 
-* A lot of granularity for the C/C++ interop and optimizations. Notably, [krux02](https://github.com/krux02/turnt-octo-wallhack) left Go for Nim. [Azul3D](https://github.com/azul3d/engine) abandoned Go for Zig. [jackmott](https://github.com/jackmott/easygl) went from Go to Nim to Rust. [Status crypto wallet]((https://our.status.im/status-desktop-why-and-what/)) is replacing Go with Nim, but there are a lot of pros and cons to that and Rust is always looming there: [1](https://forum.vac.dev/t/the-cost-of-multiple-waku-implementations/228), [2](https://docs.google.com/spreadsheets/d/1JCrYrEWtdAyjOoWiW13D3y-jwM4zUShN9OSUDd4Xu9Q/edit?pli=1&gid=1396213675#gid=1396213675), [3](https://forum.vac.dev/t/how-to-sunset-go-waku/308)...
+* Unusual low level granularity (some write/test malware in Nim). Notably, [krux02](https://github.com/krux02/turnt-octo-wallhack) left Go for Nim. [Azul3D](https://github.com/azul3d/engine) abandoned Go for Zig. [jackmott](https://github.com/jackmott/easygl) went from Go to Nim to Rust. [Status crypto wallet]((https://our.status.im/status-desktop-why-and-what/)) is replacing Go with Nim, but there are a lot of pros and cons to that and Rust is always looming there: [1](https://forum.vac.dev/t/the-cost-of-multiple-waku-implementations/228), [2](https://docs.google.com/spreadsheets/d/1JCrYrEWtdAyjOoWiW13D3y-jwM4zUShN9OSUDd4Xu9Q/edit?pli=1&gid=1396213675#gid=1396213675), [3](https://forum.vac.dev/t/how-to-sunset-go-waku/308)...
 
-* Still a mess. Tiny, largely DIY, community. Deeper important stuff is on Github issues or inside Araq's brain. [Half-done sum types](https://github.com/nim-lang/RFCs/issues/548), confusing [ref object vs object](https://forum.nim-lang.org/t/1207), macros...
+* Still a mess. Tiny community, abandoned projects including [mine](https://github.com/aabbtree77/twinpeekz2). Deeper important stuff is on Github issues or inside Araq's brain. [Half-done verbose sum types](https://github.com/nim-lang/RFCs/issues/548), confusing [ref object vs object](https://forum.nim-lang.org/t/1207).
 
 If you can understand Russian, these two podcasts about Nim are very thorough: [Youtube Podlodka #282](https://www.youtube.com/watch?v=R26qjXib5i0&t=1s&ab_channel=Podlodka) and [Youtube Podlodka #288](https://www.youtube.com/watch?v=Lz3ZA7Jz6pw&t=6603s&ab_channel=Podlodka).
 
-Andre von Houck aka [treeform](https://github.com/treeform) [nearly solved](https://github.com/treeform/fidget) with Nim the major problem of writing HTML/CSS manually, but his project seems to be abandoned. It is not clear whether the problem is Nim, or the whole idea.
+Andre von Houck aka [treeform](https://github.com/treeform) [nearly solved](https://github.com/treeform/fidget) with Nim the major problem of writing HTML/CSS manually, but his project seems to be abandoned. It is not clear whether the problem is Nim, the whole idea, or both.
 
 It took me longer to find ways around loading the GLTF assets in Nim than in Go, but the Nim GLTF code looked almost like a GLTF spec, readable and noise-free. Unlike the GLTF parsing in Go, Js, Python. 
 
