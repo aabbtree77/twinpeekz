@@ -368,11 +368,11 @@ gc 45 @345.492s 0%: 0.037+14+0.007 ms clock, 0.30+0.41/0.31/0.29+0.057 ms cpu, 4
 gc 46 @353.542s 0%: 0.045+15+0.006 ms clock, 0.36+0.25/0.58/0.27+0.051 ms cpu, 4->4->0 MB, 5 MB goal, 8 P
 ```
 
-The default GC setup does not consume more than 1ms every 8s or so. However, a spike wasting whole 24ms may occur once a minute. Dropping a frame or two per minute does not break any smooth 3D experience. Still, the GC is already intruding despite that this is a small static scene with a single camera movement and no mesh updates between the CPU and GPU, which are inevitable in 3D. 
+The default GC setup does not consume more than 1ms every 8s or so. However, a spike wasting whole 24ms may occur once a minute. Dropping a frame or two per minute does not break any smooth 3D experience. Still, the GC is already intruding despite that this is a small static scene with a single camera movement and no mesh updates between the CPU and GPU which are inevitable in 3D. 
 
-Sadly, this is a nogo. The same will likely hold for Java, Kotlin, Dart, TypeScript, C#, F#, Swift, Roc, Gleam... Minecraft was originally Java, then C++. Java worked magically for Markus Alexej Persson, but the rewrite that followed shows that the GC is a serious impediment in this space.
+Sadly, the GC is a nogo. Minecraft was also originally Java which worked magically for Markus Alexej Persson, but the C++ rewrite that followed showed that the GC was an impediment. On the other hand, if you have a great idea and execution, GC or not simply does not matter, but those success stories are too singular to rely on. [Speed matters](https://youtu.be/rngfCHiTouA?t=804), esp. in 3D.
 
-One interesting feature about Go here was that inside main.go, there was no need to use unsafe pointers to pass user 
+One interesting feature about Go was that inside main.go, there was no need to use unsafe pointers to pass user 
 data to the GLFW callbacks. By setting a struct method as a callback, the callback had access to the data of the structure.
 
 Pointers bring [troubles](https://github.com/g3n/engine/issues/163), [the trillion dollar mistake](https://github.com/tcard/sgo) is still there...
@@ -449,7 +449,7 @@ Andre von Houck aka [treeform](https://github.com/treeform) [nearly solved](http
 
 It took me longer to find ways around loading the GLTF assets in Nim than in Go, but the Nim GLTF code looked almost like a GLTF spec, readable and noise-free. Unlike the GLTF parsing in Go, Js, Python. 
 
-You can find my Nim rewrite [here](https://github.com/aabbtree77/twinpeekz2), but I am not too excited about it. Nim lacks the minimal sufficient stable core (unlike Rust with sum types, done, you can rely on them). Remarkably, the same problem persists in D ([Dlang](https://forum.dlang.org/thread/knidfnxodhplhgoxmilb@forum.dlang.org)). Nim and D are like the twin brothers.
+You can find my Nim rewrite [here](https://github.com/aabbtree77/twinpeekz2), but I am not too excited about it. Nim lacks the minimal sufficient stable core (unlike Rust with sum types, done, you can rely on them). Remarkably, the same problem persists in D ([Dlang](https://forum.dlang.org/thread/knidfnxodhplhgoxmilb@forum.dlang.org)). Nim and D are the twin brothers of doom.
 
 ChatGPT (January 2025) about the sum types in D, Rust, and Nim:
 
