@@ -435,21 +435,21 @@ MetallicRoughnessTexture in Sponza.gltf. Fall back to pseudo-PBR. Warn/adjust un
 
 * Add TOML to set all the parameters. Should lights/camera be read from the GLTF/Blender?
 
-## Nim or Go? Neither of Them...
+## Nim?! Part I
 
-If anything GC-based is not that good for 3D, consider Nim over Go:
+If anything GC-based is not that good for 3D, consider Nim:
 
-* Unusual low level granularity (some write/test malware in Nim). Notably, [krux02](https://github.com/krux02/turnt-octo-wallhack) left Go for Nim. [Azul3D](https://github.com/azul3d/engine) abandoned Go for Zig. [jackmott](https://github.com/jackmott/easygl) went from Go to Nim to Rust. [Status crypto wallet]((https://our.status.im/status-desktop-why-and-what/)) is replacing Go with Nim, but there are a lot of pros and cons to that and Rust is always looming there: [1](https://forum.vac.dev/t/the-cost-of-multiple-waku-implementations/228), [2](https://docs.google.com/spreadsheets/d/1JCrYrEWtdAyjOoWiW13D3y-jwM4zUShN9OSUDd4Xu9Q/edit?pli=1&gid=1396213675#gid=1396213675), [3](https://forum.vac.dev/t/how-to-sunset-go-waku/308)...
+* Nim is a better C/C++. *const, let, var, array* vs *ref, sequence* is just how my brain works. 
 
-* Still a mess. Tiny community, abandoned projects including [mine](https://github.com/aabbtree77/twinpeekz2). Deeper important stuff is on Github issues or inside Araq's brain. [Half-done verbose sum types](https://github.com/nim-lang/RFCs/issues/548), confusing [ref object vs object](https://forum.nim-lang.org/t/1207).
+* A lot of guidance in the docs and on the forum: [ref object vs object](https://forum.nim-lang.org/t/1207), [new](https://forum.nim-lang.org/t/3870), [new vs init](https://forum.nim-lang.org/t/9021)...
 
-If you can understand Russian, these two podcasts about Nim are very thorough: [Youtube Podlodka #282](https://www.youtube.com/watch?v=R26qjXib5i0&t=1s&ab_channel=Podlodka) and [Youtube Podlodka #288](https://www.youtube.com/watch?v=Lz3ZA7Jz6pw&t=6603s&ab_channel=Podlodka).
+* Nims still lacks wider adoption, just like D ([Dlang](https://forum.dlang.org/thread/knidfnxodhplhgoxmilb@forum.dlang.org)).
 
-Andre von Houck aka [treeform](https://github.com/treeform) [nearly solved](https://github.com/treeform/fidget) with Nim the major problem of writing HTML/CSS manually, but his project seems to be abandoned. It is not clear whether the problem is Nim, the whole idea, or both.
+* I would not write concurrency-heavy codes in Nim. Nor would I use C++/Rust for that.
 
-It took me longer to find ways around loading the GLTF assets in Nim than in Go, but the Nim GLTF code looked almost like a GLTF spec, readable and noise-free. Unlike the GLTF parsing in Go, Js, Python. 
+Notably, [krux02](https://github.com/krux02/turnt-octo-wallhack) left Go for Nim. [Azul3D](https://github.com/azul3d/engine) abandoned Go for Zig. [jackmott](https://github.com/jackmott/easygl) went from Go to Nim to Rust. [Status crypto wallet]((https://our.status.im/status-desktop-why-and-what/)) is replacing Go with Nim, but there are a lot of pros and cons to that and Rust is always looming there: [1](https://forum.vac.dev/t/the-cost-of-multiple-waku-implementations/228), [2](https://docs.google.com/spreadsheets/d/1JCrYrEWtdAyjOoWiW13D3y-jwM4zUShN9OSUDd4Xu9Q/edit?pli=1&gid=1396213675#gid=1396213675), [3](https://forum.vac.dev/t/how-to-sunset-go-waku/308)... [Andre von Houck](https://github.com/treeform) codes everything in Nim. He has [nearly solved](https://github.com/treeform/fidget) the problem of having to write HTML/CSS manually, but his project seems to be abandoned.
 
-You can find my Nim rewrite [here](https://github.com/aabbtree77/twinpeekz2), but I am not too excited about it. Nim lacks the minimal sufficient stable core (unlike Rust with sum types, done, you can rely on them). Remarkably, the same problem persists in D ([Dlang](https://forum.dlang.org/thread/knidfnxodhplhgoxmilb@forum.dlang.org)). Nim and D are the twin brothers of doom.
+## Nim?! Part II
 
 ChatGPT (January 2025) about the sum types in D, Rust, and Nim:
 
@@ -462,8 +462,40 @@ ChatGPT (January 2025) about the sum types in D, Rust, and Nim:
 | **Pattern Matching**             | No native pattern matching           | Full pattern matching    | Limited via `case`       |
 | **Ease of Use**                  | Medium, runtime checks are common    | Easy, compile-time checks | Medium, manual checks needed |
 
-Rust is a clear winner here. Ugly, complex, but more precise, and less experimental. This leads to critical mass, and even more suffering for the direct competitors: Nim, D, Zig, Odin, V, C2, C3, Cyclone, Carbon, ATS, Carp, Inko, Cone, Kit, Jiyu, Ion, Quaint, Ark, Terra, Beef, Myrddin, Jai...
-     
+Rust would be a clear winner, but dealing with Arc, Rc, Box, RefCell, .borrow_mut(), .borrow(), Rc::clone(), `&`, Mutex, async/await, and lifetimes is a lot of needless suffering.
+
+I have also looked into Ada, Pascal, D, Zig, Odin, V, C2, C3, Cyclone, C++11, Carbon, ATS, Carp, Inko, Cone, Kit, Jiyu, Ion, Quaint, Ark, Tarik, Oak, Terra, Nelua, Beef, Myrddin, Ante, Jai... to no avail.
+
+You can find my Nim rewrite of this repo as [twinpeekz2](https://github.com/aabbtree77/twinpeekz2). 
+
+I did not use any polymorphism in Nim, none. For someone worried about compile time/stack polymorphism and Nim having no [proper sum types](https://github.com/nim-lang/RFCs/issues/548), I would recommend skipping Nim's enum-case-object chains entirely and going with
+
+- either a generic type:
+
+  ```nim
+  proc intersect[T](r: Ray, x: T) =
+    case x of
+      Sphere: 
+        # Code for Sphere intersection
+      Line: 
+        # Code for Line intersection
+      Plane: 
+        # Code for Plane intersection
+  ```
+
+- or a function overloading (which Zig/Rust lack, BTW):
+
+  ```nim
+  proc intersect(r: Ray, x: Sphere) =
+    # Code for Sphere intersection
+  proc intersect(r: Ray, x: Line) =
+    # Code for Line intersection
+  proc intersect(r: Ray, x: Plane) =
+    # Code for Plane intersection
+  ```
+
+Nim is good. If you can understand Russian, these two podcasts about Nim are quite thorough: [Youtube Podlodka #282](https://www.youtube.com/watch?v=R26qjXib5i0&t=1s&ab_channel=Podlodka) and [Youtube Podlodka #288](https://www.youtube.com/watch?v=Lz3ZA7Jz6pw&t=6603s&ab_channel=Podlodka).
+       
 ## Credits, Rendering Frameworks I Have Tried, Many Thanks To:
 
 0. **Joey de Vries**. [Learn OpenGL](https://learnopengl.com/), 2014.
