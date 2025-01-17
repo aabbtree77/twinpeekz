@@ -494,7 +494,10 @@ You can find my Nim rewrite of this repo in [twinpeekz2](https://github.com/aabb
 
 Nim is good. Keep it simple, imperative. If you can understand Russian, these two podcasts about Nim are quite thorough: [Youtube Podlodka #282](https://www.youtube.com/watch?v=R26qjXib5i0&t=1s&ab_channel=Podlodka) and [Youtube Podlodka #288](https://www.youtube.com/watch?v=Lz3ZA7Jz6pw&t=6603s&ab_channel=Podlodka). Nim's docs split the language understanding into three levels of difficulty ending with the AST macros which may require a certain slow-down and meditation ;). They should be rare. The forum and github issues fill in a lot of details.
 
-![nimlang-love](https://raw.githubusercontent.com/aabbtree77/twinpeekz/main/nim-nimlang.gif)
+<div align="center">
+  <img src="https://raw.githubusercontent.com/aabbtree77/twinpeekz/main/nim-nimlang.gif" alt="nimlang-love">
+</div>
+
        
 ## Credits, Rendering Frameworks I Have Tried, Many Thanks To:
 
