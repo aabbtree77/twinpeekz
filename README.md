@@ -437,19 +437,17 @@ MetallicRoughnessTexture in Sponza.gltf. Fall back to pseudo-PBR. Warn/adjust un
 
 ## Nim?! Part I
 
-If anything GC-based is not that good for 3D, consider Nim:
+If anything GC-based is not that good for 3D, consider [Nim](https://news.ycombinator.com/item?id=36955806):
 
-* Nim is a better C/C++. 
+* Imagine C++ with std::unique_ptr and std::vector, in a much better syntax, with proper modules instead of header files.
 
-* const, let, var, array vs ref, sequence is just how my brain works. 
+* Nim does not have Rust's sum types, but unlike Rust and Zig, and like [D](https://forum.dlang.org/thread/knidfnxodhplhgoxmilb@forum.dlang.org), Nim has function overloading and full UFCS, which are equally great.
 
 * A lot of guidance in the docs and on the forum: [ref object vs object](https://forum.nim-lang.org/t/1207), [new](https://forum.nim-lang.org/t/3870), [new vs init](https://forum.nim-lang.org/t/9021)...
 
-* Nims still lacks wider adoption, just like D ([Dlang](https://forum.dlang.org/thread/knidfnxodhplhgoxmilb@forum.dlang.org)).
+* Two cons. Lack of massive adoption, just like D. Also, this whole static non-GC universalism is not as good in concurrency as more specialized ecosystems of [Go](https://github.com/uber-go/cff), Scala, F#, Erlang...
 
-* I would not write concurrency-heavy codes in Nim. Nor would I use C++/Rust for that.
-
-Notably, [krux02](https://github.com/krux02/turnt-octo-wallhack) left Go for Nim. [Azul3D](https://github.com/azul3d/engine) abandoned Go for Zig. [jackmott](https://github.com/jackmott/easygl) went from Go to Nim to Rust. [Status crypto wallet]((https://our.status.im/status-desktop-why-and-what/)) is replacing Go with Nim, but there are a lot of pros and cons to that and Rust is always looming there: [1](https://forum.vac.dev/t/the-cost-of-multiple-waku-implementations/228), [2](https://docs.google.com/spreadsheets/d/1JCrYrEWtdAyjOoWiW13D3y-jwM4zUShN9OSUDd4Xu9Q/edit?pli=1&gid=1396213675#gid=1396213675), [3](https://forum.vac.dev/t/how-to-sunset-go-waku/308)... [Andre von Houck](https://github.com/treeform) codes everything in Nim. He has [nearly solved](https://github.com/treeform/fidget) the problem of having to write HTML/CSS manually, but his project seems to be abandoned.
+Notably, [krux02](https://github.com/krux02/turnt-octo-wallhack) left Go for Nim. [Azul3D](https://github.com/azul3d/engine) abandoned Go for Zig. [jackmott](https://github.com/jackmott/easygl) went from Go to Nim to Rust. [Status crypto wallet]((https://our.status.im/status-desktop-why-and-what/)) is replacing Go with Nim, but there are a lot of pros and cons to that and Rust is always looming there: [1](https://forum.vac.dev/t/the-cost-of-multiple-waku-implementations/228), [2](https://docs.google.com/spreadsheets/d/1JCrYrEWtdAyjOoWiW13D3y-jwM4zUShN9OSUDd4Xu9Q/edit?pli=1&gid=1396213675#gid=1396213675), [3](https://forum.vac.dev/t/how-to-sunset-go-waku/308)... [Andre von Houck](https://github.com/treeform) codes everything in Nim. He has [nearly solved](https://github.com/treeform/fidget) the problem of having to write HTML/CSS manually.
 
 ## Nim?! Part II
 
@@ -466,7 +464,7 @@ ChatGPT (January 2025) about the sum types in D, Rust, and Nim:
 
 Rust would be a clear winner, but dealing with Arc, Rc, Box, RefCell, .borrow_mut(), .borrow(), Rc::clone(), `&`, Mutex, async/await, and lifetimes is a lot of needless suffering.
 
-I have also looked into Ada, Pascal, Zig, Odin, V, C2, C3, Cyclone, C++11, Carbon, ATS, Carp, Inko, Cone, Kit, Jiyu, Ion, Quaint, Ark, Tarik, Oak, Terra, Nelua, Beef, Myrddin, Ante, Jai... to no avail.
+I have also looked into Ada, Pascal, Zig, Odin, V, C2, C3, Cyclone, C++11, Carbon, ATS, Carp, Inko, Cone, Kit, Jiyu, Ion, Quaint, Ark, Tarik, Oak, Terra, Nelua, Beef, Myrddin, Ante, Jai... to no avail. Some of these are stale, some are evolving and may become interesting one day. 
 
 You can find my Nim rewrite of this repo in [twinpeekz2](https://github.com/aabbtree77/twinpeekz2). I did not use any fancy abstractions in the code. For someone worried about compile time/stack polymorphism and Nim having no [proper sum types](https://github.com/nim-lang/RFCs/issues/548), I would recommend skipping Nim's enum-case-object chains entirely and going with
 
@@ -494,7 +492,9 @@ You can find my Nim rewrite of this repo in [twinpeekz2](https://github.com/aabb
     # Code for Plane intersection
   ```
 
-Nim is good. If you can understand Russian, these two podcasts about Nim are quite thorough: [Youtube Podlodka #282](https://www.youtube.com/watch?v=R26qjXib5i0&t=1s&ab_channel=Podlodka) and [Youtube Podlodka #288](https://www.youtube.com/watch?v=Lz3ZA7Jz6pw&t=6603s&ab_channel=Podlodka).
+Nim is good. Keep it simple, imperative. If you can understand Russian, these two podcasts about Nim are quite thorough: [Youtube Podlodka #282](https://www.youtube.com/watch?v=R26qjXib5i0&t=1s&ab_channel=Podlodka) and [Youtube Podlodka #288](https://www.youtube.com/watch?v=Lz3ZA7Jz6pw&t=6603s&ab_channel=Podlodka). Nim's docs split the language understanding into three levels of difficulty ending with the AST macros which may require a certain slow-down and meditation ;). They should be rare. The forum and github issues fill in a lot of details.
+
+![nimlang-love](https://github.com/aabbtree77/twinpeekz/nim-nimlang.gif)
        
 ## Credits, Rendering Frameworks I Have Tried, Many Thanks To:
 
