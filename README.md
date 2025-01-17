@@ -439,7 +439,9 @@ MetallicRoughnessTexture in Sponza.gltf. Fall back to pseudo-PBR. Warn/adjust un
 
 If anything GC-based is not that good for 3D, consider Nim:
 
-* Nim is a better C/C++. *const, let, var, array* vs *ref, sequence* is just how my brain works. 
+* Nim is a better C/C++. 
+
+* const, let, var, array vs ref, sequence is just how my brain works. 
 
 * A lot of guidance in the docs and on the forum: [ref object vs object](https://forum.nim-lang.org/t/1207), [new](https://forum.nim-lang.org/t/3870), [new vs init](https://forum.nim-lang.org/t/9021)...
 
@@ -464,13 +466,11 @@ ChatGPT (January 2025) about the sum types in D, Rust, and Nim:
 
 Rust would be a clear winner, but dealing with Arc, Rc, Box, RefCell, .borrow_mut(), .borrow(), Rc::clone(), `&`, Mutex, async/await, and lifetimes is a lot of needless suffering.
 
-I have also looked into Ada, Pascal, D, Zig, Odin, V, C2, C3, Cyclone, C++11, Carbon, ATS, Carp, Inko, Cone, Kit, Jiyu, Ion, Quaint, Ark, Tarik, Oak, Terra, Nelua, Beef, Myrddin, Ante, Jai... to no avail.
+I have also looked into Ada, Pascal, Zig, Odin, V, C2, C3, Cyclone, C++11, Carbon, ATS, Carp, Inko, Cone, Kit, Jiyu, Ion, Quaint, Ark, Tarik, Oak, Terra, Nelua, Beef, Myrddin, Ante, Jai... to no avail.
 
-You can find my Nim rewrite of this repo as [twinpeekz2](https://github.com/aabbtree77/twinpeekz2). 
+You can find my Nim rewrite of this repo in [twinpeekz2](https://github.com/aabbtree77/twinpeekz2). I did not use any fancy abstractions in the code. For someone worried about compile time/stack polymorphism and Nim having no [proper sum types](https://github.com/nim-lang/RFCs/issues/548), I would recommend skipping Nim's enum-case-object chains entirely and going with
 
-I did not use any polymorphism in Nim, none. For someone worried about compile time/stack polymorphism and Nim having no [proper sum types](https://github.com/nim-lang/RFCs/issues/548), I would recommend skipping Nim's enum-case-object chains entirely and going with
-
-- either a generic type:
+- either generic types:
 
   ```nim
   proc intersect[T](r: Ray, x: T) =
@@ -483,7 +483,7 @@ I did not use any polymorphism in Nim, none. For someone worried about compile t
         # Code for Plane intersection
   ```
 
-- or a function overloading (which Zig/Rust lack, BTW):
+- or function overloading (which Zig/Rust lack, BTW):
 
   ```nim
   proc intersect(r: Ray, x: Sphere) =
