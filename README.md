@@ -443,7 +443,7 @@ MetallicRoughnessTexture in Sponza.gltf. Fall back to pseudo-PBR. Warn/adjust un
 
 * Full AST macros. They bring a lot of power to deal with [C/C++ bindings](https://github.com/PMunch/futhark), [OpenGL](https://github.com/krux02/opengl-sandbox), [HTML/CSS](https://github.com/treeform/fidget), [async/await](https://github.com/nim-lang/RFCs/issues/304), [sum types](https://github.com/nim-lang/RFCs/issues/525)... Though it is much better when some of these tools are inside of a language, like goroutines in Go, or the sum types in Rust.
 
-* [Concurrency](https://forum.nim-lang.org/t/6756) is a lot better in the specialized ecosystems of [Go](https://github.com/uber-go/cff), Scala, F#, Erlang... This is the key area where static non-GC universalism with "one language for everything" [simply breaks](https://www.youtube.com/watch?v=TZxxWXVnb1E&ab_channel=ThePrimeTime).
+* [Concurrency is tricky.](https://forum.nim-lang.org/t/6756) Better resort to something more focused and GC-based: [Go](https://github.com/uber-go/cff), Scala, F#, Erlang... 
 
 Notably, [krux02](https://github.com/krux02/turnt-octo-wallhack) left Go for Nim. [Azul3D](https://github.com/azul3d/engine) abandoned Go for Zig. [jackmott](https://github.com/jackmott/easygl) went from Go to Nim to Rust. [Status crypto wallet]((https://our.status.im/status-desktop-why-and-what/)) is replacing Go with Nim, but there are a lot of pros and cons to that and Rust is always looming there: [1](https://forum.vac.dev/t/the-cost-of-multiple-waku-implementations/228), [2](https://docs.google.com/spreadsheets/d/1JCrYrEWtdAyjOoWiW13D3y-jwM4zUShN9OSUDd4Xu9Q/edit?pli=1&gid=1396213675#gid=1396213675), [3](https://forum.vac.dev/t/how-to-sunset-go-waku/308)... [Andre von Houck](https://github.com/treeform) codes everything in Nim. He has [nearly solved](https://github.com/treeform/fidget) the problem of having to write HTML/CSS manually.
 
@@ -462,7 +462,11 @@ ChatGPT (January 2025, with some manual edit):
 | **Full AST Macros**                 | No                               | Yes                              | No                               | No                               |
 | **Killer Features**                 | Metaprogramming (`mixin`, CTFE)  | Easy-to-use syntax, metaprogramming | Deterministic memory management, can work without GLIBC, can link against older GLIBC | Ecosystem, safety guarantees |
 
-Rust has the ML sum types and the biggest community, but its memory management is just too painful to be productive. D, Nim, and Zig I consider roughly equal.
+Rust has the ML sum types and the biggest community, but its memory management is just too painful to be productive. As [@flanger001](https://www.youtube.com/watch?v=TZxxWXVnb1E&ab_channel=ThePrimeTime) has put it: 
+
+*"Rust wants you to know everything before you program anything."*
+
+D, Nim, and Zig I consider roughly equal.
 
 You can find my Nim rewrite of this repo in [twinpeekz2](https://github.com/aabbtree77/twinpeekz2). I did not use any fancy abstractions in the code. For someone worried about compile time/stack polymorphism and Nim having no [proper sum types](https://github.com/nim-lang/RFCs/issues/548), I would recommend skipping Nim's enum-case-object chains entirely and going with
 
