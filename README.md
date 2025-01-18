@@ -368,18 +368,16 @@ gc 45 @345.492s 0%: 0.037+14+0.007 ms clock, 0.30+0.41/0.31/0.29+0.057 ms cpu, 4
 gc 46 @353.542s 0%: 0.045+15+0.006 ms clock, 0.36+0.25/0.58/0.27+0.051 ms cpu, 4->4->0 MB, 5 MB goal, 8 P
 ```
 
-The default GC setup does not consume more than 1ms every 8s or so. However, a spike wasting whole 24ms may occur once a minute. Dropping a frame or two per minute does not break any smooth 3D experience. Still, the GC is already intruding despite that this is a small static scene with a single camera movement and no mesh updates between the CPU and GPU which are inevitable in 3D. 
-
-Sadly, the GC is a nogo. Minecraft was also originally Java which worked magically for Markus Alexej Persson, but the C++ rewrite that followed showed that the GC was an impediment. On the other hand, if you have a great idea and execution, GC or not simply does not matter, but those success stories are too singular to rely on. [Speed matters](https://youtu.be/rngfCHiTouA?t=804), esp. in 3D.
+The default GC setup does not consume more than 1ms every 8s or so. However, a spike wasting whole 24ms may occur once a minute. Dropping a frame or two per minute does not break any smooth 3D experience. Still, the GC is already intruding... 
 
 One interesting feature about Go was that inside main.go, there was no need to use unsafe pointers to pass user 
 data to the GLFW callbacks. By setting a struct method as a callback, the callback had access to the data of the structure.
 
-Pointers bring [troubles](https://github.com/g3n/engine/issues/163), [the trillion dollar mistake](https://github.com/tcard/sgo) is still there...
+Pointers bring [troubles](https://github.com/g3n/engine/issues/163), [the trillion dollar mistake](https://github.com/tcard/sgo)...
 
 Go types and libs were plain/flat enough to reach anything with printf. I relied on go-vim and its :GoDef with ctrl+O to get back. These two commands helped to navigate 3rd party codes. However, I could start working with Quim Muntal's GLTF library with its virtually nonexisting docs only by reading [Issue #26](https://github.com/qmuntal/gltf/issues/26). Still, a huge plus for Golang in that 3rd party codes can often be grokked without too much suffering, at least prior to v1.18 and v1.23.
 
-We have no luxury with "import pdb; pdb.set_trace()" and Python's REPL, but that is not a problem. Perhaps [gdbgui](https://www.gdbgui.com/), [gdlv](https://github.com/aarzilli/gdlv/issues/20), or VS Code could be useful, but I did not need them much.
+No luxury with "import pdb; pdb.set_trace()" and Python's REPL, but that is not a problem. [gdbgui](https://www.gdbgui.com/), [gdlv](https://github.com/aarzilli/gdlv/issues/20), or VS Code could be useful, but I did not need them.
 
 ## OpenGL Experience Report
 
@@ -437,34 +435,36 @@ MetallicRoughnessTexture in Sponza.gltf. Fall back to pseudo-PBR. Warn/adjust un
 
 ## Nim?! Part I
 
-If anything GC-based is not that good for 3D, consider [Nim](https://news.ycombinator.com/item?id=36955806):
+[Speed matters](https://youtu.be/rngfCHiTouA?t=804), esp. in 3D. Consider [Nim](https://news.ycombinator.com/item?id=36955806):
 
-* Imagine C++ with std::unique_ptr and std::vector, in a much better syntax, with proper modules instead of header files.
+* A subset of C++ with std::unique_ptr and std::vector, but in a much better syntax, with proper modules instead of header files. Details are in the docs and on the forum: [ref object vs object](https://forum.nim-lang.org/t/1207), [new](https://forum.nim-lang.org/t/3870), [new vs init](https://forum.nim-lang.org/t/9021)...
 
-* Nim does not have Rust's sum types, but unlike Rust and Zig, and like [D](https://forum.dlang.org/thread/knidfnxodhplhgoxmilb@forum.dlang.org), Nim has function overloading and full UFCS, which are equally great.
+* Function overloading and full UFCS for polymorphism and mild abstraction, just like [D](https://forum.dlang.org/thread/knidfnxodhplhgoxmilb@forum.dlang.org).
 
-* A lot of guidance in the docs and on the forum: [ref object vs object](https://forum.nim-lang.org/t/1207), [new](https://forum.nim-lang.org/t/3870), [new vs init](https://forum.nim-lang.org/t/9021)...
+* Full AST macros. They bring a lot of power to deal with [C/C++ bindings](https://github.com/PMunch/futhark), [OpenGL](https://github.com/krux02/opengl-sandbox), [HTML/CSS](https://github.com/treeform/fidget), [async/await](https://github.com/nim-lang/RFCs/issues/304), [sum types](https://github.com/nim-lang/RFCs/issues/525)... Though it is much better when some of these tools are inside of a language, like goroutines in Go, or the sum types in Rust.
 
-* Two cons. Lack of massive adoption, just like D. Also, this whole static non-GC universalism is not as good in concurrency as more specialized ecosystems of [Go](https://github.com/uber-go/cff), Scala, F#, Erlang...
+* [Concurrency](https://forum.nim-lang.org/t/6756) is a lot better in the specialized ecosystems of [Go](https://github.com/uber-go/cff), Scala, F#, Erlang... This is the key area where static non-GC universalism with "one language for everything" [simply breaks](https://www.youtube.com/watch?v=TZxxWXVnb1E&ab_channel=ThePrimeTime).
 
 Notably, [krux02](https://github.com/krux02/turnt-octo-wallhack) left Go for Nim. [Azul3D](https://github.com/azul3d/engine) abandoned Go for Zig. [jackmott](https://github.com/jackmott/easygl) went from Go to Nim to Rust. [Status crypto wallet]((https://our.status.im/status-desktop-why-and-what/)) is replacing Go with Nim, but there are a lot of pros and cons to that and Rust is always looming there: [1](https://forum.vac.dev/t/the-cost-of-multiple-waku-implementations/228), [2](https://docs.google.com/spreadsheets/d/1JCrYrEWtdAyjOoWiW13D3y-jwM4zUShN9OSUDd4Xu9Q/edit?pli=1&gid=1396213675#gid=1396213675), [3](https://forum.vac.dev/t/how-to-sunset-go-waku/308)... [Andre von Houck](https://github.com/treeform) codes everything in Nim. He has [nearly solved](https://github.com/treeform/fidget) the problem of having to write HTML/CSS manually.
 
 ## Nim?! Part II
 
-ChatGPT (January 2025) about the sum types in D, Rust, and Nim:
+What else is out there closer to the metal?! A brief (sometimes not so brief) look at Ada, Pascal, Zig, Odin, V, C2, C3, Cyclone, C++11, Carbon, ATS, Carp, Inko, Ante, Cone, Kit, Jiyu, Ion, Quaint, Ark, Tarik, Oak, Terra, Nelua, Beef, Myrddin, Jai... reveals that the most mature practical choices are D, Nim, Zig, and Rust. 
 
-| Feature                          | D (`Algebraic` or Tagged Union)      | Rust (`enum`)            | Nim (`case`)             |
-|----------------------------------|--------------------------------------|--------------------------|--------------------------|
-| **Safety**                       | Manual checks required, partial runtime safety | Fully compile-time safe  | Manual checks required   |
-| **Exhaustiveness Check**         | No compile-time exhaustiveness       | Enforced by compiler     | Enforced for enums       |
-| **Invalid Field Access**         | Possible undefined behavior          | Impossible               | Undefined behavior       |
-| **Flexibility**                  | Flexible but less safe               | Stricter, fully safe     | Flexible but less safe   |
-| **Pattern Matching**             | No native pattern matching           | Full pattern matching    | Limited via `case`       |
-| **Ease of Use**                  | Medium, runtime checks are common    | Easy, compile-time checks | Medium, manual checks needed |
+ChatGPT (January 2025):
 
-Rust would be a clear winner, but dealing with Arc, Rc, Box, RefCell, .borrow_mut(), .borrow(), Rc::clone(), `&`, Mutex, async/await, and lifetimes is a lot of needless suffering.
+| Feature                              | D                                | Nim                              | Zig                              | Rust                             |
+|--------------------------------------|----------------------------------|----------------------------------|----------------------------------|----------------------------------|
+| **Sum Type Support**                | Tagged unions (manual checks)    | Object variants (manual checks)  | Enums (safe and exhaustive)      | Enums (safe and exhaustive)      |
+| **Safety**                          | Manual, prone to misuse          | Manual, prone to misuse          | Enforced by compiler             | Enforced by compiler             |
+| **Pattern Matching**                | No, requires manual checks       | Partial (manual checks)          | Yes, with exhaustiveness checks  | Yes, with exhaustiveness checks  |
+| **Null Safety**                     | Nullable types, no guarantees    | `nil` exists, requires checks    | No nulls by design               | No nulls by design               |
+| **Memory Management**               | Garbage collector (optional RC)  | Garbage collector (ARC/ORC opts) | Manual memory management         | Ownership and borrowing (no GC)  |
+| **Compile-Time Execution**          | `mixin` and `static if`          | `static` blocks, templates       | `comptime`                       | `const fn`, macros               |
+| **Function Overloading**            | Yes                              | Yes                              | No                               | No                               |
+| **Performance**                     | High, depends on GC settings     | High, GC overhead in some cases  | Very high, no GC                 | Very high, no GC                 |
 
-I have also looked into Ada, Pascal, Zig, Odin, V, C2, C3, Cyclone, C++11, Carbon, ATS, Carp, Inko, Cone, Kit, Jiyu, Ion, Quaint, Ark, Tarik, Oak, Terra, Nelua, Beef, Myrddin, Ante, Jai... to no avail. Some of these are stale, some are evolving and may become interesting one day. 
+Rust looks like a clear winner, but its memory management is just too painful to be productive. D, Nim, and Zig I consider roughly equal.
 
 You can find my Nim rewrite of this repo in [twinpeekz2](https://github.com/aabbtree77/twinpeekz2). I did not use any fancy abstractions in the code. For someone worried about compile time/stack polymorphism and Nim having no [proper sum types](https://github.com/nim-lang/RFCs/issues/548), I would recommend skipping Nim's enum-case-object chains entirely and going with
 
@@ -492,7 +492,7 @@ You can find my Nim rewrite of this repo in [twinpeekz2](https://github.com/aabb
     # Code for Plane intersection
   ```
 
-Nim is good. Keep it simple, imperative. If you can understand Russian, these two podcasts about Nim are quite thorough: [Youtube Podlodka #282](https://www.youtube.com/watch?v=R26qjXib5i0&t=1s&ab_channel=Podlodka) and [Youtube Podlodka #288](https://www.youtube.com/watch?v=Lz3ZA7Jz6pw&t=6603s&ab_channel=Podlodka). Nim's docs split the language understanding into three levels of difficulty ending with the AST macros which may require a certain slow-down and meditation ;). They should be rare. The forum and github issues fill in a lot of details.
+Nim is good. Keep it simple, imperative.
 
 <div align="center">
   <img src="https://raw.githubusercontent.com/aabbtree77/twinpeekz/main/nim-nimlang.gif" alt="nimlang-love">
