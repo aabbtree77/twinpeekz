@@ -451,20 +451,18 @@ Notably, [krux02](https://github.com/krux02/turnt-octo-wallhack) left Go for Nim
 
 What else is out there closer to the metal?! A brief (sometimes not so brief) look at Ada, Pascal, Zig, Odin, V, C2, C3, Cyclone, C++11, Carbon, ATS, Carp, Inko, Ante, Cone, Kit, Jiyu, Ion, Quaint, Ark, Tarik, Oak, Terra, Nelua, Beef, Myrddin, Jai... reveals that the most mature practical choices are D, Nim, Zig, and Rust. 
 
-ChatGPT (January 2025):
+ChatGPT (January 2025, with some manual edit):
 
 | Feature                              | D                                | Nim                              | Zig                              | Rust                             |
 |--------------------------------------|----------------------------------|----------------------------------|----------------------------------|----------------------------------|
 | **Sum Type Support**                | Tagged unions (manual checks)    | Object variants (manual checks)  | Enums (safe and exhaustive)      | Enums (safe and exhaustive)      |
-| **Safety**                          | Manual, prone to misuse          | Manual, prone to misuse          | Enforced by compiler             | Enforced by compiler             |
-| **Pattern Matching**                | No, requires manual checks       | Partial (manual checks)          | Yes, with exhaustiveness checks  | Yes, with exhaustiveness checks  |
 | **Null Safety**                     | Nullable types, no guarantees    | `nil` exists, requires checks    | No nulls by design               | No nulls by design               |
 | **Memory Management**               | Garbage collector (optional RC)  | Garbage collector (ARC/ORC opts) | Manual memory management         | Ownership and borrowing (no GC)  |
-| **Compile-Time Execution**          | `mixin` and `static if`          | `static` blocks, templates       | `comptime`                       | `const fn`, macros               |
 | **Function Overloading**            | Yes                              | Yes                              | No                               | No                               |
-| **Performance**                     | High, depends on GC settings     | High, GC overhead in some cases  | Very high, no GC                 | Very high, no GC                 |
+| **Full AST Macros**                 | No                               | Yes                              | No                               | No                               |
+| **Killer Features**                 | Metaprogramming (`mixin`, CTFE)  | Easy-to-use syntax, metaprogramming | Deterministic memory management, can work without GLIBC, can link against older GLIBC | Ecosystem, safety guarantees |
 
-Rust looks like a clear winner, but its memory management is just too painful to be productive. D, Nim, and Zig I consider roughly equal.
+Rust has the ML sum types and the biggest community, but its memory management is just too painful to be productive. D, Nim, and Zig I consider roughly equal.
 
 You can find my Nim rewrite of this repo in [twinpeekz2](https://github.com/aabbtree77/twinpeekz2). I did not use any fancy abstractions in the code. For someone worried about compile time/stack polymorphism and Nim having no [proper sum types](https://github.com/nim-lang/RFCs/issues/548), I would recommend skipping Nim's enum-case-object chains entirely and going with
 
