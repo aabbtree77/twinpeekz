@@ -437,19 +437,13 @@ MetallicRoughnessTexture in Sponza.gltf. Fall back to pseudo-PBR. Warn/adjust un
 
 [Speed matters](https://youtu.be/rngfCHiTouA?t=804), esp. in 3D. Consider [Nim](https://news.ycombinator.com/item?id=36955806):
 
-* A subset of C++ with std::unique_ptr and std::vector, in a much better pseudocode-like syntax, with proper modules instead of header files. Details are in the docs and on the forum: [ref object vs object](https://forum.nim-lang.org/t/1207), [new](https://forum.nim-lang.org/t/3870), [new vs init](https://forum.nim-lang.org/t/9021)...
+* A subset of C++ with std::unique_ptr and std::vector, in a pseudocode-like syntax, with proper modules instead of header files. Details are in the docs and on the forum: [ref object vs object](https://forum.nim-lang.org/t/1207), [new](https://forum.nim-lang.org/t/3870), [new vs init](https://forum.nim-lang.org/t/9021)...
 
-* Function overloading and full UFCS for polymorphism and mild abstraction, just like [D](https://forum.dlang.org/thread/knidfnxodhplhgoxmilb@forum.dlang.org).
+* Function overloading for polymorphism.
 
-* Full AST macros. This is a clever way to offload compiler development to user spaces: [async/await](https://github.com/nim-lang/RFCs/issues/304), [sum types](https://github.com/nim-lang/RFCs/issues/525)... They also help with [C/C++ bindings](https://github.com/PMunch/futhark), [OpenGL](https://github.com/krux02/opengl-sandbox), [HTML/CSS](https://github.com/treeform/fidget)...
+* [Futhark](https://github.com/PMunch/futhark) to generate C/C++ bindings.
 
-* [Refinement types](https://news.ycombinator.com/item?id=23453022) and [DrNim.](https://nim-lang.org/docs/drnim.html)
-
-* Hot code reloading: [1](https://forum.nim-lang.org/t/4818), [2](https://nim-lang.org/docs/hcr.html).
-
-* [Concurrency?](https://forum.nim-lang.org/t/6756) Better resort to [Go](https://github.com/uber-go/cff), Scala, F#, Erlang...
-
-* Unlike Rust, **Nim does not want you to know everything before you program anything.** 
+* [Concurrency??](https://forum.nim-lang.org/t/6756) Better resort to [Go](https://github.com/uber-go/cff), Scala, F#, Erlang...
 
 Notably, [krux02](https://github.com/krux02/turnt-octo-wallhack) left Go for Nim. [Azul3D](https://github.com/azul3d/engine) abandoned Go for Zig. [jackmott](https://github.com/jackmott/easygl) went from Go to Nim to Rust. [Status crypto wallet]((https://our.status.im/status-desktop-why-and-what/)) is replacing Go with Nim, but there are a lot of pros and cons to that and Rust is always looming there: [1](https://forum.vac.dev/t/the-cost-of-multiple-waku-implementations/228), [2](https://docs.google.com/spreadsheets/d/1JCrYrEWtdAyjOoWiW13D3y-jwM4zUShN9OSUDd4Xu9Q/edit?pli=1&gid=1396213675#gid=1396213675), [3](https://forum.vac.dev/t/how-to-sunset-go-waku/308)... [Andre von Houck](https://github.com/treeform) codes everything in Nim. He has [nearly solved](https://github.com/treeform/fidget) the problem of generating HTML/CSS from Figma.
 
