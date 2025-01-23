@@ -433,21 +433,21 @@ MetallicRoughnessTexture in Sponza.gltf. Fall back to pseudo-PBR. Warn/adjust un
 
 * Add TOML to set all the parameters. Should lights/camera be read from the GLTF/Blender?
 
-## [Nim: New Indented Modula-3](https://forum.nim-lang.org/t/2994)
+## Nim
 
-[Speed matters](https://youtu.be/rngfCHiTouA?t=804), esp. in 3D. Consider [Nim](https://news.ycombinator.com/item?id=36955806):
+[Speed matters](https://youtu.be/rngfCHiTouA?t=804), esp. in 3D. Consider [Nim](https://news.ycombinator.com/item?id=36955806): 
 
-* A subset of C++ with std::unique_ptr and std::vector, in a pseudocode-like syntax, with proper modules instead of header files. Details are in the docs and on the forum: [ref object vs object](https://forum.nim-lang.org/t/1207), [new](https://forum.nim-lang.org/t/3870), [new vs init](https://forum.nim-lang.org/t/9021)...
+* A subset of C++ with std::shared_ptr and std::vector, in a beautiful pseudocode syntax, with proper [modules](https://github.com/ckkashyap/rustix/issues/8) instead of header files. Details: [ref object vs object](https://forum.nim-lang.org/t/1207), [new](https://forum.nim-lang.org/t/3870), new vs init: [1](https://forum.nim-lang.org/t/9021), [2](https://forum.nim-lang.org/t/1233). Unlike with Go, one controls what goes to the heap, without C++/Rust complexity (at the expense of their granularity). Nim does not force you to know everything before you can code anything.
 
 * Function overloading for polymorphism.
 
 * [Futhark](https://github.com/PMunch/futhark) to generate C/C++ bindings.
 
-* [Concurrency??](https://forum.nim-lang.org/t/6756) Better resort to [Go](https://github.com/uber-go/cff), Scala, F#, Erlang...
+* [Concurrency?](https://forum.nim-lang.org/t/6756)
 
-Notably, [krux02](https://github.com/krux02/turnt-octo-wallhack) left Go for Nim. [Azul3D](https://github.com/azul3d/engine) abandoned Go for Zig. [jackmott](https://github.com/jackmott/easygl) went from Go to Nim to Rust. [Status crypto wallet]((https://our.status.im/status-desktop-why-and-what/)) is replacing Go with Nim, but there are a lot of pros and cons to that and Rust is always looming there: [1](https://forum.vac.dev/t/the-cost-of-multiple-waku-implementations/228), [2](https://docs.google.com/spreadsheets/d/1JCrYrEWtdAyjOoWiW13D3y-jwM4zUShN9OSUDd4Xu9Q/edit?pli=1&gid=1396213675#gid=1396213675), [3](https://forum.vac.dev/t/how-to-sunset-go-waku/308)... [Andre von Houck](https://github.com/treeform) codes everything in Nim. He has [nearly solved](https://github.com/treeform/fidget) the problem of generating HTML/CSS from Figma.
+Notably, [krux02](https://github.com/krux02/turnt-octo-wallhack) left Go for Nim. [Azul3D](https://github.com/azul3d/engine) abandoned Go for Zig. [jackmott](https://github.com/jackmott/easygl) went from Go to Nim to Rust. [Status crypto wallet]((https://our.status.im/status-desktop-why-and-what/)) is replacing Go with Nim, but Rust is always looming in those projects: [1](https://forum.vac.dev/t/the-cost-of-multiple-waku-implementations/228), [2](https://docs.google.com/spreadsheets/d/1JCrYrEWtdAyjOoWiW13D3y-jwM4zUShN9OSUDd4Xu9Q/edit?pli=1&gid=1396213675#gid=1396213675), [3](https://forum.vac.dev/t/how-to-sunset-go-waku/308)... [Andre von Houck](https://github.com/treeform) codes everything in Nim. He has [nearly solved](https://github.com/treeform/fidget) the problem of generating HTML/CSS from Figma. [ckkashyap](https://github.com/ckkashyap/rustix) has made a switch [from Rust to Nim](https://news.ycombinator.com/item?id=9049698), but he does not use Nim for everything.
 
-One could also mention that besides Nim, there are a lot of other brave projects which could be a better C/C++: Ada, Rust, Free Pascal, Fortran 2023, Zig, Odin, V, C2, C3, Cyclone, Carbon, ATS, Carp, Inko, Ante, Cone, Kit, Jiyu, Ion, Quaint, Ark, Tarik, Oak, Terra, Nelua, Beef, Myrddin, Jai...
+Besides Nim, there are a lot of other brave projects which could be a better C/C++: Ada, Rust, Free Pascal, Fortran 2023, Zig, Odin, V, C2, C3, Cyclone, Carbon, ATS, Carp, Inko, Ante, Cone, Kit, Jiyu, Ion, Quaint, Ark, Tarik, Oak, Terra, Nelua, Beef, Myrddin, Jai...
 
 You can find my Nim rewrite of this repo in [twinpeekz2](https://github.com/aabbtree77/twinpeekz2). I did not use any fancy abstractions in the code. For someone worried about compile time/stack polymorphism and Nim having no [proper sum types](https://github.com/nim-lang/RFCs/issues/548), I would recommend skipping Nim's enum-case-object chains entirely and going with
 
