@@ -435,19 +435,19 @@ MetallicRoughnessTexture in Sponza.gltf. Fall back to pseudo-PBR. Warn/adjust un
 
 ## Nim
 
-[Speed matters](https://youtu.be/rngfCHiTouA?t=804), esp. in 3D, but I do not want to rewrite Go in Rust as the latter has too much granularity.
+[Speed matters](https://youtu.be/rngfCHiTouA?t=804), safety too, but I am not into Rust.
 
-Other "better C/C++" candidates include: Ada, Free Pascal, Nim, Fortran 2023, Zig, Odin, V, C2, C3, D, Cyclone, Carbon, ATS, Carp, Inko, Ante, Cone, Kit, Jiyu, Ion, Quaint, Ark, Tarik, Oak, Terra, Nelua, Beef, Myrddin, Cwerg, Jai...
+The other C/C++ alternatives include: Ada, Free Pascal, Nim, Fortran 2023, Zig, Odin, V, C2, C3, D, Cyclone, Carbon, ATS, Carp, Inko, Ante, Cone, Kit, Jiyu, Ion, Quaint, Ark, Tarik, Oak, Terra, Nelua, Beef, Myrddin, Cwerg, Jai...
 
-Consider Nim: [1](https://www.youtube.com/@nimprogramminglanguage3130/videos), [2](https://www.youtube.com/@Xkonti/videos), with its few basic virtues:
+Consider Nim: [1](https://www.youtube.com/@nimprogramminglanguage3130/videos), [2](https://www.youtube.com/@Xkonti/videos). My take:
 
-* A subset of C++ with std::shared_ptr and std::vector, in a beautiful pseudocode syntax, with proper [modules](https://github.com/ckkashyap/rustix/issues/8) instead of header files. 
+* A subset of C++ with std::shared_ptr and std::vector in a beautiful syntax, with proper [modules](https://github.com/ckkashyap/rustix/issues/8) instead of header files. 
 
 * Function overloading for polymorphism, with the UFCS, just like [D](https://www.youtube.com/watch?v=0k9-lvQCu7c&ab_channel=MikeShah).
 
-* [Futhark](https://github.com/PMunch/futhark) to generate C/C++ bindings.
+* [Futhark](https://github.com/PMunch/futhark) to reuse C.
 
-* Nim does not force you to know everything before you can code anything. For me, it was enough to read about reference types: [ref object vs object](https://forum.nim-lang.org/t/1207), [new](https://forum.nim-lang.org/t/3870), new vs init: [1](https://forum.nim-lang.org/t/9021), [2](https://forum.nim-lang.org/t/1233). They allow one to control what goes to the heap.
+Nim does not force you to know everything before you can code anything. For me, it was enough to read about reference types: [ref object vs object](https://forum.nim-lang.org/t/1207), [new](https://forum.nim-lang.org/t/3870), new vs init: [1](https://forum.nim-lang.org/t/9021), [2](https://forum.nim-lang.org/t/1233). They allow one to control what goes to the heap.
 
 You can find my Nim rewrite of this repo in [twinpeekz2](https://github.com/aabbtree77/twinpeekz2). I did not use any fancy abstractions. For someone worried about compile time/stack polymorphism and Nim having no [proper sum types](https://github.com/nim-lang/RFCs/issues/548), I would recommend skipping Nim's enum-case-object chains or fancy macro-based libs and going with
 
@@ -475,7 +475,7 @@ You can find my Nim rewrite of this repo in [twinpeekz2](https://github.com/aabb
     # Code for Plane intersection
   ```
 
-Nim is sharp. Use its advanced features sparingly. Follow [the rule of least power](https://en.wikipedia.org/wiki/Rule_of_least_power).
+Nim is too big and eternally experimental, but it has a solid subset outlined above which will cover 99% of low level needs without wasting too much time on unnecessary details. The only major weakness is concurrency which will not match the focus and battle testing surrounding Go. Use Nim's advanced features sparingly. Follow [the rule of least power](https://en.wikipedia.org/wiki/Rule_of_least_power).
 
 <div align="center">
   <img src="https://raw.githubusercontent.com/aabbtree77/twinpeekz/main/nim-nimlang.gif" alt="nimlang-love">
