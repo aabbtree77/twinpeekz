@@ -406,48 +406,54 @@ Implicit behaviour. [This code](https://github.com/guzba/gltfviewer) does not us
 | GLSL     | 7     | 107   | 89      | 261  |
 | SUM:     | 13    | 529   | 316     | 1601 |
 
-## What (Not) To Do Next
+## Something to Think About
 
 * [Rewrite everything in Nim](https://github.com/aabbtree77/twinpeekz2).
 
-* Focus on mesh instancing and complete scene export from Blender, in GLTF 2.0.
+* Focus on mesh instancing and complete scene export from Blender, in GLTF 2.0. Should lights/camera be read from the GLTF/Blender?
 
 * Reliable GLTF: failback/failover w.r.t. broken file paths and assets, e.g. Sponza primitive No. 12 (rusty chain) has no 
 MetallicRoughnessTexture in Sponza.gltf. Fall back to pseudo-PBR. Warn/adjust unusual mesh scales.
 
-* CSM, AA, baking, culling, LOD popping?
+* CSM, AA, baking, culling, LOD popping, bloom/glow, TOML to organize parameters.
 
 * A tighter adaptive frustum for each light and camera.
 
-* [Vulkan?](https://github.com/oakes/vulkan_triangle_nim/blob/master/src/core.nim)
+* [Vulkan?](https://github.com/oakes/vulkan_triangle_nim/blob/master/src/core.nim) Or better isolate OpenGL state/context, test with a frame inside a frame?
 
-* Bloom/glow, water-underwater transitions as in [INSIDE 2016](https://youtu.be/RdN06E6Xn9E?t=2755).
+* Surface-underwater transitions as in [INSIDE 2016](https://youtu.be/RdN06E6Xn9E?t=2755).
 
 * A skybox would be nice, but anything "samplerCube" related takes 3ms. on GTX 760. Dual-paraboloid maps as in [GTA-5](https://www.adriancourreges.com/blog/2015/11/02/gta-v-graphics-study/)?
 
-* [Forward vs Deferred vs Forward+](https://www.3dgep.com/forward-plus/). Forward is alright, but it does not matter. INSIDE 2016 used deferred rendering. Forward+? Tiling/voxelization, 3D textures, this is too much complexity or a different paradigm.
+* [Forward vs Deferred vs Forward+](https://www.3dgep.com/forward-plus/). Forward is alright, but it does not matter. INSIDE 2016 used deferred rendering. Forward+? Tiling/voxelization, 3D textures, this is too specialized.
 
 * Animations, hot reloading, ImGui, ECS, physics engine. See [David H. Eberly, 2010](https://www.amazon.com/Game-Physics-David-H-Eberly/dp/0123749034), [qu3e](https://github.com/RandyGaul/qu3e)...
 
-* Isolate OpenGL state/context more, test with a frame inside a frame?
-
-* Add TOML to set all the parameters. Should lights/camera be read from the GLTF/Blender?
-
 ## Nim
 
-[Speed matters](https://youtu.be/rngfCHiTouA?t=804), safety too, but I am not into Rust.
-
-The other C/C++ alternatives include: Ada, Free Pascal, Nim, Fortran 2023, Zig, Odin, V, C2, C3, D, Cyclone, Carbon, ATS, Carp, Inko, Ante, Cone, Kit, Jiyu, Ion, Quaint, Ark, Tarik, Oak, Terra, Nelua, Beef, Myrddin, Cwerg, Jai...
+[Speed matters](https://youtu.be/rngfCHiTouA?t=804), safety too. There are quite a few C/C++ alternatives which allow to place most of the data on the stack, and control what goes to the heap. They include: Ada, Free Pascal, Nim, Fortran 2023, Zig, Rust, Odin, V, C2, C3, D, Cyclone, Carbon, ATS, Dale, Carp, Inko, Ante, Cone, Kit, Jiyu, Ion, Quaint, Ark, Tarik, Oak, Terra, Nelua, Beef, Myrddin, Cwerg, Jai... See [awesome-low-level-programming-languages](https://github.com/robertmuth/awesome-low-level-programming-languages).
 
 Consider Nim: [1](https://www.youtube.com/@nimprogramminglanguage3130/videos), [2](https://www.youtube.com/@Xkonti/videos). My take:
 
-* A subset of C++ with std::shared_ptr and std::vector in a beautiful syntax, with proper [modules](https://github.com/ckkashyap/rustix/issues/8) instead of header files. 
+* A subset of C++ with std::shared_ptr and std::vector in a clean syntax, with proper [modules](https://github.com/ckkashyap/rustix/issues/8) instead of header files. 
 
 * Function overloading for polymorphism, with the UFCS, just like [D](https://www.youtube.com/watch?v=0k9-lvQCu7c&ab_channel=MikeShah).
 
 * [Futhark](https://github.com/PMunch/futhark) to reuse C.
 
-Nim does not force you to know everything before you can code anything. For me, it was enough to read about reference types: [ref object vs object](https://forum.nim-lang.org/t/1207), [new](https://forum.nim-lang.org/t/3870), new vs init: [1](https://forum.nim-lang.org/t/9021), [2](https://forum.nim-lang.org/t/1233). They allow one to control what goes to the heap.
+* Nim does not force you to know everything before you can code anything. For me, it was enough to read about reference types: [ref object vs object](https://forum.nim-lang.org/t/1207), [new](https://forum.nim-lang.org/t/3870), new vs init: [1](https://forum.nim-lang.org/t/9021), [2](https://forum.nim-lang.org/t/1233). They allow one to control what goes to the heap.
+
+The downsides:
+
+* Controlling stack vs heap allocations is a significant burden, no matter how nice Nim tries to make it. The complexity roughly doubles (e.g. OrderedTable vs OrderedTableRef), and this is only in the best case scenario when everything is orthogonal, flat, without bugs.
+
+* Small adoption, on par with D or Zig. This is even 10-100x smaller than Rust which itself is extremely minuscule compared to C/C++. [PLDB](https://pldb.io/concepts/rust.html) states 356,891 Rust github repos while Nim has 8,018. In 3D and compilers Nim is virtually zero.
+
+* Nim overdoes compile time, just like the whole non-GC space, except C. It also relies on pragmas and macros. None of this will make reading 3rd party codes and debugging easy. When I want to understand how somebody implements something, Go or Python are my gotos, not Nim.
+
+* Andre von Houck, [September 2020](https://forum.nim-lang.org/t/6756): "Threads/concurrency are still hard to use. Not impossible just hard. Java/Go threads felt really easy. After using threads in nim I still don't like them. Async/await feels a bit too verbose, I like the gevent/scheme model of concurrency where everything is just concurrent without extra markings."
+
+Projects such as [Cwerg](https://github.com/robertmuth/Cwerg) or even [PyTorch](https://github.com/pytorch/pytorch) could have greatly benefited by going with Nim instead of Python with C++, but this is history now.
 
 You can find my Nim rewrite of this repo in [twinpeekz2](https://github.com/aabbtree77/twinpeekz2). I did not use any fancy abstractions. For someone worried about compile time/stack polymorphism and Nim having no [proper sum types](https://github.com/nim-lang/RFCs/issues/548), I would recommend skipping Nim's enum-case-object chains or fancy macro-based libs and going with
 
@@ -475,7 +481,7 @@ You can find my Nim rewrite of this repo in [twinpeekz2](https://github.com/aabb
     # Code for Plane intersection
   ```
 
-Nim is too big and eternally experimental, but it has a solid subset outlined above which will cover 99% of low level needs without wasting too much time on unnecessary details. The only major weakness is concurrency which will not match the focus and battle testing surrounding Go. Use Nim's advanced features sparingly. Follow [the rule of least power](https://en.wikipedia.org/wiki/Rule_of_least_power).
+Use Nim's advanced features sparingly. Follow [the rule of least power](https://en.wikipedia.org/wiki/Rule_of_least_power).
 
 <div align="center">
   <img src="https://raw.githubusercontent.com/aabbtree77/twinpeekz/main/nim-nimlang.gif" alt="nimlang-love">
