@@ -431,31 +431,21 @@ MetallicRoughnessTexture in Sponza.gltf. Fall back to pseudo-PBR. Warn/adjust un
 
 ## Nim?
 
-[Speed matters](https://youtu.be/rngfCHiTouA?t=804), safety too. In addition to C/C++, we can also choose from: Ada, the whole Pascal family, Nim, Fortran 2023, Zig, Rust, Odin, V, C2, C3, D, Cyclone, Carbon, ATS, Dale, Carp, Inko, Ante, Cone, Kit, Jiyu, Ion, Quaint, Ark, Tarik, Oak, Terra, Nelua, Beef, Myrddin, Cwerg, Jai... See [awesome-low-level-programming-languages](https://github.com/robertmuth/awesome-low-level-programming-languages).
+[Speed matters](https://youtu.be/rngfCHiTouA?t=804). Consider Nim: [1](https://www.youtube.com/@nimprogramminglanguage3130/videos), [2](https://www.youtube.com/@Xkonti/videos).
 
-Consider Nim: [1](https://www.youtube.com/@nimprogramminglanguage3130/videos), [2](https://www.youtube.com/@Xkonti/videos). My take:
+The good:
 
-* A subset of C++ with std::shared_ptr and std::vector in a clean syntax, with proper [modules](https://github.com/ckkashyap/rustix/issues/8).
+* Switching between stack and heap allocations is explicit and done with only a single construct called `ref` which is like std::shared_ptr in C++: [ref object vs object](https://forum.nim-lang.org/t/1207), [new](https://forum.nim-lang.org/t/3870), new vs init: [1](https://forum.nim-lang.org/t/9021), [2](https://forum.nim-lang.org/t/1233). We do not get this in Go.
 
-* Function overloading for polymorphism, with a full UFCS, just like [D](https://www.youtube.com/watch?v=0k9-lvQCu7c&ab_channel=MikeShah).
+The bad:
 
-* [Futhark](https://github.com/PMunch/futhark) to reuse C.
-
-* Nim does not force you to know everything before you can code anything. Knowing about ref is enough to get going: [ref object vs object](https://forum.nim-lang.org/t/1207), [new](https://forum.nim-lang.org/t/3870), new vs init: [1](https://forum.nim-lang.org/t/9021), [2](https://forum.nim-lang.org/t/1233).
-
-The downsides:
-
-* Controlling stack vs heap allocations is a significant burden, no matter how nice Nim tries to make it.
-
-* Extremely minuscule adoption on par with Ada, D, or Zig, github-wise. [PLDB](https://pldb.io/concepts/rust.html) states 1,083,789 Go github repos while Nim has 8,018.
-
-* Nim overdoes compile time, just like the whole non-GC space, except C. It is easy to get lost there.
-
-* Nim is also a static Lisp, disguised in Pascal/Python attire, which is another source of the language complexity.
+* Reusing C is a huge mess: [1](https://forum.nim-lang.org/t/1287), [2](https://github.com/PMunch/futhark), [3](https://github.com/aabbtree77/twinpeekz2)... just like everywhere. The question "why not just C/C++" is always there.
 
 * Andre von Houck, [September 2020](https://forum.nim-lang.org/t/6756): "Threads/concurrency are still hard to use. Not impossible just hard. Java/Go threads felt really easy. After using threads in nim I still don't like them. Async/await feels a bit too verbose, I like the gevent/scheme model of concurrency where everything is just concurrent without extra markings."
 
-Projects such as [Cwerg](https://github.com/robertmuth/Cwerg) and [PyTorch](https://github.com/pytorch/pytorch) might have benefited from using Nim instead of Python with C++, but that is in the past now.
+The ugly: 
+
+* Nim is [yet another big language](https://github.com/robertmuth/awesome-low-level-programming-languages) with its internal C++-like puzzles. We do not have anything like Go in the static non-GC space. I was hoping for a minimal modern Oberon...
 
 You can find my Nim rewrite of this repo in [twinpeekz2](https://github.com/aabbtree77/twinpeekz2). I did not use any fancy abstractions. For someone worried about compile time/stack polymorphism and Nim having no [proper sum types](https://github.com/nim-lang/RFCs/issues/548), I would recommend skipping Nim's enum-case-object chains or fancy macro-based libs and going with
 
