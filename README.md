@@ -435,17 +435,15 @@ MetallicRoughnessTexture in Sponza.gltf. Fall back to pseudo-PBR. Warn/adjust un
 
 The good:
 
-* Switching between stack and heap allocations is explicit and done with only a single construct called `ref` which is like std::shared_ptr in C++: [ref object vs object](https://forum.nim-lang.org/t/1207), [new](https://forum.nim-lang.org/t/3870), new vs init: [1](https://forum.nim-lang.org/t/9021), [2](https://forum.nim-lang.org/t/1233). We do not get this in Go.
+* My experiments with [smallpt](https://www.kevinbeason.com/smallpt/) (unpublished) indicate that it is easier to reach the C speed with Nim than Go.
 
 The bad:
-
-* Reusing C is a huge mess: [1](https://forum.nim-lang.org/t/1287), [2](https://github.com/PMunch/futhark), [3](https://github.com/aabbtree77/twinpeekz2)... just like everywhere. The question "why not just C/C++" is always there.
 
 * Andre von Houck, [September 2020](https://forum.nim-lang.org/t/6756): "Threads/concurrency are still hard to use. Not impossible just hard. Java/Go threads felt really easy. After using threads in nim I still don't like them. Async/await feels a bit too verbose, I like the gevent/scheme model of concurrency where everything is just concurrent without extra markings."
 
 The ugly: 
 
-* Nim is [yet another big language](https://github.com/robertmuth/awesome-low-level-programming-languages) with its internal C++-like puzzles. We do not have anything like Go in the static non-GC space. I was hoping for a minimal modern Oberon...
+* Nim is a big language. I had hoped for a minimal, modern Oberon.
 
 You can find my Nim rewrite of this repo in [twinpeekz2](https://github.com/aabbtree77/twinpeekz2). I did not use any fancy abstractions. For someone worried about compile time/stack polymorphism and Nim having no [proper sum types](https://github.com/nim-lang/RFCs/issues/548), I would recommend skipping Nim's enum-case-object chains or fancy macro-based libs and going with
 
@@ -475,7 +473,7 @@ You can find my Nim rewrite of this repo in [twinpeekz2](https://github.com/aabb
 
 Use Nim's advanced features sparingly. Follow [the rule of least power](https://en.wikipedia.org/wiki/Rule_of_least_power), though this is hopeless. 
 
-I now begin to appreciate Go even more, esp. the Go prior to v1.18...
+After the rewrite in Nim, I begin to appreciate Go even more, esp. the Go prior to v1.18...
 
 <div align="center">
   <img src="https://raw.githubusercontent.com/aabbtree77/twinpeekz/main/golang.gif" alt="golang-love">
@@ -492,13 +490,7 @@ I now begin to appreciate Go even more, esp. the Go prior to v1.18...
 
     [https://youtu.be/Bafoekti34Y](https://youtu.be/Bafoekti34Y)
 
-    It is a reasonable POD-mostly clean C++ that completely implements the method of Balázs Tóth and Tamás Umenhoffer (EUROGRAPHICS 2009). The translation was not smooth due to the bug I mentioned above and some OpenGL issues with sending an array of light structs to the shaders.
-
-    Eventually, a few problems became visible. The lack of license, 
-
-    https://gitlab.com/tomasoh/100_procent_more_volume/-/issues/1
-
-    Some 3x slower than it should be shadow map stage and 3x slower volumetrics, caused mostly by the use of point lights and numerous distance-based functions. The rays were somewhat bleak and numerous scattering parameters barely changed anything visually. I was clamping the ray intensity artificially initially, and the code for that is still included in the postprocessing shader, though with the other two volumetric methods this problem is gone now. Parsing .obj files instead of GLTF 2.0, suboptimal PBR... An amazing work nonetheless.
+    It is a reasonable POD-mostly clean C++ that completely implements the method of Balázs Tóth and Tamás Umenhoffer (EUROGRAPHICS 2009). The translation was not smooth due to the bug I mentioned above and some OpenGL issues with sending an array of light structs to the shaders. The rays were initially bleak and numerous scattering parameters barely changed anything visually. I have clamped the ray intensity artificially at first, and the code for that is still included in the postprocessing shader. Considering the other two volumetric methods this problem is gone now. Parsing .obj files instead of GLTF 2.0, suboptimal PBR... An amazing work nonetheless.
 
 2. **Baldur Karlsson** (and Crytek?) for RenderDoc which helped me to locate wrong mesh buffer indexing in "scene.go" (uint vs uint32!).
 
