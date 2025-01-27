@@ -406,7 +406,7 @@ Implicit behaviour. [This code](https://github.com/guzba/gltfviewer) does not us
 | GLSL     | 7     | 107   | 89      | 261  |
 | SUM:     | 13    | 529   | 316     | 1601 |
 
-## Something to Think About
+## To Do (Or Not)
 
 * [Rewrite everything in Nim](https://github.com/aabbtree77/twinpeekz2).
 
@@ -435,15 +435,15 @@ MetallicRoughnessTexture in Sponza.gltf. Fall back to pseudo-PBR. Warn/adjust un
 
 The good:
 
-* My experiments with [smallpt](https://www.kevinbeason.com/smallpt/) (unpublished) indicate that it is easier to reach the C speed with Nim than Go.
+* Often as fast as C without the mess of C/C++/Rust.
 
 The bad:
 
-* Andre von Houck, [September 2020](https://forum.nim-lang.org/t/6756): "Threads/concurrency are still hard to use. Not impossible just hard. Java/Go threads felt really easy. After using threads in nim I still don't like them. Async/await feels a bit too verbose, I like the gevent/scheme model of concurrency where everything is just concurrent without extra markings."
+* A lot is offloaded to libraries: sum types, concurrency, FFI to C... You never know which library to use, and they are not as good as the language-integrated counterparts in F#, Go, Zig, resp.  
 
 The ugly: 
 
-* Nim is a big language. I had hoped for a minimal, modern Oberon.
+* Nim is Haskell in sheep's clothing, with all sorts of [lifting](https://nim-lang.org/blog/2021/11/15/zen-of-nim.html) and [hooking](https://ramanlabs.in/static/blog/raw_memory_management_patterns_in_nim_language.html). Outstanding for compiler gurus and library writers, not so for [1x engineering](https://1x.engineer/) and [the rule of least power](https://en.wikipedia.org/wiki/Rule_of_least_power).
 
 You can find my Nim rewrite of this repo in [twinpeekz2](https://github.com/aabbtree77/twinpeekz2). I did not use any fancy abstractions. For someone worried about compile time/stack polymorphism and Nim having no [proper sum types](https://github.com/nim-lang/RFCs/issues/548), I would recommend skipping Nim's enum-case-object chains or fancy macro-based libs and going with
 
@@ -471,9 +471,7 @@ You can find my Nim rewrite of this repo in [twinpeekz2](https://github.com/aabb
     # Code for Plane intersection
   ```
 
-Use Nim's advanced features sparingly. Follow [the rule of least power](https://en.wikipedia.org/wiki/Rule_of_least_power), though this is hopeless. 
-
-After the rewrite in Nim, I begin to appreciate Go even more, esp. the Go prior to v1.18...
+After the rewrite in Nim, I begin to appreciate Go even more, esp. the Go prior to v1.18.
 
 <div align="center">
   <img src="https://raw.githubusercontent.com/aabbtree77/twinpeekz/main/golang.gif" alt="golang-love">
