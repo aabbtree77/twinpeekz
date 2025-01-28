@@ -429,15 +429,13 @@ MetallicRoughnessTexture in Sponza.gltf. Fall back to pseudo-PBR. Warn/adjust un
 
 * Animations, hot reloading, ImGui, ECS, physics engine. See [David H. Eberly, 2010](https://www.amazon.com/Game-Physics-David-H-Eberly/dp/0123749034), [qu3e](https://github.com/RandyGaul/qu3e)...
 
-## Nim?
+## Nim?!
 
-[Speed matters](https://youtu.be/rngfCHiTouA?t=804). Consider Nim: [1](https://www.youtube.com/@nimprogramminglanguage3130/videos), [2](https://www.youtube.com/@Xkonti/videos):
+[Speed matters](https://youtu.be/rngfCHiTouA?t=804). Consider Nim: [1](https://www.youtube.com/@nimprogramminglanguage3130/videos), [2](https://www.youtube.com/@Xkonti/videos), [3](https://nim-lang.org/blog/2021/11/15/zen-of-nim.html):
 
-* Often as fast as C without the mess of C/C++.
+* As fast as C due to [optimized reference counting](https://youtu.be/aDi50K_Id_k?t=1634) and low level control: [1](https://nim-lang.org/docs/destructors.html), [2](https://ramanlabs.in/static/blog/raw_memory_management_patterns_in_nim_language.html), [3](https://forum.nim-lang.org/t/3926)...
 
-* Plenty of useful libs: [futhark](https://github.com/PMunch/futhark), [npeg](https://github.com/zevv/npeg)...
-
-* Perhaps too much power: [lifting](https://nim-lang.org/blog/2021/11/15/zen-of-nim.html), hooking: [1](https://nim-lang.org/docs/destructors.html), [2](https://ramanlabs.in/static/blog/raw_memory_management_patterns_in_nim_language.html), [3](https://forum.nim-lang.org/t/3926), pragmas, refined types, macros... 
+* [Decent 3D activity.](https://github.com/search?q=game+engine+language%3ANim&type=repositories)
 
 You can find my Nim rewrite of this repo in [twinpeekz2](https://github.com/aabbtree77/twinpeekz2). I did not use any fancy abstractions. For someone worried about compile time/stack polymorphism and Nim having no [proper sum types](https://github.com/nim-lang/RFCs/issues/548), I would recommend skipping Nim's enum-case-object chains or fancy macro-based libs and going with
 
@@ -465,7 +463,7 @@ You can find my Nim rewrite of this repo in [twinpeekz2](https://github.com/aabb
     # Code for Plane intersection
   ```
 
-After the rewrite in Nim, I begin to appreciate Go even more, esp. the Go prior to v1.18.
+Nim is a beautiful complex language with a tiny user base. Go is the opposite, but it also has its charms, esp. Go v1.17, IYKWIM. 
 
 <div align="center">
   <img src="https://raw.githubusercontent.com/aabbtree77/twinpeekz/main/golang.gif" alt="golang-love">
