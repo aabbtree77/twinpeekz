@@ -431,19 +431,13 @@ MetallicRoughnessTexture in Sponza.gltf. Fall back to pseudo-PBR. Warn/adjust un
 
 ## Nim?
 
-[Speed matters](https://youtu.be/rngfCHiTouA?t=804). Consider Nim: [1](https://www.youtube.com/@nimprogramminglanguage3130/videos), [2](https://www.youtube.com/@Xkonti/videos).
+[Speed matters](https://youtu.be/rngfCHiTouA?t=804). Consider Nim: [1](https://www.youtube.com/@nimprogramminglanguage3130/videos), [2](https://www.youtube.com/@Xkonti/videos):
 
-The good:
+* Often as fast as C without the mess of C/C++.
 
-* Often as fast as C without the mess of C.
+* Plenty of useful libs: [futhark](https://github.com/PMunch/futhark), [npeg](https://github.com/zevv/npeg)...
 
-The bad:
-
-* A lot is offloaded to libraries: sum types, concurrency, FFI to C, arrays... You never know which library to use, and they are not as good as the language-integrated counterparts in F#, Go, Zig, Julia, resp.  
-
-The ugly: 
-
-* Nim is as complex as C++/Rust, with all sorts of [lifting](https://nim-lang.org/blog/2021/11/15/zen-of-nim.html) and hooking: [1](https://nim-lang.org/docs/destructors.html), [2](https://ramanlabs.in/static/blog/raw_memory_management_patterns_in_nim_language.html), [3](https://forum.nim-lang.org/t/3926) before you even get into pragmas and macros. Outstanding for compiler gurus, library writers, self-education at times. Not so for [1x engineering](https://1x.engineer/) and [the rule of least power](https://en.wikipedia.org/wiki/Rule_of_least_power). It is so far away from Oberon.
+* Perhaps too much power: [lifting](https://nim-lang.org/blog/2021/11/15/zen-of-nim.html), hooking: [1](https://nim-lang.org/docs/destructors.html), [2](https://ramanlabs.in/static/blog/raw_memory_management_patterns_in_nim_language.html), [3](https://forum.nim-lang.org/t/3926), pragmas, refined types, macros... 
 
 You can find my Nim rewrite of this repo in [twinpeekz2](https://github.com/aabbtree77/twinpeekz2). I did not use any fancy abstractions. For someone worried about compile time/stack polymorphism and Nim having no [proper sum types](https://github.com/nim-lang/RFCs/issues/548), I would recommend skipping Nim's enum-case-object chains or fancy macro-based libs and going with
 
