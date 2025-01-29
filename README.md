@@ -433,9 +433,19 @@ MetallicRoughnessTexture in Sponza.gltf. Fall back to pseudo-PBR. Warn/adjust un
 
 [Speed matters](https://youtu.be/rngfCHiTouA?t=804). Consider Nim: [Nim Nuggets](https://www.youtube.com/watch?v=d2VRuZo2pdA&t=26s&ab_channel=StrangeLoopConference), [Nim Programming Language Youtube Channel](https://www.youtube.com/@nimprogramminglanguage3130/videos), [Xkonti Youtube Channel](https://www.youtube.com/@Xkonti/videos), [Zen of Nim](https://nim-lang.org/blog/2021/11/15/zen-of-nim.html):
 
+Pros:
+
 * As fast as C due to [optimized reference counting](https://youtu.be/aDi50K_Id_k?t=1634) and low level control: [1](https://nim-lang.org/docs/destructors.html), [2](https://ramanlabs.in/static/blog/raw_memory_management_patterns_in_nim_language.html), [3](https://forum.nim-lang.org/t/3926)...
 
 * [Decent 3D activity.](https://github.com/search?q=game+engine+language%3ANim&type=repositories)
+
+* Interop with C++?
+
+Cons:
+
+* No sum types. This is not a big deal, but plain parsing/compiler codes are better in F#, clf. [Monkey-Nim](https://github.com/mrsekut/monkey-nim/blob/master/src/parser/ast.nim) with an ugly ref object vs [Monkey-F#](https://github.com/worriedvulkan/monkey-lang/blob/main/Monkey.Interpreter/Ast.fs).
+
+* Complex language, just like C++/Rust: all sorts lifting, hooking, overloading, closures, pragmas, refined types, type erasure, macros... Confusing ref object vs object.
 
 You can find my Nim rewrite of this repo in [twinpeekz2](https://github.com/aabbtree77/twinpeekz2). I did not use any fancy abstractions. For someone worried about compile time/stack polymorphism and Nim having no [proper sum types](https://github.com/nim-lang/RFCs/issues/548), I would recommend skipping Nim's enum-case-object chains or fancy macro-based libs and going with
 
