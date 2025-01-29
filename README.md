@@ -431,7 +431,7 @@ MetallicRoughnessTexture in Sponza.gltf. Fall back to pseudo-PBR. Warn/adjust un
 
 ## Nim?!
 
-[Speed matters](https://youtu.be/rngfCHiTouA?t=804). Consider Nim: [1](https://www.youtube.com/@nimprogramminglanguage3130/videos), [2](https://www.youtube.com/@Xkonti/videos), [3](https://nim-lang.org/blog/2021/11/15/zen-of-nim.html):
+[Speed matters](https://youtu.be/rngfCHiTouA?t=804). Consider Nim: [Nim Nuggets](https://www.youtube.com/watch?v=d2VRuZo2pdA&t=26s&ab_channel=StrangeLoopConference), [Nim Programming Language Youtube Channel](https://www.youtube.com/@nimprogramminglanguage3130/videos), [Xkonti Youtube Channel](https://www.youtube.com/@Xkonti/videos), [Zen of Nim](https://nim-lang.org/blog/2021/11/15/zen-of-nim.html):
 
 * As fast as C due to [optimized reference counting](https://youtu.be/aDi50K_Id_k?t=1634) and low level control: [1](https://nim-lang.org/docs/destructors.html), [2](https://ramanlabs.in/static/blog/raw_memory_management_patterns_in_nim_language.html), [3](https://forum.nim-lang.org/t/3926)...
 
@@ -463,7 +463,9 @@ You can find my Nim rewrite of this repo in [twinpeekz2](https://github.com/aabb
     # Code for Plane intersection
   ```
 
-Nim is a beautiful complex language with a tiny user base. Go is the opposite, but it also has its charms, esp. Go v1.17, IYKWIM. 
+This, however, will lack the exhaustive checks and elegance of sum types.
+
+In any case, Nim is a beautiful complex language with a tiny user base. Go is the opposite, but it also has its charms, esp. Go v1.17, IYKWIM. 
 
 <div align="center">
   <img src="https://raw.githubusercontent.com/aabbtree77/twinpeekz/main/golang.gif" alt="golang-love">
