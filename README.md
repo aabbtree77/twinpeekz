@@ -439,13 +439,13 @@ Pros:
 
 * [Decent 3D activity.](https://github.com/search?q=game+engine+language%3ANim&type=repositories)
 
-* Interop with C++?
+* [Interop with C++.](https://www.youtube.com/watch?v=d2VRuZo2pdA&t=26s&ab_channel=StrangeLoopConference)
 
 Cons:
 
 * No sum types. This is not a big deal, but plain parsing/compiler codes are better in F#, clf. [Monkey-Nim](https://github.com/mrsekut/monkey-nim/blob/master/src/parser/ast.nim) with an ugly ref object vs [Monkey-F#](https://github.com/worriedvulkan/monkey-lang/blob/main/Monkey.Interpreter/Ast.fs).
 
-* Complex language, just like C++/Rust: all sorts lifting, hooking, overloading, closures, pragmas, refined types, type erasure, macros... Confusing ref object vs object.
+* Nim is complex, just like C++/Rust. All sorts lifting, hooking, overloading, dynamic dispatch, object variants, closures, pragmas, refined types, [type erasure](https://gist.github.com/cgarciae/9b7f5d456e8aed3181f8b30f13de2f01), macros... Confusing ref object vs object.
 
 You can find my Nim rewrite of this repo in [twinpeekz2](https://github.com/aabbtree77/twinpeekz2). I did not use any fancy abstractions. For someone worried about compile time/stack polymorphism and Nim having no [proper sum types](https://github.com/nim-lang/RFCs/issues/548), I would recommend skipping Nim's enum-case-object chains or fancy macro-based libs and going with
 
@@ -462,7 +462,7 @@ You can find my Nim rewrite of this repo in [twinpeekz2](https://github.com/aabb
         # Code for Plane intersection
   ```
 
-- or function overloading (which Zig/Rust lack, BTW):
+- or function overloading (which Zig/Rust do not have, BTW):
 
   ```nim
   proc intersect(r: Ray, x: Sphere) =
@@ -475,7 +475,7 @@ You can find my Nim rewrite of this repo in [twinpeekz2](https://github.com/aabb
 
 This, however, will lack the exhaustive checks and elegance of sum types.
 
-In any case, Nim is a beautiful complex language with a tiny user base. Go is the opposite, but it also has its charms, esp. Go v1.17, IYKWIM. 
+Nim is a complex language with a tiny user base. Go v1.17 was the opposite, sadly not anymore.
 
 <div align="center">
   <img src="https://raw.githubusercontent.com/aabbtree77/twinpeekz/main/golang.gif" alt="golang-love">
