@@ -435,19 +435,17 @@ MetallicRoughnessTexture in Sponza.gltf. Fall back to pseudo-PBR. Warn/adjust un
 
 Pros:
 
-* As fast as C due to [optimized reference counting](https://youtu.be/aDi50K_Id_k?t=1634) and low level control: [1](https://nim-lang.org/docs/destructors.html), [2](https://ramanlabs.in/static/blog/raw_memory_management_patterns_in_nim_language.html), [3](https://forum.nim-lang.org/t/3926)...
+* Easier to start with than C/C++/Zig/Rust...
 
-* [Decent 3D activity.](https://github.com/search?q=game+engine+language%3ANim&type=repositories)
-
-* [Interop with C++.](https://www.youtube.com/watch?v=d2VRuZo2pdA&t=26s&ab_channel=StrangeLoopConference)
+* [Optimized reference counting](https://youtu.be/aDi50K_Id_k?t=1634) and low level control: [1](https://nim-lang.org/docs/destructors.html), [2](https://ramanlabs.in/static/blog/raw_memory_management_patterns_in_nim_language.html), [3](https://forum.nim-lang.org/t/3926) to seek for the C performance.
 
 Cons:
 
-* No sum types. This is not a big deal, but plain parsing/compiler codes are better in F#, clf. [Monkey-Nim](https://github.com/mrsekut/monkey-nim/blob/master/src/parser/ast.nim) with an ugly ref object vs [Monkey-F#](https://github.com/worriedvulkan/monkey-lang/blob/main/Monkey.Interpreter/Ast.fs).
+* ref object vs object can get confusing. I wish Nim did not have ref objects at all. Look at this code: [Monkey-Nim](https://github.com/mrsekut/monkey-nim/blob/master/src/parser/ast.nim) with an ugly ref object definining a parser's AST node. Why must the AST node be of a reference type and live on the heap? Compare the Nim code to [Monkey-F#](https://github.com/worriedvulkan/monkey-lang/blob/main/Monkey.Interpreter/Ast.fs) which is less confusing to me.
 
-* Nim is complex, just like C++/Rust. All sorts lifting, hooking, overloading, dynamic dispatch, object variants, closures, pragmas, refined types, [type erasure](https://gist.github.com/cgarciae/9b7f5d456e8aed3181f8b30f13de2f01), macros... Confusing ref object vs object.
+* Nim has a lot of advanced features, but lacks the essential one: algebraic data types with type constructors and pattern matching integrated into a language. Instead, we get shooting in random directions with all sorts of lifting, hooking, overloading, dynamic dispatch, object variants, closures, pragmas, refined types, [type erasure](https://gist.github.com/cgarciae/9b7f5d456e8aed3181f8b30f13de2f01), and macros. The language is optimized for compiler gurus and library writers, just like C++.
 
-You can find my Nim rewrite of this repo in [twinpeekz2](https://github.com/aabbtree77/twinpeekz2). I did not use any fancy abstractions. For someone worried about compile time/stack polymorphism and Nim having no [proper sum types](https://github.com/nim-lang/RFCs/issues/548), I would recommend skipping Nim's enum-case-object chains or fancy macro-based libs and going with
+You can find my Nim rewrite of this repo in [twinpeekz2](https://github.com/aabbtree77/twinpeekz2). I did not use any fancy abstractions. For someone worried about compile time/stack polymorphism and Nim having no [proper sum types](https://github.com/nim-lang/RFCs/issues/548), I would recommend skipping Nim's enum-object-case-of chains or fancy macro-based libs and going with
 
 - either generic types:
 
@@ -473,7 +471,7 @@ You can find my Nim rewrite of this repo in [twinpeekz2](https://github.com/aabb
     # Code for Plane intersection
   ```
 
-This, however, will lack the exhaustive checks and elegance of sum types.
+We can also do runtime polymorphism via dynamic dispatch, closures, type erasure, with some combinations.
 
 Nim is a complex language with a tiny user base. Go v1.17 was the opposite, sadly not anymore.
 
