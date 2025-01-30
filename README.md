@@ -431,51 +431,37 @@ MetallicRoughnessTexture in Sponza.gltf. Fall back to pseudo-PBR. Warn/adjust un
 
 ## Nim?!
 
-[Speed matters](https://youtu.be/rngfCHiTouA?t=804). Consider Nim: [Nim Nuggets](https://www.youtube.com/watch?v=d2VRuZo2pdA&t=26s&ab_channel=StrangeLoopConference), [Nim Programming Language Youtube](https://www.youtube.com/@nimprogramminglanguage3130/videos), [Xkonti Youtube](https://www.youtube.com/@Xkonti/videos), [Zen of Nim](https://nim-lang.org/blog/2021/11/15/zen-of-nim.html):
+[Speed matters](https://youtu.be/rngfCHiTouA?t=804). Consider Nim: [Nim Nuggets](https://www.youtube.com/watch?v=d2VRuZo2pdA&t=26s&ab_channel=StrangeLoopConference), [Nim Programming Language Youtube](https://www.youtube.com/@nimprogramminglanguage3130/videos), [Xkonti Youtube](https://www.youtube.com/@Xkonti/videos), [Zen of Nim](https://nim-lang.org/blog/2021/11/15/zen-of-nim.html), [nim-lang.org](https://nim-lang.org/), [forum.nim-lang.org](https://forum.nim-lang.org/).
 
 Pros:
 
-* Default reference semantics and mutability are easier (for me) than in C, C++, Zig, Rust. Ada and D could also be worthy, but I have no experience with them.
+* Stack vs heap control. Nim uses mostly a single concept `ref` which is just like Go's pointer `*`, but Nim statically checks and optimizes more ([big topic](https://youtu.be/aDi50K_Id_k?t=1651)). Unlike Go pointers, Nim's `ref` is optional.
 
-* [nim-lang.org](https://nim-lang.org/) and [forum.nim-lang.org](https://forum.nim-lang.org/) read like an interesting growing book about a static non-GC space and its [possibilities](https://forum.nim-lang.org/t/3926), not just Nim. I suspect the D forum is also like that.
+  `ref object` is only needed for dynamic dispatch, function pointers/closures, async, recursion, shared ownership, dynamic collections of object variants. Good code will seldom use these capabilities.
+
+  Nim's value semantics and `ref` should cover 99% of the stack vs heap granularity. For the remaining 1%, one can delve into copy/move semantics: [1](https://nim-lang.org/docs/destructors.html), [2](https://ramanlabs.in/static/blog/raw_memory_management_patterns_in_nim_language.html).
+  
+* Compile time vs runtime polymorphism. Nim's `concept` is like Go's `interface`, but statically checked, and not demanding reference semantics. Nim also allows function overloading, just like D, and unlike Go, Zig, or Rust. Parametric polymorphism, function overloading, and `concept` are probably enough to cover most of the needs of polymorphism. Note that C has none and is alive and kicking.
+
+* Less safe than Rust probably, but not Go either: `ref object not nil` and `std/options`.
+
+* [nim-lang.org](https://nim-lang.org/) and [forum.nim-lang.org](https://forum.nim-lang.org/) read like a captivating never ending story about the whole static non-GC space, not just Nim. The D forum is also like that. Lots of insights not to be found in theory or on github.
 
 Cons:
 
-* No simple way to say my type is A or B.
+* Minimizing the uses of `ref object` requires knowledge and discipline.
 
-* ref object vs object is somewhat tricky. ref object will generally be needed for dynamic dispatch, function pointers/closures, async, recursion, shared ownership, or dynamic collections of object variants. Use ChatGPT or DeepSeek for concrete examples, the forum and the docs are lacking here.
+* Nim's object variants are not [sum types](https://github.com/nim-lang/RFCs/issues/548). Nim has no simple way to say "MyType is A or B". Newer low level languages such as Rust, Ante, and Inko allow that. Parsing/compiler codes are better in the ML family, clf. [Monkey-Nim](https://github.com/mrsekut/monkey-nim/blob/master/src/parser/ast.nim) vs [Monkey-F#](https://github.com/worriedvulkan/monkey-lang/blob/main/Monkey.Interpreter/Ast.fs). Notice that `ref object` lurking in Nim, definining every tiny AST node as a reference type.
 
-* Nim is not about [the rule of least power](https://en.wikipedia.org/wiki/Rule_of_least_power).
+* Nim is a big language, which is only great for self-education, compiler gurus, and framework writers. I would choose to read 3rd party codes in Go, not Nim.
 
-You can find my Nim rewrite of this repo in [twinpeekz2](https://github.com/aabbtree77/twinpeekz2). I did not use any fancy abstractions. For someone worried about compile time/stack polymorphism and Nim having no [proper sum types](https://github.com/nim-lang/RFCs/issues/548), I would recommend skipping Nim's enum-object-case-of chains or fancy macro-based libs and going with
+You can find my Nim rewrite of this repo in [twinpeekz2](https://github.com/aabbtree77/twinpeekz2). I have not found any need for fancy abstractions there, but Nim invites complexity. Go v1.17 does the opposite, but sadly newer Go is more about Anders Hejlsberg than Rob Pike, IYKWIM. 
 
-- either generic types:
+In a single threaded case (most of the code out there), one can write Nim with `ref` and `concept` and it will be just like Go, but more statically checked, faster, more readable, and more pleasant to write. Just better. However, Nim has so many features that "a better Go" may also become a much better or much worse Go, esp. in the presence of concurrency and 3rd party libraries.
 
-  ```nim
-  proc intersect[T](r: Ray, x: T) =
-    case x of
-      Sphere: 
-        # Code for Sphere intersection
-      Line: 
-        # Code for Line intersection
-      Plane: 
-        # Code for Plane intersection
-  ```
+Neither is particularly good for parsing and often only [fakes sum types](https://github.com/fadion/aria/blob/master/ast/ast.go) with noisy verbosity and without exhaustive checks.
 
-- or function overloading (which Zig/Rust do not have, BTW):
-
-  ```nim
-  proc intersect(r: Ray, x: Sphere) =
-    # Code for Sphere intersection
-  proc intersect(r: Ray, x: Line) =
-    # Code for Line intersection
-  proc intersect(r: Ray, x: Plane) =
-    # Code for Plane intersection
-  ```
-
-There is also *concept*, which is like Go's interface, but resolved at compile time and empowered with function overloading. 
-
-The only truly serious Nim's drawback is that it is a complex language. Go v1.17 was the opposite, sadly not anymore.
+Ultimately, github is also not to be underestimated. [PLDB](https://pldb.io/) lists 1,083,789 Go repos on GitHub. Nim - 8,018. F# - 6,000.
 
 <div align="center">
   <img src="https://raw.githubusercontent.com/aabbtree77/twinpeekz/main/golang.gif" alt="golang-love">
