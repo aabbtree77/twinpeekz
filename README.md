@@ -431,19 +431,21 @@ MetallicRoughnessTexture in Sponza.gltf. Fall back to pseudo-PBR. Warn/adjust un
 
 ## Nim?!
 
-[Speed matters](https://youtu.be/rngfCHiTouA?t=804). Consider Nim: [Nim Nuggets](https://www.youtube.com/watch?v=d2VRuZo2pdA&t=26s&ab_channel=StrangeLoopConference), [Nim Programming Language Youtube Channel](https://www.youtube.com/@nimprogramminglanguage3130/videos), [Xkonti Youtube Channel](https://www.youtube.com/@Xkonti/videos), [Zen of Nim](https://nim-lang.org/blog/2021/11/15/zen-of-nim.html):
+[Speed matters](https://youtu.be/rngfCHiTouA?t=804). Consider Nim: [Nim Nuggets](https://www.youtube.com/watch?v=d2VRuZo2pdA&t=26s&ab_channel=StrangeLoopConference), [Nim Programming Language Youtube](https://www.youtube.com/@nimprogramminglanguage3130/videos), [Xkonti Youtube](https://www.youtube.com/@Xkonti/videos), [Zen of Nim](https://nim-lang.org/blog/2021/11/15/zen-of-nim.html):
 
 Pros:
 
-* Easier to start with than C/C++/Zig/Rust...
+* Default reference semantics and mutability are easier (for me) than in C, C++, Zig, Rust. Ada and D could also be worthy, but I have no experience with them.
 
-* [Optimized reference counting](https://youtu.be/aDi50K_Id_k?t=1634) and low level control: [1](https://nim-lang.org/docs/destructors.html), [2](https://ramanlabs.in/static/blog/raw_memory_management_patterns_in_nim_language.html), [3](https://forum.nim-lang.org/t/3926) to seek for the C performance.
+* [nim-lang.org](https://nim-lang.org/) and [forum.nim-lang.org](https://forum.nim-lang.org/) read like an interesting growing book about a static non-GC space and its [possibilities](https://forum.nim-lang.org/t/3926), not just Nim. I suspect the D forum is also like that.
 
 Cons:
 
-* ref object vs object can get confusing. I wish Nim did not have ref objects at all. Look at this code: [Monkey-Nim](https://github.com/mrsekut/monkey-nim/blob/master/src/parser/ast.nim) with an ugly ref object definining a parser's AST node. Why must the AST node be of a reference type and live on the heap? Compare the Nim code to [Monkey-F#](https://github.com/worriedvulkan/monkey-lang/blob/main/Monkey.Interpreter/Ast.fs) which is less confusing to me.
+* No simple way to say my type is A or B.
 
-* Nim has a lot of advanced features, but lacks the essential one: algebraic data types with type constructors and pattern matching integrated into a language. Instead, we get shooting in random directions with all sorts of lifting, hooking, overloading, dynamic dispatch, object variants, closures, pragmas, refined types, [type erasure](https://gist.github.com/cgarciae/9b7f5d456e8aed3181f8b30f13de2f01), and macros. The language is optimized for compiler gurus and library writers, just like C++.
+* ref object vs object is somewhat tricky. ref object will generally be needed for dynamic dispatch, function pointers/closures, async, recursion, shared ownership, or dynamic collections of object variants. Use ChatGPT or DeepSeek for concrete examples, the forum and the docs are lacking here.
+
+* Nim is not about [the rule of least power](https://en.wikipedia.org/wiki/Rule_of_least_power).
 
 You can find my Nim rewrite of this repo in [twinpeekz2](https://github.com/aabbtree77/twinpeekz2). I did not use any fancy abstractions. For someone worried about compile time/stack polymorphism and Nim having no [proper sum types](https://github.com/nim-lang/RFCs/issues/548), I would recommend skipping Nim's enum-object-case-of chains or fancy macro-based libs and going with
 
@@ -471,9 +473,9 @@ You can find my Nim rewrite of this repo in [twinpeekz2](https://github.com/aabb
     # Code for Plane intersection
   ```
 
-We can also do runtime polymorphism via dynamic dispatch, closures, type erasure, with some combinations.
+There is also *concept*, which is like Go's interface, but resolved at compile time and empowered with function overloading. 
 
-Nim is a complex language with a tiny user base. Go v1.17 was the opposite, sadly not anymore.
+The only truly serious Nim's drawback is that it is a complex language. Go v1.17 was the opposite, sadly not anymore.
 
 <div align="center">
   <img src="https://raw.githubusercontent.com/aabbtree77/twinpeekz/main/golang.gif" alt="golang-love">
