@@ -435,33 +435,25 @@ MetallicRoughnessTexture in Sponza.gltf. Fall back to pseudo-PBR. Warn/adjust un
 
 Pros:
 
-* Stack vs heap control. Nim uses mostly a single concept `ref` which is just like Go's pointer `*`, but Nim statically checks and optimizes more ([big topic](https://youtu.be/aDi50K_Id_k?t=1651)). Unlike Go pointers, Nim's `ref` is optional.
+* Pointers are tricky. In Go, they are everywhere. In Nim, `ref object` is a code smell, applied only when one is desperate for dynamic dispatch, function pointers/closures, async, recursion, shared ownership, dynamic collections of object variants. Reliable low level code will seldom use these capabilities.
 
-  `ref object` is only needed for dynamic dispatch, function pointers/closures, async, recursion, shared ownership, dynamic collections of object variants. Good code will seldom use these capabilities.
+* Runtime polymorphism demands pointers, which means even more of them in Go. Go v1.17 has no compile time polymorphism at all, while Nim has five mechanisms (generics, concepts, function and operator overloading, templates and macros, object variants). 
 
-  Nim's value semantics and `ref` should cover 99% of the stack vs heap granularity. For the remaining 1%, one can delve into copy/move semantics: [1](https://nim-lang.org/docs/destructors.html), [2](https://ramanlabs.in/static/blog/raw_memory_management_patterns_in_nim_language.html).
-  
-* Compile time vs runtime polymorphism. Nim's `concept` is like Go's `interface`, but statically checked, and not demanding reference semantics. Nim also allows function overloading, just like D, and unlike Go, Zig, or Rust. Parametric polymorphism, function overloading, and `concept` are probably enough to cover most of the needs of polymorphism. Note that C has none and is alive and kicking.
+* Nim has at least `ref object not nil` and `std/options`. Go has a trillion dollar mistake.
 
-* Less safe than Rust probably, but not Go either: `ref object not nil` and `std/options`.
-
-* [nim-lang.org](https://nim-lang.org/) and [forum.nim-lang.org](https://forum.nim-lang.org/) read like a captivating never ending story about the whole static non-GC space, not just Nim. The D forum is also like that. Lots of insights not to be found in theory or on github.
+* [nim-lang.org](https://nim-lang.org/) and [forum.nim-lang.org](https://forum.nim-lang.org/) read like a captivating never ending story about the whole static non-GC space, not just Nim. The D forum is also like that. Lots of design discussions and [hacking](https://forum.nim-lang.org/t/3926) not to be found in theory.
 
 Cons:
 
-* Minimizing the uses of `ref object` requires knowledge and discipline.
+* [No sum types](https://github.com/nim-lang/RFCs/issues/548). See [Monkey-Nim](https://github.com/mrsekut/monkey-nim/blob/master/src/parser/ast.nim) and notice that `ref object` lurking in Nim, definining every tiny AST node as a reference type. [Monkey-Go](https://github.com/fadion/aria/blob/master/ast/ast.go) is a similar mess, but we forgive Go for its minimalism. [Monkey-F#-Idiomatic](https://github.com/worriedvulkan/monkey-lang/blob/main/Monkey.Interpreter/Ast.fs) wins here, but we can create a mess with F# too, e.g. see [Monkey-F#-Non-Idiomatic](https://github.com/ledbutter/FsharpMonkeyInterpreter/blob/master/src/Monkey/Ast.fs).
 
-* Nim's object variants are not [sum types](https://github.com/nim-lang/RFCs/issues/548). Nim has no simple way to say "MyType is A or B". Newer low level languages such as Rust, Ante, and Inko allow that. Parsing/compiler codes are better in the ML family, clf. [Monkey-Nim](https://github.com/mrsekut/monkey-nim/blob/master/src/parser/ast.nim) vs [Monkey-F#](https://github.com/worriedvulkan/monkey-lang/blob/main/Monkey.Interpreter/Ast.fs). Notice that `ref object` lurking in Nim, definining every tiny AST node as a reference type.
-
-* Nim is a big language, which is only great for self-education, compiler gurus, and framework writers. I would choose to read 3rd party codes in Go, not Nim.
+* Very complex language.
 
 You can find my Nim rewrite of this repo in [twinpeekz2](https://github.com/aabbtree77/twinpeekz2). I have not found any need for fancy abstractions there, but Nim invites complexity. Go v1.17 does the opposite, but sadly newer Go is more about Anders Hejlsberg than Rob Pike, IYKWIM. 
 
 In a single threaded case (most of the code out there), one can write Nim with `ref` and `concept` and it will be just like Go, but more statically checked, faster, more readable, and more pleasant to write. Just better. However, Nim has so many features that "a better Go" may also become a much better or much worse Go, esp. in the presence of concurrency and 3rd party libraries.
 
-Neither is particularly good for parsing and often only [fakes sum types](https://github.com/fadion/aria/blob/master/ast/ast.go) with noisy verbosity and without exhaustive checks.
-
-Ultimately, github is also not to be underestimated. [PLDB](https://pldb.io/) lists 1,083,789 Go repos on GitHub. Nim - 8,018. F# - 6,000.
+Ultimately, [PLDB](https://pldb.io/) lists 1,083,789 Go repos on GitHub. Nim - 8,018. F# - 6,000.
 
 <div align="center">
   <img src="https://raw.githubusercontent.com/aabbtree77/twinpeekz/main/golang.gif" alt="golang-love">
