@@ -435,17 +435,17 @@ MetallicRoughnessTexture in Sponza.gltf. Fall back to pseudo-PBR. Warn/adjust un
 
 Pros:
 
-* Pointers are tricky. In Go, they are everywhere. In Nim, `ref object` is a code smell, applied only when one is desperate for dynamic dispatch, function pointers/closures, async, recursion, shared ownership, dynamic collections of object variants. Reliable low level code will seldom use these capabilities.
+* Pointers are tricky. In Go, they are everywhere. In Nim, `ref object` is a code smell, applied only when one is desperate for dynamic dispatch, function pointers/closures, async, recursion, shared ownership, and object variants whose branches mix small and big data.
 
 * Runtime polymorphism demands pointers, which means even more of them in Go. Go v1.17 has no compile time polymorphism at all, while Nim has five mechanisms (generics, concepts, function and operator overloading, templates and macros, object variants). 
 
-* Nim has at least `ref object not nil` and `std/options`. Go has a trillion dollar mistake.
+* Nim has at least `ref object not nil` and `std/options`. Go has the trillion dollar mistake.
 
 * [nim-lang.org](https://nim-lang.org/) and [forum.nim-lang.org](https://forum.nim-lang.org/) read like a captivating never ending story about the whole static non-GC space, not just Nim. The D forum is also like that. Lots of design discussions and [hacking](https://forum.nim-lang.org/t/3926) not to be found in theory.
 
 Cons:
 
-* [No sum types](https://github.com/nim-lang/RFCs/issues/548). See [Monkey-Nim](https://github.com/mrsekut/monkey-nim/blob/master/src/parser/ast.nim) and notice that `ref object` lurking in Nim, definining every tiny AST node as a reference type. [Monkey-Go](https://github.com/fadion/aria/blob/master/ast/ast.go) is a similar mess, but we forgive Go for its minimalism. [Monkey-F#-Idiomatic](https://github.com/worriedvulkan/monkey-lang/blob/main/Monkey.Interpreter/Ast.fs) wins here, but we can create a mess with F# too, e.g. see [Monkey-F#-Non-Idiomatic](https://github.com/ledbutter/FsharpMonkeyInterpreter/blob/master/src/Monkey/Ast.fs).
+* [No sum types](https://github.com/nim-lang/RFCs/issues/548). See [Monkey-Nim](https://github.com/mrsekut/monkey-nim/blob/master/src/parser/ast.nim) and notice that `ref object` lurking in Nim, definining every tiny AST node as a reference type. [Monkey-Go](https://github.com/fadion/aria/blob/master/ast/ast.go) is a similar mess, but we forgive Go for its minimalism. [Monkey-F#-Idiomatic](https://github.com/worriedvulkan/monkey-lang/blob/main/Monkey.Interpreter/Ast.fs) wins here, but we can create a mess with F# too, see e.g. [Monkey-F#-Non-Idiomatic](https://github.com/ledbutter/FsharpMonkeyInterpreter/blob/master/src/Monkey/Ast.fs).
 
 * Very complex language.
 
