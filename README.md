@@ -16,7 +16,7 @@ This code renders Sponza in real time. Details:
 std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&
 ```
 
-which should have been just "String"?!
+which should have been just *String*?!
 
 ## Why Volumetric Lighting?
 
@@ -446,7 +446,9 @@ type
     disambTable*: CountTable[PIdent]
 ```
 
-Deciding on `ref object` vs `object` requires knowledge and discipline. It is not clear if this is a language fault. See [Monkey-Nim](https://github.com/mrsekut/monkey-nim/blob/master/src/parser/ast.nim) and notice that `ref object` lurking, definining every tiny AST node as a reference type. Can this be avoided? 
+Deciding on `ref object` vs `object` requires knowledge and discipline. See [Monkey-Nim](https://github.com/mrsekut/monkey-nim/blob/master/src/parser/ast.nim) and notice that `ref object` lurking, definining every tiny AST node as a reference type. Can this be avoided? 
+
+[Monkey-Rust](https://github.com/Dentrax/Monkey/blob/master/src/ast/ast.rs) introduces similar games where `ref` becomes `&` with some further modalities `&mut`, `&'a`, Box, Arc, Mutex, Rc, Gc, Ref, RefMut, RefCell. This is [tough](https://github.com/pauldix/monkey-rust/issues/2), but unlike Nim, Rust has a bigger community and all this is discussed and well absorbed by ChatGTP/DeepSeek. Rust has standard ML sum types (great) and errors as values instead of exceptions (neutral).
 
 [Monkey-Go](https://github.com/fadion/aria/blob/master/ast/ast.go) is a mess, but we forgive Go for not giving us options. [Monkey-F#-Idiomatic](https://github.com/worriedvulkan/monkey-lang/blob/main/Monkey.Interpreter/Ast.fs) wins here, but we can create a mess with F# too, see e.g. [Monkey-F#-Non-Idiomatic](https://github.com/ledbutter/FsharpMonkeyInterpreter/blob/master/src/Monkey/Ast.fs).
 
