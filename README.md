@@ -448,7 +448,7 @@ type
 
 Deciding on `ref object` vs `object` requires knowledge and discipline. See [this AST](https://github.com/mrsekut/monkey-nim/blob/master/src/parser/ast.nim) and notice that `ref object` lurking, definining every tiny node as a reference type. Can this be avoided? 
 
-[Rust](https://github.com/Dentrax/Monkey/blob/master/src/ast/ast.rs) introduces similar games where `ref` becomes `&` with some further modalities `&mut`, `&'a`, &'static, Box, Arc, Mutex, Rc, Gc, Ref, RefMut, RefCell. This is [tough](https://github.com/pauldix/monkey-rust/issues/2), but unlike Nim, Rust has a bigger community and all of this is discussed, also well absorbed by ChatGTP/DeepSeek.
+[Rust](https://github.com/Dentrax/Monkey/blob/master/src/ast/ast.rs) introduces similar games where `ref` becomes `&` with some further modalities [`&mut`, `&'a`, &'static, Box, Arc, Mutex, Rc, Gc, Ref, RefMut, RefCell](https://glaebhoerl.tumblr.com/rust_closure_types). This is [tough](https://github.com/pauldix/monkey-rust/issues/2), but unlike Nim, Rust has a bigger community and all of this is discussed, also absorbed by ChatGTP/DeepSeek.
 
 [Go](https://github.com/fadion/aria/blob/master/ast/ast.go) is not as good as [F#-Idiomatic](https://github.com/worriedvulkan/monkey-lang/blob/main/Monkey.Interpreter/Ast.fs), but I like Go more than [F#-Non-Idiomatic](https://github.com/ledbutter/FsharpMonkeyInterpreter/blob/master/src/Monkey/Ast.fs).
 
@@ -458,9 +458,9 @@ In a single threaded case (most of the code out there), one can write Nim with `
 
 Ultimately, [PLDB](https://pldb.io/) lists the following numbers of Github repos per language:
 
-* Js/Ts: 19,328,238, Java: 11,529,980, Python: 9,300,725.
+* Js/Ts: 19,328,238, Java: 11,529,980, Python: 9,300,725, C/C++: 4,321,896. 
 
-* C/C++: 4,321,896, PHP: 3,479,326, **C#**: 2,161,625, Ruby: 2,659,551, Bash: 1,579,442.
+* PHP: 3,479,326, **C#**: 2,161,625, Ruby: 2,659,551, Bash: 1,579,442.
 
 * Go: 1,083,789, Swift: 1,044,892, Kotlin: 901,474, Dart: 737,948.
 
@@ -470,7 +470,7 @@ Ultimately, [PLDB](https://pldb.io/) lists the following numbers of Github repos
 
 * Smalltalk: 9,336, Nim: 8,018, **F#**: 6,000, Ada: 4,785, Scilab: 3,986, Zig: 3,909, VimScript: 3,544, Starlark: 3,423, COBOL: 3,411. 
 
-* Brainfuck: 1,631, V: 1,382, LLVM IR: 1,351, Emacs Lisp: 1,305, Eiffel: 913, Pony: 549, Odin: 417, Gleam: 104, Self: 36.
+* Brainfuck: 1,631, Forth: 1,537, V: 1,382, Emacs Lisp: 1,305, Eiffel: 913, Pony: 549, Odin: 417, Gleam: 104, Self: 36.
 
 <div align="center">
   <img src="https://raw.githubusercontent.com/aabbtree77/twinpeekz/main/golang.gif" alt="golang-love">
