@@ -433,7 +433,7 @@ MetallicRoughnessTexture in Sponza.gltf. Fall back to pseudo-PBR. Warn/adjust un
 
 [Speed matters](https://youtu.be/rngfCHiTouA?t=804). Consider Nim: [Nim Nuggets](https://www.youtube.com/watch?v=d2VRuZo2pdA&t=26s&ab_channel=StrangeLoopConference), [Nim Programming Language Youtube](https://www.youtube.com/@nimprogramminglanguage3130/videos), [Xkonti Youtube](https://www.youtube.com/@Xkonti/videos), [Zen of Nim](https://nim-lang.org/blog/2021/11/15/zen-of-nim.html), [nim-lang.org](https://nim-lang.org/), [forum.nim-lang.org](https://forum.nim-lang.org/).
 
-In Go, pointers are everywhere by design and culture. In solid Nim, `ref object` is a code smell, applied only when one is desperate, see e.g.
+In Go, pointers are everywhere by design and culture. In a solid Nim, `ref object` is a code smell, applied only when one is desperate, see e.g.
 
 ```nim
 # https://github.com/nim-lang/Nim/blob/devel/compiler/ast.nim
@@ -446,17 +446,31 @@ type
     disambTable*: CountTable[PIdent]
 ```
 
-Deciding on `ref object` vs `object` requires knowledge and discipline. See [Monkey-Nim](https://github.com/mrsekut/monkey-nim/blob/master/src/parser/ast.nim) and notice that `ref object` lurking, definining every tiny AST node as a reference type. Can this be avoided? 
+Deciding on `ref object` vs `object` requires knowledge and discipline. See [this AST](https://github.com/mrsekut/monkey-nim/blob/master/src/parser/ast.nim) and notice that `ref object` lurking, definining every tiny node as a reference type. Can this be avoided? 
 
-[Monkey-Rust](https://github.com/Dentrax/Monkey/blob/master/src/ast/ast.rs) introduces similar games where `ref` becomes `&` with some further modalities `&mut`, `&'a`, Box, Arc, Mutex, Rc, Gc, Ref, RefMut, RefCell. This is [tough](https://github.com/pauldix/monkey-rust/issues/2), but unlike Nim, Rust has a bigger community and all this is discussed and well absorbed by ChatGTP/DeepSeek. Rust has standard ML sum types (great) and errors as values instead of exceptions (neutral).
+[Rust](https://github.com/Dentrax/Monkey/blob/master/src/ast/ast.rs) introduces similar games where `ref` becomes `&` with some further modalities `&mut`, `&'a`, &'static, Box, Arc, Mutex, Rc, Gc, Ref, RefMut, RefCell. This is [tough](https://github.com/pauldix/monkey-rust/issues/2), but unlike Nim, Rust has a bigger community and all of this is discussed, also well absorbed by ChatGTP/DeepSeek.
 
-[Monkey-Go](https://github.com/fadion/aria/blob/master/ast/ast.go) is a mess, but we forgive Go for not giving us options. [Monkey-F#-Idiomatic](https://github.com/worriedvulkan/monkey-lang/blob/main/Monkey.Interpreter/Ast.fs) wins here, but we can create a mess with F# too, see e.g. [Monkey-F#-Non-Idiomatic](https://github.com/ledbutter/FsharpMonkeyInterpreter/blob/master/src/Monkey/Ast.fs).
+[Go](https://github.com/fadion/aria/blob/master/ast/ast.go) is not as good as [F#-Idiomatic](https://github.com/worriedvulkan/monkey-lang/blob/main/Monkey.Interpreter/Ast.fs), but I like Go more than [F#-Non-Idiomatic](https://github.com/ledbutter/FsharpMonkeyInterpreter/blob/master/src/Monkey/Ast.fs).
 
 You can find my Nim rewrite of this repo in [twinpeekz2](https://github.com/aabbtree77/twinpeekz2). I have not found any need for fancy abstractions there, but Nim invites complexity. Go v1.17 does the opposite. Sadly, newer Go is more about Anders Hejlsberg than Rob Pike, IYKWIM. 
 
 In a single threaded case (most of the code out there), one can write Nim with `ref` and `concept` and it will be just like Go, but more statically checked, faster, more readable, and more pleasant to write. Just better. However, Nim is also an extremely complex language, and we know what complexity does to Ada, C++, D, ATS, Rust, Zig, Jai...
 
-Ultimately, [PLDB](https://pldb.io/) lists 1,083,789 Go repos on GitHub. Nim - 8,018. F# - 6,000.
+Ultimately, [PLDB](https://pldb.io/) lists the following numbers of Github repos per language:
+
+* Js/Ts: 19,328,238, Java: 11,529,980, Python: 9,300,725.
+
+* C/C++: 4,321,896, PHP: 3,479,326, **C#**: 2,161,625, Ruby: 2,659,551, Bash: 1,579,442.
+
+* Go: 1,083,789, Swift: 1,044,892, Kotlin: 901,474, Dart: 737,948.
+
+* R: 689,533, Objective-C: 535,667, Rust: 356,891, Matlab: 311,901, Lua: 243,541, Scala: 219,084, Perl: 169,830, Haskell: 126,924.  
+
+* Assembly: 109,158, Solidity: 87,183, Clojure: 82,125, Julia: 53,507, Pascal: 49,346, GDScript: 39,447, VBA+BASIC+FreeBASIC: 29,867, Fortran: 29,127, Erlang: 28,645, Ocaml: 27,376, Prolog: 22,512, Scheme: 16,742, Tcl: 13,969, D: 13,224. 
+
+* Smalltalk: 9,336, Nim: 8,018, **F#**: 6,000, Ada: 4,785, Scilab: 3,986, Zig: 3,909, VimScript: 3,544, Starlark: 3,423, COBOL: 3,411. 
+
+* Brainfuck: 1,631, V: 1,382, LLVM IR: 1,351, Emacs Lisp: 1,305, Eiffel: 913, Pony: 549, Odin: 417, Gleam: 104, Self: 36.
 
 <div align="center">
   <img src="https://raw.githubusercontent.com/aabbtree77/twinpeekz/main/golang.gif" alt="golang-love">
