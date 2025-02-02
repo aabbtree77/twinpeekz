@@ -433,7 +433,7 @@ MetallicRoughnessTexture in Sponza.gltf. Fall back to pseudo-PBR. Warn/adjust un
 
 [Speed matters](https://youtu.be/rngfCHiTouA?t=804). Consider Nim: [Nim Nuggets](https://www.youtube.com/watch?v=d2VRuZo2pdA&t=26s&ab_channel=StrangeLoopConference), [Nim Programming Language Youtube](https://www.youtube.com/@nimprogramminglanguage3130/videos), [Xkonti Youtube](https://www.youtube.com/@Xkonti/videos), [Zen of Nim](https://nim-lang.org/blog/2021/11/15/zen-of-nim.html), [nim-lang.org](https://nim-lang.org/), [forum.nim-lang.org](https://forum.nim-lang.org/).
 
-In Go, pointers are everywhere by design and culture. In a solid Nim, `ref object` is a code smell, applied only when one is desperate, see e.g.
+In Go, pointers are everywhere by design and culture. In Nim, `ref object` is a code smell, applied only when one is desperate, see e.g.
 
 ```nim
 # https://github.com/nim-lang/Nim/blob/devel/compiler/ast.nim
@@ -446,15 +446,33 @@ type
     disambTable*: CountTable[PIdent]
 ```
 
-Deciding on `ref object` vs `object` requires knowledge and discipline. See [this AST](https://github.com/mrsekut/monkey-nim/blob/master/src/parser/ast.nim) and notice that `ref object` lurking, definining every tiny node as a reference type. Can this be avoided? 
+Deciding on `ref object` vs `object` is not trivial. See [this AST](https://github.com/mrsekut/monkey-nim/blob/master/src/parser/ast.nim) and notice that `ref object` lurking, definining every tiny node as a reference type. Can this be avoided? 
 
-[Rust](https://github.com/Dentrax/Monkey/blob/master/src/ast/ast.rs) introduces similar games where `ref` becomes `&` with some further modalities [`&mut`, `&'a`, &'static, Box, Arc, Mutex, Rc, Gc, Ref, RefMut, RefCell](https://glaebhoerl.tumblr.com/rust_closure_types). This is [tough](https://github.com/pauldix/monkey-rust/issues/2), but unlike Nim, Rust has a bigger community and all of this is discussed, also absorbed by ChatGTP/DeepSeek.
+[Rust](https://github.com/Dentrax/Monkey/blob/master/src/ast/ast.rs) introduces similar games where `ref` becomes `&` with some further modalities: `&mut`, `&'a`, &'a mut, &'static, &dyn, &mut dyn, Box, Box<dyn Trait>, dyn Trait + 'a, Rc, Arc, Weak, Cow<'a, T>, Gc, Cell, RefCell, Mutex/RwLock, OnceLock/LazyLock, ref mut, *const, *mut, Pin, PhantomData, MaybeUninit, fn(T) -> U, Box<dyn Fn(T) -> U>, ... with all the subsets, permutations, interactions. This poses [challenges](https://github.com/pauldix/monkey-rust/issues/2), but unlike Nim, Rust has larger community and all of this is discussed, better absorbed by ChatGPT/DeepSeek.
 
 [Go](https://github.com/fadion/aria/blob/master/ast/ast.go) is not as good as [F#-Idiomatic](https://github.com/worriedvulkan/monkey-lang/blob/main/Monkey.Interpreter/Ast.fs), but I like Go more than [F#-Non-Idiomatic](https://github.com/ledbutter/FsharpMonkeyInterpreter/blob/master/src/Monkey/Ast.fs).
 
 You can find my Nim rewrite of this repo in [twinpeekz2](https://github.com/aabbtree77/twinpeekz2). I have not found any need for fancy abstractions there, but Nim invites complexity. Go v1.17 does the opposite. Sadly, newer Go is more about Anders Hejlsberg than Rob Pike, IYKWIM. 
 
-In a single threaded case (most of the code out there), one can write Nim with `ref` and `concept` and it will be just like Go, but more statically checked, faster, more readable, and more pleasant to write. Just better. However, Nim is also an extremely complex language, and we know what complexity does to Ada, C++, D, ATS, Rust, Zig, Jai...
+In a single threaded case (most of the code out there), one can write Nim with `ref` and `concept` and it will be just like Go, but more statically checked, faster, more readable, and more pleasant to write. Just better. However, Nim is also an extremely complex language, and we know what complexity does to code reading and debugging.
+
+According to [Andreas Rumpf Araq](https://nim-lang.org/), Nim maximizes performance, expressiveness, and elegance, but in reality elegance is not codifiable, is in the eye of the beholder, and boils down to expressiveness, so we arrive at
+
+Nim: Performance + 2 * Expressiveness.
+
+Compare this to 
+
+Rust/Ada: Performance + Expressiveness + Safety,
+
+and
+
+Go: -Expressiveness,
+
+which is also a good thing since Expressiveness = Multiple Ways To Do X. 
+
+**V**: [0](https://vlang.io/), [1](https://github.com/vlang/v/wiki/V-for-Go-developers), [2](https://github.com/vlang/v/wiki/V-for-Cpp-developers) is also worth considering:
+
+V: Performance - Expressiveness - Go quirks. 
 
 Ultimately, [PLDB](https://pldb.io/) lists the following numbers of Github repos per language:
 
