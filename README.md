@@ -368,12 +368,12 @@ gc 45 @345.492s 0%: 0.037+14+0.007 ms clock, 0.30+0.41/0.31/0.29+0.057 ms cpu, 4
 gc 46 @353.542s 0%: 0.045+15+0.006 ms clock, 0.36+0.25/0.58/0.27+0.051 ms cpu, 4->4->0 MB, 5 MB goal, 8 P
 ```
 
-The default GC setup does not consume more than 1ms every 8s or so. However, a spike wasting whole 24ms may occur once a minute. Dropping a frame or two per minute does not break any smooth 3D experience. Still, the GC is already intruding... 
+The default GC setup does not consume more than 1ms every 8s or so. However, a spike wasting whole 24ms may occur once a minute. Dropping a frame or two per minute does not break any smooth 3D experience.
 
 One interesting feature about Go was that inside main.go, there was no need to use unsafe pointers to pass user 
 data to the GLFW callbacks. By setting a struct method as a callback, the callback had access to the data of the structure.
 
-Pointers bring [troubles](https://github.com/g3n/engine/issues/163), [the trillion dollar mistake](https://github.com/tcard/sgo)...
+Pointers bring [bugs](https://github.com/g3n/engine/issues/163) and [the trillion dollar mistake](https://github.com/tcard/sgo)...
 
 Go types and libs were plain/flat enough to reach anything with printf. I relied on go-vim and its :GoDef with ctrl+O to get back. These two commands helped to navigate 3rd party codes. However, I could start working with Quim Muntal's GLTF library with its virtually nonexisting docs only by reading [Issue #26](https://github.com/qmuntal/gltf/issues/26). Still, a huge plus for Golang in that 3rd party codes can often be grokked without too much suffering, at least prior to v1.18 and v1.23.
 
@@ -408,7 +408,7 @@ Implicit behaviour. [This code](https://github.com/guzba/gltfviewer) does not us
 
 ## To Do (Or Not)
 
-* [Rewrite everything in Nim](https://github.com/aabbtree77/twinpeekz2).
+* [Replace Go with Nim?](https://github.com/aabbtree77/twinpeekz2)
 
 * Focus on mesh instancing and complete scene export from Blender, in GLTF 2.0. Should lights/camera be read from the GLTF/Blender?
 
@@ -425,7 +425,7 @@ MetallicRoughnessTexture in Sponza.gltf. Fall back to pseudo-PBR. Warn/adjust un
 
 * A skybox would be nice, but anything "samplerCube" related takes 3ms. on GTX 760. Dual-paraboloid maps as in [GTA-5](https://www.adriancourreges.com/blog/2015/11/02/gta-v-graphics-study/)?
 
-* [Forward vs Deferred vs Forward+](https://www.3dgep.com/forward-plus/). Forward is alright, but it does not matter. INSIDE 2016 used deferred rendering. Forward+? Tiling/voxelization, 3D textures, this is too specialized.
+* [Forward vs Deferred vs Forward+](https://www.3dgep.com/forward-plus/). Forward is alright, but it does not matter. INSIDE 2016 used deferred rendering. Forward+? See Maximilian Mader's code in the references below.
 
 * Animations, hot reloading, ImGui, ECS, physics engine. See [David H. Eberly, 2010](https://www.amazon.com/Game-Physics-David-H-Eberly/dp/0123749034), [qu3e](https://github.com/RandyGaul/qu3e)...
 
@@ -448,52 +448,31 @@ type
 
 Deciding on `ref object` vs `object` is not trivial. See [this AST](https://github.com/mrsekut/monkey-nim/blob/master/src/parser/ast.nim) and notice that `ref object` lurking, definining every tiny node as a reference type. Can this be avoided? 
 
-[Rust](https://github.com/Dentrax/Monkey/blob/master/src/ast/ast.rs) introduces similar games where `ref` becomes `&` with some further modalities: `&mut`, `&'a`, &'a mut, &'static, &dyn, &mut dyn, Box, Box<dyn Trait>, dyn Trait + 'a, Rc, Arc, Weak, Cow<'a, T>, Gc, Cell, RefCell, Mutex/RwLock, OnceLock/LazyLock, ref mut, *const, *mut, Pin, PhantomData, MaybeUninit, fn(T) -> U, Box<dyn Fn(T) -> U>, ... with all the subsets, permutations, interactions. This poses [challenges](https://github.com/pauldix/monkey-rust/issues/2), but unlike Nim, Rust has larger community and all of this is discussed, better absorbed by ChatGPT/DeepSeek.
+[Rust](https://github.com/Dentrax/Monkey/blob/master/src/ast/ast.rs) introduces similar games where `ref` becomes `&` with some further modalities: `&mut`, `&'a`, &'a mut, &'static, &dyn, &mut dyn, Box, Box<dyn Trait>, dyn Trait + 'a, Rc, Arc, Weak, Cow<'a, T>, Gc, Cell, RefCell, Mutex/RwLock, OnceLock/LazyLock, ref mut, *const, *mut, Pin, PhantomData, MaybeUninit, fn(T) -> U, Box<dyn Fn(T) -> U>, ... with all the subsets, permutations, interactions. This poses [challenges](https://github.com/pauldix/monkey-rust/issues/2) since effectively you are now a garbage collector.
 
-[Go](https://github.com/fadion/aria/blob/master/ast/ast.go) is not as good as [F#-Idiomatic](https://github.com/worriedvulkan/monkey-lang/blob/main/Monkey.Interpreter/Ast.fs), but I like Go more than [F#-Non-Idiomatic](https://github.com/ledbutter/FsharpMonkeyInterpreter/blob/master/src/Monkey/Ast.fs).
+You can find my Nim rewrite of this repo in [twinpeekz2](https://github.com/aabbtree77/twinpeekz2). I have not found any need for fancy abstractions there, but Nim invites complexity. Go v1.17 does the opposite. Even in the places demanding high levels of polymorphism, [Go](https://github.com/fadion/aria/blob/master/ast/ast.go) is very decent.
 
-You can find my Nim rewrite of this repo in [twinpeekz2](https://github.com/aabbtree77/twinpeekz2). I have not found any need for fancy abstractions there, but Nim invites complexity. Go v1.17 does the opposite. Sadly, newer Go is more about Anders Hejlsberg than Rob Pike, IYKWIM. 
-
-In a single threaded case (most of the code out there), one can write Nim with `ref` and `concept` and it will be just like Go, but more statically checked, faster, more readable, and more pleasant to write. Just better. However, Nim is also an extremely complex language, and we know what complexity does to code reading and debugging.
-
-According to [Andreas Rumpf Araq](https://nim-lang.org/), Nim maximizes performance, expressiveness, and elegance, but in reality elegance is not codifiable, is in the eye of the beholder, and boils down to expressiveness, so we arrive at
-
-Nim: Performance + 2 * Expressiveness.
-
-Compare this to 
-
-Rust/Ada: Performance + Expressiveness + Safety,
-
-and
-
-Go: -Expressiveness,
-
-which is also a good thing since Expressiveness = Multiple Ways To Do X. 
-
-**V**: [0](https://vlang.io/), [1](https://github.com/vlang/v/wiki/V-for-Go-developers), [2](https://github.com/vlang/v/wiki/V-for-Cpp-developers) is also worth considering:
-
-V: Performance - Expressiveness - Go quirks. 
+In a single threaded case (most of the code out there), one can write in plain Nim with `ref` and `concept` and it will be just like Go, but more statically checked, faster, more readable, and more pleasant to write. Just better. However, Nim is generally an extremely complex language...
 
 Ultimately, [PLDB](https://pldb.io/) lists the following numbers of Github repos per language:
 
-* Js/Ts: 19,328,238, Java: 11,529,980, Python: 9,300,725, C/C++: 4,321,896. 
+* Js/Ts: 19M, Java: 12M, Python: 9M, C/C++: 4M. 
 
-* PHP: 3,479,326, **C#**: 2,161,625, Ruby: 2,659,551, Bash: 1,579,442.
+* C#: 2M, **Go: 1M**, Kotlin: 901K.
 
-* Go: 1,083,789, Swift: 1,044,892, Kotlin: 901,474, Dart: 737,948.
+* Rust: 357K, Matlab: 312K, Lua: 244K, Scala: 219K, Haskell: 127K.  
 
-* R: 689,533, Objective-C: 535,667, Rust: 356,891, Matlab: 311,901, Lua: 243,541, Scala: 219,084, Perl: 169,830, Haskell: 126,924.  
+* Solidity: 87K, Clojure: 82K, GDScript: 39K, Erlang: 29K. 
 
-* Assembly: 109,158, Solidity: 87,183, Clojure: 82,125, Julia: 53,507, Pascal: 49,346, GDScript: 39,447, VBA+BASIC+FreeBASIC: 29,867, Fortran: 29,127, Erlang: 28,645, Ocaml: 27,376, Prolog: 22,512, Scheme: 16,742, Tcl: 13,969, D: 13,224. 
+* D: 13K, Nim: 8K, F#: 6K, Ada: 5K, Scilab: 4K, Starlark: 3K, V: 1K.
 
-* Smalltalk: 9,336, Nim: 8,018, **F#**: 6,000, Ada: 4,785, Scilab: 3,986, Zig: 3,909, VimScript: 3,544, Starlark: 3,423, COBOL: 3,411. 
-
-* Brainfuck: 1,631, Forth: 1,537, V: 1,382, Emacs Lisp: 1,305, Eiffel: 913, Pony: 549, Odin: 417, Gleam: 104, Self: 36.
+* Self: 36.
 
 <div align="center">
   <img src="https://raw.githubusercontent.com/aabbtree77/twinpeekz/main/golang.gif" alt="golang-love">
 </div>
 
+[Write in Go...](https://www.youtube.com/watch?v=LJvEIjRBSDA&ab_channel=ScaleAbility)
        
 ## Credits, Rendering Frameworks I Have Tried, Many Thanks To:
 
