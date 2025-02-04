@@ -468,11 +468,15 @@ Ultimately, [PLDB](https://pldb.io/) lists the following numbers of Github repos
 
 * Self: 36.
 
+In practice, it is better to have a smaller language with more libraries than the opposite of it. Go simply maximizes # of Github repos / # language features.
+
 <div align="center">
   <img src="https://raw.githubusercontent.com/aabbtree77/twinpeekz/main/golang.gif" alt="golang-love">
 </div>
 
-[Write in Go...](https://www.youtube.com/watch?v=LJvEIjRBSDA&ab_channel=ScaleAbility)
+[Write in Go.](https://www.youtube.com/watch?v=LJvEIjRBSDA&ab_channel=ScaleAbility)
+
+[You'll be back (to Go).](https://www.youtube.com/watch?v=rzo8u03vC7Y&ab_channel=MatRyer)
        
 ## Credits, Rendering Frameworks I Have Tried, Many Thanks To:
 
