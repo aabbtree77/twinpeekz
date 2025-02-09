@@ -468,7 +468,7 @@ Ultimately, [PLDB](https://pldb.io/) lists the following numbers of Github repos
 
 * Self: 36.
 
-In practice, it is better to have a smaller language with more libraries than the opposite of it. Go simply maximizes # of Github repos / # language features.
+In practice, it is better to have a smaller language with more libraries than the opposite of it. Perhaps Go even maximizes the number of Github repos divided by the language features.
 
 <div align="center">
   <img src="https://raw.githubusercontent.com/aabbtree77/twinpeekz/main/golang.gif" alt="golang-love">
@@ -477,6 +477,10 @@ In practice, it is better to have a smaller language with more libraries than th
 [Write in Go.](https://www.youtube.com/watch?v=LJvEIjRBSDA&ab_channel=ScaleAbility)
 
 [You'll be back (to Go).](https://www.youtube.com/watch?v=rzo8u03vC7Y&ab_channel=MatRyer)
+
+To be fair, another metric. Search for "esp32", which is a popular embedded platform. Results (number of Github repos per language):
+
+C++: 39.6K, C: 16K, Rust: 1.2K. TypeScript: 499, Go: 101. D/Pascal/Zig/Ada/Nim/F#: fewer than 15, but greater than zero. V/Odin: 0. 
        
 ## Credits, Rendering Frameworks I Have Tried, Many Thanks To:
 
