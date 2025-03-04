@@ -433,11 +433,7 @@ MetallicRoughnessTexture in Sponza.gltf. Fall back to pseudo-PBR. Warn/adjust un
 
 [Speed matters](https://youtu.be/rngfCHiTouA?t=804). I have considered Nim: [Nim Nuggets](https://www.youtube.com/watch?v=d2VRuZo2pdA&t=26s&ab_channel=StrangeLoopConference), [Nim Programming Language Youtube](https://www.youtube.com/@nimprogramminglanguage3130/videos), [Xkonti Youtube](https://www.youtube.com/@Xkonti/videos), [Zen of Nim](https://nim-lang.org/blog/2021/11/15/zen-of-nim.html), [nim-lang.org](https://nim-lang.org/), [forum.nim-lang.org](https://forum.nim-lang.org/)... see [the rewrite](https://github.com/aabbtree77/twinpeekz2).
 
-In a single threaded case (most of the 3D codes out there), Nim with `ref` and `concept` is just a better Go, more performant and statically checked. Unlike Go, Nim suffers feature creep and has a few peculiarities:
-
-* Deciding on `ref object` vs `object` is vital (GC vs non-GC), but often not trivial.
-
-* Object variants instead of proper [sum types](https://github.com/nim-lang/RFCs/issues/548). Just like Ada.
+In a single-threaded case (most of the 3D codes out there), Nim with `object` and `concept` is just like Go with `struct` and `interface`, but with the performance of C and static checks. Unlike Go's `interface`, one cannot store `concept`-satisfying  objects in a (heterogeneous) container. An object variant will be needed, or `ref object` (dynamic dispatch), or closures with macros, or various combinations of these. Having the degrees of freedom can be very annoying. Object variants are not proper [sum types](https://github.com/nim-lang/RFCs/issues/548), while refs/closures kill performance and add "action at a distance".
 
 Ultimately, the [PLDB](https://pldb.io/) lists the following numbers of Github repos per language:
 
