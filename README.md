@@ -433,23 +433,11 @@ MetallicRoughnessTexture in Sponza.gltf. Fall back to pseudo-PBR. Warn/adjust un
 
 [Speed matters](https://youtu.be/rngfCHiTouA?t=804). I have considered Nim: [Nim Nuggets](https://www.youtube.com/watch?v=d2VRuZo2pdA&t=26s&ab_channel=StrangeLoopConference), [Nim Programming Language Youtube](https://www.youtube.com/@nimprogramminglanguage3130/videos), [Xkonti Youtube](https://www.youtube.com/@Xkonti/videos), [Zen of Nim](https://nim-lang.org/blog/2021/11/15/zen-of-nim.html), [nim-lang.org](https://nim-lang.org/), [forum.nim-lang.org](https://forum.nim-lang.org/)... see [the rewrite](https://github.com/aabbtree77/twinpeekz2).
 
-I am not too excited about these low level languages as the codes bring complexity around:
+In a single threaded case (most of the 3D codes out there), Nim with `ref` and `concept` is just a better Go, more performant and statically checked. Unlike Go, Nim suffers feature creep and has a few peculiarities:
 
-* Too much granularity (custom allocators, string interning, move semantics).
+* Deciding on `ref object` vs `object` is vital (GC vs non-GC), but often not trivial.
 
-* The joy of debugging compile time shenanigans.
-
-* Bad design (static and dynamic feature creep, compiler directives).
-
-Specifically to Nim:
-
-* Deciding on `ref object` vs `object` is vital (GC vs non-GC), but not trivial.
-
-* Macros spread essentials to 3rd party libs.
-
-* OO with needless extra baggage such as object variants and interfaces. No proper [sum types](https://github.com/nim-lang/RFCs/issues/548). Just like Ada.
-
-In a single threaded case (most of the 3D codes out there), Nim with `ref` and `concept` is just Go, but more performant and statically checked. However, nobody will agree on this Nim subset!
+* Object variants instead of proper [sum types](https://github.com/nim-lang/RFCs/issues/548). Just like Ada.
 
 Ultimately, the [PLDB](https://pldb.io/) lists the following numbers of Github repos per language:
 
