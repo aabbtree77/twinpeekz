@@ -429,31 +429,29 @@ MetallicRoughnessTexture in Sponza.gltf. Fall back to pseudo-PBR. Warn/adjust un
 
 * Animations, hot reloading, ImGui, ECS, physics engine. See [David H. Eberly, 2010](https://www.amazon.com/Game-Physics-David-H-Eberly/dp/0123749034), [qu3e](https://github.com/RandyGaul/qu3e)...
 
-## Why Go, Not Ada/Pascal/D/Nim/Rust/C3/Jai etc.
+## Why Go, Not Ada/D/Nim/Rust/Jai etc.
 
-[Speed matters](https://youtu.be/rngfCHiTouA?t=804). I have considered Nim: [Nim Nuggets](https://www.youtube.com/watch?v=d2VRuZo2pdA&t=26s&ab_channel=StrangeLoopConference), [Nim Programming Language Youtube](https://www.youtube.com/@nimprogramminglanguage3130/videos), [Xkonti Youtube](https://www.youtube.com/@Xkonti/videos), [Zen of Nim](https://nim-lang.org/blog/2021/11/15/zen-of-nim.html), [nim-lang.org](https://nim-lang.org/), [forum.nim-lang.org](https://forum.nim-lang.org/)... 
+[Speed matters](https://youtu.be/rngfCHiTouA?t=804). I have considered Nim: [Nim Nuggets](https://www.youtube.com/watch?v=d2VRuZo2pdA&t=26s&ab_channel=StrangeLoopConference), [Nim Programming Language Youtube](https://www.youtube.com/@nimprogramminglanguage3130/videos), [Xkonti Youtube](https://www.youtube.com/@Xkonti/videos), [Zen of Nim](https://nim-lang.org/blog/2021/11/15/zen-of-nim.html), [nim-lang.org](https://nim-lang.org/), [forum.nim-lang.org](https://forum.nim-lang.org/)... see [the rewrite](https://github.com/aabbtree77/twinpeekz2).
 
-See [the rewrite](https://github.com/aabbtree77/twinpeekz2).
+I am not too excited about these low level languages as the codes bring complexity around:
 
-However, I am not too excited about it. In my experience, any of these low level (system) programming languages will bring a lot of extra complexity revolving around:
+* Too much granularity (custom allocators, string interning, move semantics).
 
-* Stack vs heap and address passing.
+* The joy of debugging compile time shenanigans.
 
-* Compile time shenanigans.
-
-* Bad design (universalism, micromanagement, too many ways to do the same thing).
+* Bad design (static and dynamic feature creep, compiler directives).
 
 Specifically to Nim:
 
-* Deciding on `ref object` vs `object` is vital, but not trivial.
+* Deciding on `ref object` vs `object` is vital (GC vs non-GC), but not trivial.
 
-* Macros spread the essential to random 3rd party libs.
+* Macros spread essentials to 3rd party libs.
 
-* Neither OO, nor FP. Neither GC, nor non-GC.
+* OO with needless extra baggage such as object variants and interfaces. No proper [sum types](https://github.com/nim-lang/RFCs/issues/548). Just like Ada.
 
 In a single threaded case (most of the 3D codes out there), Nim with `ref` and `concept` is just Go, but more performant and statically checked. However, nobody will agree on this Nim subset!
 
-Ultimately, a huge problem with these "more disciplined" languages is the lack of code. [PLDB](https://pldb.io/) lists the following numbers of Github repos per language:
+Ultimately, the [PLDB](https://pldb.io/) lists the following numbers of Github repos per language:
 
 * C/C++: 4M. 
 
