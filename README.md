@@ -375,9 +375,7 @@ data to the GLFW callbacks. By setting a struct method as a callback, the callba
 
 Pointers bring [bugs](https://github.com/g3n/engine/issues/163). [The trillion dollar mistake](https://github.com/tcard/sgo)...
 
-Go types and libs were plain/flat enough to reach anything with printf. I relied on go-vim and its :GoDef with ctrl+O to get back. These two commands helped to navigate 3rd party codes. However, I could start working with Quim Muntal's GLTF library with its virtually nonexisting docs only by reading [Issue #26](https://github.com/qmuntal/gltf/issues/26). Still, a huge plus for Golang in that 3rd party codes can often be grokked without too much suffering, at least prior to v1.18 and v1.23.
-
-No luxury with "import pdb; pdb.set_trace()" and Python's REPL, but that is not a problem. [gdbgui](https://www.gdbgui.com/), [gdlv](https://github.com/aarzilli/gdlv/issues/20), or VS Code could be useful, but I did not need them.
+Go types and libs were plain/flat enough to reach anything with printf. I relied on go-vim and its :GoDef with ctrl+O to get back. These two commands helped to navigate 3rd party codes. However, I could start working with Quim Muntal's GLTF library with its virtually nonexisting docs only by reading [Issue #26](https://github.com/qmuntal/gltf/issues/26). Still, a huge plus for Golang in that 3rd party codes can often be grokked without too much suffering.
 
 ## OpenGL Experience Report
 
@@ -429,13 +427,13 @@ MetallicRoughnessTexture in Sponza.gltf. Fall back to pseudo-PBR. Warn/adjust un
 
 * [Replace Go with Nim?](https://github.com/aabbtree77/twinpeekz2)
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/aabbtree77/twinpeekz/main/golang.gif" alt="golang-love">
-</div>
+    <div align="center">
+      <img src="https://raw.githubusercontent.com/aabbtree77/twinpeekz/main/golang.gif" alt="golang-love">
+    </div>
 
-[Write in Go.](https://www.youtube.com/watch?v=LJvEIjRBSDA&ab_channel=ScaleAbility)
+    [Write in Go.](https://www.youtube.com/watch?v=LJvEIjRBSDA&ab_channel=ScaleAbility)
 
-[You'll be back (to Go).](https://www.youtube.com/watch?v=rzo8u03vC7Y&ab_channel=MatRyer)
+    [You'll be back (to Go).](https://www.youtube.com/watch?v=rzo8u03vC7Y&ab_channel=MatRyer)
        
 ## Credits, Rendering Frameworks I Have Tried, Many Thanks To:
 
