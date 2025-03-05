@@ -373,7 +373,7 @@ The default GC setup does not consume more than 1ms every 8s or so. However, a s
 One interesting feature about Go was that inside main.go, there was no need to use unsafe pointers to pass user 
 data to the GLFW callbacks. By setting a struct method as a callback, the callback had access to the data of the structure.
 
-Pointers bring [bugs](https://github.com/g3n/engine/issues/163) and [the trillion dollar mistake](https://github.com/tcard/sgo)...
+Pointers bring [bugs](https://github.com/g3n/engine/issues/163). [The trillion dollar mistake](https://github.com/tcard/sgo)...
 
 Go types and libs were plain/flat enough to reach anything with printf. I relied on go-vim and its :GoDef with ctrl+O to get back. These two commands helped to navigate 3rd party codes. However, I could start working with Quim Muntal's GLTF library with its virtually nonexisting docs only by reading [Issue #26](https://github.com/qmuntal/gltf/issues/26). Still, a huge plus for Golang in that 3rd party codes can often be grokked without too much suffering, at least prior to v1.18 and v1.23.
 
@@ -408,8 +408,6 @@ Implicit behaviour. [This code](https://github.com/guzba/gltfviewer) does not us
 
 ## To Do (Or Not)
 
-* [Replace Go with Nim?](https://github.com/aabbtree77/twinpeekz2)
-
 * Focus on mesh instancing and complete scene export from Blender, in GLTF 2.0. Should lights/camera be read from the GLTF/Blender?
 
 * Reliable GLTF: failback/failover w.r.t. broken file paths and assets, e.g. Sponza primitive No. 12 (rusty chain) has no 
@@ -429,21 +427,7 @@ MetallicRoughnessTexture in Sponza.gltf. Fall back to pseudo-PBR. Warn/adjust un
 
 * Animations, hot reloading, ImGui, ECS, physics engine. See [David H. Eberly, 2010](https://www.amazon.com/Game-Physics-David-H-Eberly/dp/0123749034), [qu3e](https://github.com/RandyGaul/qu3e)...
 
-## Why Go, Not Ada/D/Nim/Rust/Jai etc.
-
-[Speed matters](https://youtu.be/rngfCHiTouA?t=804). I have considered Nim: [Nim Nuggets](https://www.youtube.com/watch?v=d2VRuZo2pdA&t=26s&ab_channel=StrangeLoopConference), [Nim Programming Language Youtube](https://www.youtube.com/@nimprogramminglanguage3130/videos), [Xkonti Youtube](https://www.youtube.com/@Xkonti/videos), [Zen of Nim](https://nim-lang.org/blog/2021/11/15/zen-of-nim.html), [nim-lang.org](https://nim-lang.org/), [forum.nim-lang.org](https://forum.nim-lang.org/)... see [the rewrite](https://github.com/aabbtree77/twinpeekz2).
-
-In a single-threaded case (most of the 3D codes out there), Nim with `object` and `concept` is just like Go with `struct` and `interface`, but with the performance of C and static checks. Unlike Go's `interface`, one cannot store `concept`-satisfying  objects in a (heterogeneous) container. An object variant will be needed, or `ref object` (dynamic dispatch), or closures with macros, or various combinations of these. Having the degrees of freedom can be very annoying. Object variants are not proper [sum types](https://github.com/nim-lang/RFCs/issues/548), while refs/closures kill performance and add "action at a distance".
-
-Ultimately, the [PLDB](https://pldb.io/) lists the following numbers of Github repos per language:
-
-* C/C++: 4M. 
-
-* **Go: 1M**.
-
-* Rust: 357K.
-
-* D: 13K, Nim: 8K, Ada: 5K.
+* [Replace Go with Nim?](https://github.com/aabbtree77/twinpeekz2)
 
 <div align="center">
   <img src="https://raw.githubusercontent.com/aabbtree77/twinpeekz/main/golang.gif" alt="golang-love">
