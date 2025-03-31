@@ -408,6 +408,8 @@ Implicit behaviour. [This code](https://github.com/guzba/gltfviewer) does not us
 
 * Focus on mesh instancing and complete scene export from Blender, in GLTF 2.0. Should lights/camera be read from the GLTF/Blender?
 
+* May need an optimized scene graph, look into [Kosarevsky et al. 2024, Chapter 8](https://github.com/PacktPublishing/3D-Graphics-Rendering-Cookbook-Second-Edition).
+
 * Reliable GLTF: failback/failover w.r.t. broken file paths and assets, e.g. Sponza primitive No. 12 (rusty chain) has no 
 MetallicRoughnessTexture in Sponza.gltf. Fall back to pseudo-PBR. Warn/adjust unusual mesh scales.
 
@@ -415,7 +417,13 @@ MetallicRoughnessTexture in Sponza.gltf. Fall back to pseudo-PBR. Warn/adjust un
 
 * A tighter adaptive frustum for each light and camera.
 
-* [Vulkan?](https://github.com/oakes/vulkan_triangle_nim/blob/master/src/core.nim) Or better isolate OpenGL state/context, test with a frame inside a frame?
+* Better isolate OpenGL state/context, or drop OpenGL entirely in favor of, say, [Vulkan?](https://github.com/oakes/vulkan_triangle_nim/blob/master/src/core.nim)
+
+    OpenGL has ["Learn OpenGL"](https://learnopengl.com/), but it is old and not easy/reliable at all.
+
+    Vulkan is too low level, good to run, say, [d3d9-d3d11 on Linux](https://github.com/doitsujin/dxvk/issues/3789). 
+    
+    [WebGPU](https://eliemichel.github.io/LearnWebGPU/introduction.html) is still not there, but it could be the best option.
 
 * Surface-underwater transitions as in [INSIDE 2016](https://youtu.be/RdN06E6Xn9E?t=2755).
 
