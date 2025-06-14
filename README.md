@@ -447,15 +447,11 @@ MetallicRoughnessTexture in Sponza.gltf. Fall back to pseudo-PBR. Warn/adjust un
 
 I am no longer too excited about Go:
 
-* Simple polymorphism (interfaces) is gone with v1.18.
+* Check [this AST](https://github.com/fadion/aria/blob/master/ast/ast.go) in Go, and compare it with a [similar code in Odin](https://github.com/spencerNelson-dev/monkey/blob/main/ast/ast.odin). Go has no ability to say that something is of type A or B followed by an exhaustive match where needed. Nim is also ugly here: [2024](https://github.com/nim-lang/RFCs/issues/548), [2025](https://github.com/nim-lang/RFCs/issues/559)...
 
-* Check [the AST of Aria](https://github.com/fadion/aria/blob/master/ast/ast.go) in Go, and compare it with a [similar code in Odin](https://github.com/spencerNelson-dev/monkey/blob/main/ast/ast.odin). With Go interfaces, one must turn nouns into verbs. It is possible to get used to it, but this is so bad compared to the ability to simply say my node is of type A or B with proper exhaustive match in Odin. Nim is also very subpar here: [2024](https://github.com/nim-lang/RFCs/issues/548), [2025](https://github.com/nim-lang/RFCs/issues/559)...
+* Pointers, nil, paranoid error checking, [locks](https://www.youtube.com/watch?v=SJaEbmeAI0o&ab_channel=WebDevCody), [contexts](https://go.dev/talks/2014/gotham-context.slide#19), generic types, yield, struct tags... I do not want any of this.
 
-* A lot is mutable and nil-able by default, pointers everywhere. I do not want any of this in a GC language. Some better alternatives include Kotlin, TypeScript, Dart, Haskell, Ocaml, F# partially, Rust, Roc, Gleam... but they are also a mess.
-
-* Errors as values lead to extreme paranoid verbosity which does not guarantee anything.
-
-* Goroutines can be impressive, but this is a separate domain which is better to be ignored. See [The First Law of Distributed Object Design by Martin Fowler](https://martinfowler.com/articles/distributed-objects-microservices.html). Or one must take it seriously as [Katherine Cox-Buday](https://www.amazon.com/Concurrency-Go-Tools-Techniques-Developers/dp/1491941197), reaching the Erlang territory.
+* Go is a special tool to implement concurrency: [Thomas Kappler](https://github.com/thomas11/csp), [Katherine Cox-Buday](https://edu.anarcho-copy.org/Programming%20Languages/Go/Concurrency%20in%20Go.pdf), [Sameer Ajmani](https://www.youtube.com/watch?v=_YK0viplIl4&ab_channel=dotconferences), [Rob Pike and Kevin Niechen](https://github.com/kevinniechen/go-concurrency-patterns), [Rob Pike](https://www.youtube.com/watch?v=oV9rvDllKEg&ab_channel=gnbitcom), [A.A.A. Donovan and B.W. Kernighan: 9.7. Example: Concurrent Non-Blocking Cache](https://www.gopl.io/), [A.A.A. Donovan: Starlark](https://www.youtube.com/watch?v=9P_YKVhncWI&t=103s&ab_channel=NationConfrences), [Thang Chung](https://github.com/thangchung/go-coffeeshop)...
        
 ## Credits, Rendering Frameworks I Have Tried, Many Thanks To:
 
