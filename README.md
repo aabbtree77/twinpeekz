@@ -368,12 +368,12 @@ gc 45 @345.492s 0%: 0.037+14+0.007 ms clock, 0.30+0.41/0.31/0.29+0.057 ms cpu, 4
 gc 46 @353.542s 0%: 0.045+15+0.006 ms clock, 0.36+0.25/0.58/0.27+0.051 ms cpu, 4->4->0 MB, 5 MB goal, 8 P
 ```
 
-The default GC setup does not consume more than 1ms every 8s or so. However, a spike wasting whole 24ms may occur once a minute. Dropping a frame or two per minute does not break any smooth 3D experience.
+The default GC setup does not consume more than 1ms every 8s or so. However, a spike wasting whole 24ms may occur once a minute. Dropping a frame or two per minute does not break any smooth 3D experience. On the other hand, the codes renders a static scene, so having a GC is dangerous.
 
 One interesting feature about Go was that inside main.go, there was no need to use unsafe pointers to pass user 
 data to the GLFW callbacks. By setting a struct method as a callback, the callback had access to the data of the structure.
 
-Pointers bring [bugs](https://github.com/g3n/engine/issues/163). [The trillion dollar mistake](https://github.com/tcard/sgo)...
+Pointers bring [bugs](https://github.com/g3n/engine/issues/163). [The billion dollar mistake](https://github.com/tcard/sgo)...
 
 Go types and libs were plain/flat enough to reach anything with printf. I relied on go-vim and its :GoDef with ctrl+O to get back. These two commands helped to navigate 3rd party codes. However, I could start working with Quim Muntal's GLTF library with its virtually nonexisting docs only by reading [Issue #26](https://github.com/qmuntal/gltf/issues/26). Still, a huge plus for Golang in that 3rd party codes can often be grokked without too much suffering.
 
@@ -439,9 +439,23 @@ MetallicRoughnessTexture in Sponza.gltf. Fall back to pseudo-PBR. Warn/adjust un
       <img src="https://raw.githubusercontent.com/aabbtree77/twinpeekz/main/golang.gif" alt="golang-love">
     </div>
 
-    [Write in Go.](https://www.youtube.com/watch?v=LJvEIjRBSDA&ab_channel=ScaleAbility)
+    [Write in Go?](https://www.youtube.com/watch?v=LJvEIjRBSDA&ab_channel=ScaleAbility)
 
-    [You'll be back (to Go).](https://www.youtube.com/watch?v=rzo8u03vC7Y&ab_channel=MatRyer)
+    [You'll be back (to Go)?](https://www.youtube.com/watch?v=rzo8u03vC7Y&ab_channel=MatRyer)
+
+## A Note about Go (2025)
+
+I am no longer too excited about Go:
+
+* Simple polymorphism (interfaces) is gone with v1.18.
+
+* Check [the AST of Aria](https://github.com/fadion/aria/blob/master/ast/ast.go) in Go, and compare it with a [similar code in Odin](https://github.com/spencerNelson-dev/monkey/blob/main/ast/ast.odin). With Go interfaces, one must turn nouns into verbs. It is possible to get used to it, but this is so bad compared to the ability to simply say my node is of type A or B with proper exhaustive match in Odin. Nim is also very subpar here: [2024](https://github.com/nim-lang/RFCs/issues/548), [2025](https://github.com/nim-lang/RFCs/issues/559)...
+
+* A lot is mutable and nil-able by default, pointers everywhere. I do not want any of this in a GC language. Some better alternatives include Kotlin, TypeScript, Dart, Haskell, Ocaml, F# partially, Rust, Roc, Gleam... but they are also a mess.
+
+* Errors as values lead to extreme paranoid verbosity which does not guarantee anything.
+
+* Goroutines can be impressive, but this is a separate domain which is better to be ignored. See [The First Law of Distributed Object Design by Martin Fowler](https://martinfowler.com/articles/distributed-objects-microservices.html). Or one must take it seriously as [Katherine Cox-Buday](https://www.amazon.com/Concurrency-Go-Tools-Techniques-Developers/dp/1491941197), reaching the Erlang territory.
        
 ## Credits, Rendering Frameworks I Have Tried, Many Thanks To:
 
