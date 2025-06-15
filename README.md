@@ -445,13 +445,13 @@ MetallicRoughnessTexture in Sponza.gltf. Fall back to pseudo-PBR. Warn/adjust un
 
 ## A Note about Go (2025)
 
-I am no longer too excited about Go:
+I am no longer too excited about Go in general coding and 3D:
 
-* Check [this AST](https://github.com/fadion/aria/blob/master/ast/ast.go) in Go, and compare it with a [similar code in Odin](https://github.com/spencerNelson-dev/monkey/blob/main/ast/ast.odin). Go has no ability to say that something is of type A or B followed by an exhaustive match where needed. Nim is also ugly here: [2024](https://github.com/nim-lang/RFCs/issues/548), [2025](https://github.com/nim-lang/RFCs/issues/559)...
+* Check [this AST](https://github.com/fadion/aria/blob/master/ast/ast.go) in Go, and compare it with a [similar code in Odin](https://github.com/spencerNelson-dev/monkey/blob/main/ast/ast.odin). Go has no ability to say that something is of type A or B followed by an exhaustive match where needed. Nim is also ugly with ASTs: [2024](https://github.com/nim-lang/RFCs/issues/548), [2025](https://github.com/nim-lang/RFCs/issues/559)...
 
 * Pointers, nil, paranoid error checking, [locks](https://www.youtube.com/watch?v=SJaEbmeAI0o&ab_channel=WebDevCody), [contexts](https://go.dev/talks/2014/gotham-context.slide#19), generic types, yield, struct tags... I do not want any of this.
 
-* Go is a special tool to implement concurrency: [Thomas Kappler](https://github.com/thomas11/csp), [Katherine Cox-Buday](https://edu.anarcho-copy.org/Programming%20Languages/Go/Concurrency%20in%20Go.pdf), [Sameer Ajmani](https://www.youtube.com/watch?v=_YK0viplIl4&ab_channel=dotconferences), [Rob Pike and Kevin Niechen](https://github.com/kevinniechen/go-concurrency-patterns), [Rob Pike](https://www.youtube.com/watch?v=oV9rvDllKEg&ab_channel=gnbitcom), [A.A.A. Donovan and B.W. Kernighan: 9.7. Example: Concurrent Non-Blocking Cache](https://www.gopl.io/), [A.A.A. Donovan: Starlark](https://www.youtube.com/watch?v=9P_YKVhncWI&t=103s&ab_channel=NationConfrences), [Thang Chung](https://github.com/thangchung/go-coffeeshop)...
+* Go is the language of distributed caches, queues, job scheduling, messaging, and [P2P](https://libp2p.io/implementations/). Mountains of code related to [concurrency and microservices](https://github.com/avelino/awesome-go) including the work by [Thomas Kappler](https://github.com/thomas11/csp), [Katherine Cox-Buday](https://edu.anarcho-copy.org/Programming%20Languages/Go/Concurrency%20in%20Go.pdf), [Sameer Ajmani](https://www.youtube.com/watch?v=_YK0viplIl4&ab_channel=dotconferences), [Rob Pike and Kevin Niechen](https://github.com/kevinniechen/go-concurrency-patterns), [Rob Pike](https://www.youtube.com/watch?v=oV9rvDllKEg&ab_channel=gnbitcom), [A.A.A. Donovan and B.W. Kernighan: 9.7. Example: Concurrent Non-Blocking Cache](https://www.gopl.io/), [A.A.A. Donovan: Starlark](https://www.youtube.com/watch?v=9P_YKVhncWI&t=103s&ab_channel=NationConfrences), [Thang Chung](https://github.com/thangchung/go-coffeeshop), [Ken Hibino](https://github.com/hibiken/asynq), [Uber](uber-go/cff)...
        
 ## Credits, Rendering Frameworks I Have Tried, Many Thanks To:
 
