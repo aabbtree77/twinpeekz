@@ -445,7 +445,7 @@ MetallicRoughnessTexture in Sponza.gltf. Fall back to pseudo-PBR. Warn/adjust un
 
 ## Minor Edit (2025). Some Food for Thought:
 
-    [Why Go? #411](https://github.com/microsoft/typescript-go/discussions/411)
+    [Why Go?](https://github.com/microsoft/typescript-go/discussions/411)
     
     [ast.go](https://github.com/fadion/aria/blob/master/ast/ast.go) vs [ast.odin](https://github.com/spencerNelson-dev/monkey/blob/main/ast/ast.odin)
 
