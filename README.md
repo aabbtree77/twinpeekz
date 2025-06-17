@@ -439,17 +439,17 @@ MetallicRoughnessTexture in Sponza.gltf. Fall back to pseudo-PBR. Warn/adjust un
       <img src="https://raw.githubusercontent.com/aabbtree77/twinpeekz/main/golang.gif" alt="golang-love">
     </div>
 
-    [Write in Go?](https://www.youtube.com/watch?v=LJvEIjRBSDA&ab_channel=ScaleAbility)
+    [Write in Go](https://www.youtube.com/watch?v=LJvEIjRBSDA&ab_channel=ScaleAbility)
 
-    [You'll be back (to Go)?](https://www.youtube.com/watch?v=rzo8u03vC7Y&ab_channel=MatRyer)
+    [You'll be back (to Go)](https://www.youtube.com/watch?v=rzo8u03vC7Y&ab_channel=MatRyer)
 
-## A Note about Go (2025)
+## Minor Edit (2025). Some Food for Thought:
 
-Go is readable, compiles fast, has a build system ("packages"), and a package manager ("module system") with over a million repositories on github.com. However, Go is still in the older generation of static languages with no ability to say that something is of type A or B. Check [this AST](https://github.com/fadion/aria/blob/master/ast/ast.go) in Go, and compare it with [the unions in Odin](https://github.com/spencerNelson-dev/monkey/blob/main/ast/ast.odin). The latter is an absolute godsend.
+    [Why Go? #411](https://github.com/microsoft/typescript-go/discussions/411)
+    
+    [ast.go](https://github.com/fadion/aria/blob/master/ast/ast.go) vs [ast.odin](https://github.com/spencerNelson-dev/monkey/blob/main/ast/ast.odin)
 
-Nonetheless, Go must be used where it shines with its runtime: distributed caches, queues, job scheduling, messaging, and [P2P](https://libp2p.io/implementations/). Mountains of code related to [concurrency and microservices](https://github.com/avelino/awesome-go): [Thomas Kappler](https://github.com/thomas11/csp), [Katherine Cox-Buday](https://edu.anarcho-copy.org/Programming%20Languages/Go/Concurrency%20in%20Go.pdf), [Sameer Ajmani](https://www.youtube.com/watch?v=_YK0viplIl4&ab_channel=dotconferences), [Rob Pike and Kevin Niechen](https://github.com/kevinniechen/go-concurrency-patterns), [Rob Pike](https://www.youtube.com/watch?v=oV9rvDllKEg&ab_channel=gnbitcom), [A.A.A. Donovan and B.W. Kernighan: 9.7. Example: Concurrent Non-Blocking Cache](https://www.gopl.io/), [A.A.A. Donovan: Starlark](https://www.youtube.com/watch?v=9P_YKVhncWI&t=103s&ab_channel=NationConfrences), [Thang Chung](https://github.com/thangchung/go-coffeeshop), [Ken Hibino](https://github.com/hibiken/asynq), [Uber](uber-go/cff)...
-
-Another interesting case is [the choice of Go by Microsoft to implement the TypeScript compiler](https://github.com/microsoft/typescript-go/discussions/411). One would think C#, especially F#, would be the better choice in this case, but Go’s lack of proper sum types and immutability is outweighed by its superior runtime.
+    [Thomas Kappler](https://github.com/thomas11/csp), [Katherine Cox-Buday](https://edu.anarcho-copy.org/Programming%20Languages/Go/Concurrency%20in%20Go.pdf), [Sameer Ajmani](https://www.youtube.com/watch?v=_YK0viplIl4&ab_channel=dotconferences), [Rob Pike and Kevin Niechen](https://github.com/kevinniechen/go-concurrency-patterns), [Rob Pike](https://www.youtube.com/watch?v=oV9rvDllKEg&ab_channel=gnbitcom), [A.A.A. Donovan and B.W. Kernighan: 9.7. Example: Concurrent Non-Blocking Cache](https://www.gopl.io/), [A.A.A. Donovan: Starlark](https://www.youtube.com/watch?v=9P_YKVhncWI&t=103s&ab_channel=NationConfrences), [Thang Chung](https://github.com/thangchung/go-coffeeshop), [Ken Hibino](https://github.com/hibiken/asynq), [Uber](uber-go/cff)...
        
 ## Credits, Rendering Frameworks I Have Tried, Many Thanks To:
 
