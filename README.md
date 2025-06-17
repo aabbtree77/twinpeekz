@@ -443,7 +443,7 @@ MetallicRoughnessTexture in Sponza.gltf. Fall back to pseudo-PBR. Warn/adjust un
 
     [You'll be back (to Go)](https://www.youtube.com/watch?v=rzo8u03vC7Y&ab_channel=MatRyer)
 
-## Minor Edit (2025). Some Food for Thought:
+* Minor edit (2025). Some food for thought:
 
     [Why Go?](https://github.com/microsoft/typescript-go/discussions/411)
     
