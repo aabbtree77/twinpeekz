@@ -451,7 +451,7 @@ MetallicRoughnessTexture in Sponza.gltf. Fall back to pseudo-PBR. Warn/adjust un
 
     [bytedance/sonic](https://github.com/bytedance/sonic/blob/main/docs/INTRODUCTION.md), [Thomas Kappler](https://github.com/thomas11/csp), [Katherine Cox-Buday](https://edu.anarcho-copy.org/Programming%20Languages/Go/Concurrency%20in%20Go.pdf), [Sameer Ajmani](https://www.youtube.com/watch?v=_YK0viplIl4&ab_channel=dotconferences), [Rob Pike and Kevin Niechen](https://github.com/kevinniechen/go-concurrency-patterns), [Rob Pike](https://www.youtube.com/watch?v=oV9rvDllKEg&ab_channel=gnbitcom), [A.A.A. Donovan and B.W. Kernighan: 9.7. Example: Concurrent Non-Blocking Cache](https://www.gopl.io/), [A.A.A. Donovan: Starlark](https://www.youtube.com/watch?v=9P_YKVhncWI&t=103s&ab_channel=NationConfrences), [Thang Chung](https://github.com/thangchung/go-coffeeshop), [Ken Hibino](https://github.com/hibiken/asynq), [Uber](https://github.com/uber-go/cff)...
     
-    [ast.go](https://github.com/fadion/aria/blob/master/ast/ast.go) vs [ast.odin](https://github.com/spencerNelson-dev/monkey/blob/main/ast/ast.odin)
+    [ast.go](https://github.com/fadion/aria/blob/master/ast/ast.go) -> [ast.odin](https://github.com/spencerNelson-dev/monkey/blob/main/ast/ast.odin) -> [even more memory management to do the same](https://github.com/4odin/monkey-odin/blob/main/utils/utils.odin)
        
 ## Credits, Rendering Frameworks I Have Tried, Many Thanks To:
 
