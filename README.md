@@ -433,25 +433,19 @@ MetallicRoughnessTexture in Sponza.gltf. Fall back to pseudo-PBR. Warn/adjust un
 
 * Animations, hot reloading, ImGui, ECS, physics engine. See [David H. Eberly, 2010](https://www.amazon.com/Game-Physics-David-H-Eberly/dp/0123749034), [qu3e](https://github.com/RandyGaul/qu3e)...
 
-* [Replace Go with Nim?](https://github.com/aabbtree77/twinpeekz2)
+* [Write in Go?](https://www.youtube.com/watch?v=LJvEIjRBSDA&ab_channel=ScaleAbility)
 
     <div align="center">
       <img src="https://raw.githubusercontent.com/aabbtree77/twinpeekz/main/golang.gif" alt="golang-love">
     </div>
 
-    [Write in Go](https://www.youtube.com/watch?v=LJvEIjRBSDA&ab_channel=ScaleAbility)
+    [You'll be back (to Go)?](https://www.youtube.com/watch?v=rzo8u03vC7Y&ab_channel=MatRyer)
 
-    [You'll be back (to Go)](https://www.youtube.com/watch?v=rzo8u03vC7Y&ab_channel=MatRyer)
+* Replace Go with Nim? [Done.](https://github.com/aabbtree77/twinpeekz2)
 
-* Minor edit (2025). Some food for thought:
-
-    [Why Go?](https://github.com/microsoft/typescript-go/discussions/411)
-    
-    [kostya/benchmarks#json](https://github.com/kostya/benchmarks#json)
+* Minor edit (2025). Nim is much better than Go for most things, except concurrency and distributed stuff:
 
     [bytedance/sonic](https://github.com/bytedance/sonic/blob/main/docs/INTRODUCTION.md), [Thomas Kappler](https://github.com/thomas11/csp), [Katherine Cox-Buday](https://edu.anarcho-copy.org/Programming%20Languages/Go/Concurrency%20in%20Go.pdf), [Sameer Ajmani](https://www.youtube.com/watch?v=_YK0viplIl4&ab_channel=dotconferences), [Rob Pike and Kevin Niechen](https://github.com/kevinniechen/go-concurrency-patterns), [Rob Pike](https://www.youtube.com/watch?v=oV9rvDllKEg&ab_channel=gnbitcom), [A.A.A. Donovan and B.W. Kernighan: 9.7. Example: Concurrent Non-Blocking Cache](https://www.gopl.io/), [A.A.A. Donovan: Starlark](https://www.youtube.com/watch?v=9P_YKVhncWI&t=103s&ab_channel=NationConfrences), [Thang Chung](https://github.com/thangchung/go-coffeeshop), [Ken Hibino](https://github.com/hibiken/asynq), [Uber](https://github.com/uber-go/cff)...
-    
-    [ast.go](https://github.com/fadion/aria/blob/master/ast/ast.go) -> [ast.odin](https://github.com/spencerNelson-dev/monkey/blob/main/ast/ast.odin) -> [even more memory management to do the same](https://github.com/4odin/monkey-odin/blob/main/utils/utils.odin)
        
 ## Credits, Rendering Frameworks I Have Tried, Many Thanks To:
 
