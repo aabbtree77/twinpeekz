@@ -1,5 +1,19 @@
 <img src="./screenshots_volumetrics/screentwodirlightsSept2022.png"  alt="Sponza with two dir lights" width="100%" >
 
+## 2026 Update
+
+There are now three options to use Go in 3D rendering:
+
+- Target weaker devices with OpenGL/WebGL via [go-gl](https://github.com/go-gl), see [gokoban](https://github.com/danaugrs/gokoban) or this code. These evoke the `cgo` mechanism which makes Go harder to cross-compile. OpenGL/WebGL is still not that easy to write and debug.
+
+- Target everything modern with WebGPU via [gogpu](https://github.com/gogpu/). This implements WebGPU for all the graphics backends (Vulkan, DX12...). Instead of `cgo` it uses a more portable `goffi`. Very recent, but already in use by [ironwail-go](https://github.com/darkliquid/ironwail-go) (Quake in Go). 
+
+- Use a custom Vulkan-based engine, e.g. [kaiju](https://github.com/KaijuEngine/kaiju).
+
+Consider Go 1.17 with [Uber Go Style Guide.](https://github.com/uber-go/guide/blob/master/style.md) No need to waste time on [parametric anything.](https://arxiv.org/abs/2005.11710)
+
+For Go in 2D: [ebiten](https://github.com/hajimehoshi/ebiten), [wails](https://github.com/wailsapp/wails), [fogleman](https://github.com/fogleman?tab=repositories)...
+
 ## Introduction
 
 This code renders Sponza in real time. Details:
@@ -16,13 +30,13 @@ This code renders Sponza in real time. Details:
 std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&
 ```
 
-which should have been just *String*?!
+which should have been *String*?!
 
 ## Why Volumetric Lighting?
 
 It is one of the post 2013 graphics effects that vastly advances immersion and realism. It is also a very smart approximation to [the rendering equation](https://en.wikipedia.org/wiki/Rendering_equation) which connects programming with geometric optics without brute force ray tracing. 
 
-What else is an exponential improvement after say 2013? Rendering [water in INSIDE 2016](https://www.youtube.com/watch?v=RdN06E6Xn9E&t=2755s), [skyscapes in Red Dead Redemption 2 2018](https://www.youtube.com/watch?v=9-HTvoBi0Iw&t=7100s).
+What else is exponential improvement after say 2013? Rendering [water in INSIDE 2016](https://www.youtube.com/watch?v=RdN06E6Xn9E&t=2755s), [skyscapes in Red Dead Redemption 2 2018](https://www.youtube.com/watch?v=9-HTvoBi0Iw&t=7100s).
 
 ## Setup
 
@@ -368,7 +382,7 @@ gc 45 @345.492s 0%: 0.037+14+0.007 ms clock, 0.30+0.41/0.31/0.29+0.057 ms cpu, 4
 gc 46 @353.542s 0%: 0.045+15+0.006 ms clock, 0.36+0.25/0.58/0.27+0.051 ms cpu, 4->4->0 MB, 5 MB goal, 8 P
 ```
 
-The default GC setup does not consume more than 1ms every 8s or so. However, a spike wasting whole 24ms may occur once a minute. Dropping a frame or two per minute does not break any smooth 3D experience. On the other hand, the codes renders a static scene, so having a GC is dangerous.
+The default GC setup does not consume more than 1ms every 8s or so. However, a spike wasting whole 24ms may occur once a minute. Dropping a frame or two per minute does not break any smooth 3D experience.
 
 One interesting feature about Go was that inside main.go, there was no need to use unsafe pointers to pass user 
 data to the GLFW callbacks. By setting a struct method as a callback, the callback had access to the data of the structure.
@@ -382,7 +396,7 @@ Go types and libs were plain/flat enough to reach anything with printf. I relied
 Programming with [GLSL/OpenGL](https://www.youtube.com/watch?v=dd0p0wieVwQ&t=26s&ab_channel=JonathanBlowClips) is very tiresome as there is not much help from the compiler. However, this is only a part of the problem. The bigger issue is the disappearance of an immediate incremental feedback. The OpenGL setup and its state spreads everywhere and one has to write a lot of code before even seeing the first result on the screen. This is the elephant in the room.
 
 I was hunting down one bug for days which was rendering a black screen without a crash. The problem turned out to be gl.BufferData function storing mesh index array on a GPU. I was using
-type uint whose analogue in C++ takes 4 bytes of memory, but in Go it's 8! Switching to uint32 simply solved the problem, but to actually locate 
+type uint whose analogue in C++ takes 4 bytes of memory, but in Go it's 8. Switching to uint32 simply solved the problem, but to actually locate 
 that I had to use RenderDoc. Luckily, I had a working C++ alternative code by Tomas Öhberg, so I could compare the raw data differences in the both cases by loading a simple 3D cube.
 
 An unused variable warning is actually an error:
@@ -433,7 +447,7 @@ MetallicRoughnessTexture in Sponza.gltf. Fall back to pseudo-PBR. Warn/adjust un
 
 * Animations, hot reloading, ImGui, ECS, physics engine. See [David H. Eberly, 2010](https://www.amazon.com/Game-Physics-David-H-Eberly/dp/0123749034), [qu3e](https://github.com/RandyGaul/qu3e)...
 
-* [Replace Go with Nim??](https://github.com/aabbtree77/twinpeekz2)
+* [Replace Go with Nim?](https://github.com/aabbtree77/twinpeekz2)
 
 * [Write in Go](https://www.youtube.com/watch?v=LJvEIjRBSDA&ab_channel=ScaleAbility)
 
@@ -445,7 +459,15 @@ MetallicRoughnessTexture in Sponza.gltf. Fall back to pseudo-PBR. Warn/adjust un
 
 * Minor edit (2025). Some Go bookmarks:
 
-    [bytedance/sonic](https://github.com/bytedance/sonic/blob/main/docs/INTRODUCTION.md), [Thomas Kappler](https://github.com/thomas11/csp), [Katherine Cox-Buday](https://edu.anarcho-copy.org/Programming%20Languages/Go/Concurrency%20in%20Go.pdf), [Sameer Ajmani](https://www.youtube.com/watch?v=_YK0viplIl4&ab_channel=dotconferences), [Rob Pike and Kevin Niechen](https://github.com/kevinniechen/go-concurrency-patterns), [Rob Pike](https://www.youtube.com/watch?v=oV9rvDllKEg&ab_channel=gnbitcom), [A.A.A. Donovan and B.W. Kernighan: 9.7. Example: Concurrent Non-Blocking Cache](https://www.gopl.io/), [A.A.A. Donovan: Starlark](https://www.youtube.com/watch?v=9P_YKVhncWI&t=103s&ab_channel=NationConfrences), [Thang Chung](https://github.com/thangchung/go-coffeeshop), [Ken Hibino](https://github.com/hibiken/asynq), [Uber](https://github.com/uber-go/cff), [Monkey Interpreter](https://github.com/search?q=monkey+interpreter+language%3AGo&type=repositories&s=stars&o=desc), [Why Go? #411](https://github.com/microsoft/typescript-go/discussions/411), [Hewitt, Meijer and Szyperski: The Actor Model](https://www.youtube.com/watch?v=7erJ1DV_Tlo&t=115s&ab_channel=jasonofthel33t)...
+    - [Sameer Ajmani: Simulating a real-world system in Go](https://www.youtube.com/watch?v=_YK0viplIl4&ab_channel=dotconferences)
+
+    - [Rob Pike: Moving C++ to the Incinerator](https://www.youtube.com/watch?v=oV9rvDllKEg&ab_channel=gnbitcom)
+
+    - [A.A.A. Donovan and B.W. Kernighan: 9.7. Example: Concurrent Non-Blocking Cache](https://www.gopl.io/)
+
+    - [Thang Chung: go-coffeeshop](https://github.com/thangchung/go-coffeeshop)
+
+    - [Ken Hibino: asynq](https://github.com/hibiken/asynq)
        
 ## Credits, Rendering Frameworks I Have Tried, Many Thanks To:
 
