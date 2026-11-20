@@ -20,9 +20,9 @@ A reminder: everything in Go is shared and mutable, which requires discipline ar
 
 Go has so many gotchas that I have seriously considered [Nim](https://github.com/aabbtree77/twinpeekz2), but eventually Nim's overfocus on compile time and lack of stability made Go win this battle, for me.
 
-Nim (and Swift) get the basics right (structures, functions, dynamic and associative arrays, basic immutability, assignment either deep copies or does COW). They also multiply quantities beyond necessity. Go is on the opposite. 
+Nim (and Swift) get the basics right (structures, functions, dynamic and associative arrays, basic immutability, assignment either deep copies or does COW, worrying about object vs ref object may lead to cleaner and 2-3x faster code, value semantics and all that). They also multiply quantities beyond necessity. Go is the opposite. 
 
-Ultimately, it is easier to keep track of Go's gotchas than dealing with macros and CTFE in 3rd party codes. Go repels abstractionists, esp. Go 1.17.
+Ultimately, it is easier to keep track of Go's gotchas and not to overthink stack vs heap than dealing with macros and CTFE in 3rd party Nim. Go repels abstractionists, esp. Go 1.17.
 
 *"Hell is other people"* - Jean-Paul Sartre
 
