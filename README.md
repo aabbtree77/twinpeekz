@@ -4,15 +4,27 @@
 
 There are now three options to use Go in 3D rendering:
 
-- Target weaker devices with OpenGL/WebGL via [go-gl](https://github.com/go-gl), see [gokoban](https://github.com/danaugrs/gokoban) or this code. These evoke the `cgo` mechanism which makes Go harder to cross-compile. OpenGL/WebGL is still not that easy to write and debug.
+- OpenGL/WebGL via [go-gl](https://github.com/go-gl), see [gokoban](https://github.com/danaugrs/gokoban) or this code. These evoke the `cgo` mechanism which makes Go harder to cross-compile. OpenGL/WebGL is still not that easy to write and debug, but this avoids Vulkan 1.2 vs Vulkan 1.3 issues for older cards such as GTX760.
 
-- Target everything modern with WebGPU via [gogpu](https://github.com/gogpu/). This implements WebGPU for all the graphics backends (Vulkan, DX12...). Instead of `cgo` it uses a more portable `goffi`. Very recent, but already in use by [ironwail-go](https://github.com/darkliquid/ironwail-go) (Quake in Go). 
+- WebGPU via [gogpu](https://github.com/gogpu/). This implements WebGPU for all the graphics backends (Vulkan, DX12...). Instead of `cgo` it uses a more portable `goffi`. Very recent, but already in use by [ironwail-go](https://github.com/darkliquid/ironwail-go) (Quake in Go). 
 
-- Use a custom Vulkan-based engine, e.g. [kaiju](https://github.com/KaijuEngine/kaiju).
-
-Consider Go 1.17 with [Uber Go Style Guide.](https://github.com/uber-go/guide/blob/master/style.md) No need to waste time on [parametric anything.](https://arxiv.org/abs/2005.11710)
+- Vulkan, e.g. [kaiju](https://github.com/KaijuEngine/kaiju).
 
 For Go in 2D: [ebiten](https://github.com/hajimehoshi/ebiten), [wails](https://github.com/wailsapp/wails), [fogleman](https://github.com/fogleman?tab=repositories)...
+
+A reminder: everything in Go is shared and mutable, which requires discipline around various gotchas:
+
+- [Uber Go Style Guide](https://github.com/uber-go/guide/blob/master/style.md)
+
+- [GopherCon 2018: Go Says WAT - Jon Bodner](https://www.youtube.com/watch?v=zPd0Cxzsslk)
+
+Go has so many gotchas that I have seriously considered [Nim](https://github.com/aabbtree77/twinpeekz2), but eventually Nim's overfocus on compile time and lack of stability made Go win this battle, for me.
+
+Nim (and Swift) get the basics right (structures, functions, dynamic and associative arrays, basic immutability, assignment either deep copies or does COW). They also multiply quantities beyond necessity. Go is on the opposite. 
+
+Ultimately, it is easier to keep track of Go's gotchas than dealing with macros and CTFE in 3rd party codes. Go repels abstractionists, esp. Go 1.17.
+
+*"Hell is other people"* - Jean-Paul Sartre
 
 ## Introduction
 
