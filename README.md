@@ -22,13 +22,13 @@ Why Go? It helps avoiding premature optimization and abstractions.
 
 *"Hell is other people."* - Jean-Paul Sartre
 
-We now have quite a few recent languages which fix Go in the following sense:
+There have been quite a few attempts to fix Go in the following sense:
 
 - They add sum types, not nil...
 
 - Compile to and integrate with Go, some aim to be Go supersets.
 
-I would not use them yet, but see [this Borgo issue 43](https://github.com/borgo-lang/borgo/issues/43) for the links. [Lisette](https://news.ycombinator.com/item?id=47646843), [GALA](https://gala.fyi/), [Soppo](https://soppolang.dev/), [Dingo](https://github.com/MadAppGang/dingo), [GPP](https://gpp.telga.in/)...
+I am not sure I would use them, but see [this Borgo issue 43](https://github.com/borgo-lang/borgo/issues/43) for the links: [Lisette](https://news.ycombinator.com/item?id=47646843), [GALA](https://gala.fyi/), [Soppo](https://soppolang.dev/), [Dingo](https://github.com/MadAppGang/dingo). Also [GPP](https://gpp.telga.in/) and [sgo](https://github.com/tcard/sgo).
 
 ## Introduction
 
