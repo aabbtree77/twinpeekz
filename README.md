@@ -20,9 +20,7 @@ Error handling, concurrency, gotchas with slices and maps:
 
 - [Uber Go Style Guide](https://github.com/uber-go/guide/blob/master/style.md)
 
-Why Go? It helps avoiding premature optimization and abstractions. See also [my response to Go++](https://forum.golangbridge.org/t/introducing-go-a-superset-of-go/42638/11?u=aabbtree77) on the Go forum.
-
-*"Hell is other people."* - Jean-Paul Sartre
+For recent languages which compile to Go, see [this issue](https://github.com/borgo-lang/borgo/issues/43). I really like [Lisette](https://lisette.run/). It looks like "Go done right" which is a mini-Rust without the borrow checker.
 
 ## Introduction
 
