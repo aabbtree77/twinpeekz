@@ -20,19 +20,9 @@ Error handling, concurrency, gotchas with slices and maps:
 
 - [Uber Go Style Guide](https://github.com/uber-go/guide/blob/master/style.md)
 
-Why Go? It helps avoiding premature optimization and abstractions.
+Why Go? It helps avoiding premature optimization and abstractions. See also [my response to Go++](https://forum.golangbridge.org/t/introducing-go-a-superset-of-go/42638/11?u=aabbtree77) on the Go forum.
 
 *"Hell is other people."* - Jean-Paul Sartre
-
-The downsides:
-
-- Shared mutation bugs.
-
-- Most action is in corporate distributed systems.
-
-I used to think that Go is not a succinct language, that this is also a problem. In reality, most thinking goes around Go modules (packages), what does what and where. An http endpoint will typically be a whole separate file. Go's verbosity becomes a very minor thing. Look into codebases of more succinct/elegant languages such as Nim or D, they are harder, not easier to read.
-
-We now have quite a few languages which compile to Go, see [this issue](https://github.com/borgo-lang/borgo/issues/43) for the links: [Lisette](https://news.ycombinator.com/item?id=47646843), [GALA](https://gala.fyi/), [Soppo](https://soppolang.dev/), [Dingo](https://github.com/MadAppGang/dingo), [Borgo](https://github.com/borgo-lang/borgo). Also [GPP](https://gpp.telga.in/) and [SGo](https://github.com/tcard/sgo). I would not use them though.
 
 ## Introduction
 
@@ -488,6 +478,8 @@ MetallicRoughnessTexture in Sponza.gltf. Fall back to pseudo-PBR. Warn/adjust un
     - [Rob Pike: Moving C++ to the Incinerator](https://www.youtube.com/watch?v=oV9rvDllKEg&ab_channel=gnbitcom)
 
     - [Thang Chung: go-coffeeshop](https://github.com/thangchung/go-coffeeshop)
+    
+    - [BadgerDB](https://github.com/dgraph-io/badger)
 
     - [Ken Hibino: asynq](https://github.com/hibiken/asynq)
     
