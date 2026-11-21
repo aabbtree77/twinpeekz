@@ -28,7 +28,11 @@ There have been quite a few attempts to fix Go in the following sense:
 
 - Compile to and integrate with Go, some aim to be Go supersets.
 
-I am not sure I would use them, but see [this Borgo issue 43](https://github.com/borgo-lang/borgo/issues/43) for the links: [Lisette](https://news.ycombinator.com/item?id=47646843), [GALA](https://gala.fyi/), [Soppo](https://soppolang.dev/), [Dingo](https://github.com/MadAppGang/dingo). Also [GPP](https://gpp.telga.in/) and [sgo](https://github.com/tcard/sgo).
+I am not sure I would use them, but see [this Borgo issue 43](https://github.com/borgo-lang/borgo/issues/43) for the links: 
+
+[Lisette](https://news.ycombinator.com/item?id=47646843), [GALA](https://gala.fyi/), [Soppo](https://soppolang.dev/), [Dingo](https://github.com/MadAppGang/dingo). 
+
+Also [GPP](https://gpp.telga.in/) and [SGo](https://github.com/tcard/sgo).
 
 ## Introduction
 
