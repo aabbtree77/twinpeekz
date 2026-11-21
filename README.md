@@ -12,17 +12,19 @@ There are now three options to use Go in 3D rendering:
 
 For Go in 2D: [ebiten](https://github.com/hajimehoshi/ebiten), [wails](https://github.com/wailsapp/wails), [fogleman](https://github.com/fogleman?tab=repositories)...
 
-Essentials/survival:
+Error handling, concurrency, gotchas with slices and maps:
 
-- [Uber Go Style Guide](https://github.com/uber-go/guide/blob/master/style.md)
+- [Chris Elder](https://www.youtube.com/@chriselderxyz/playlists)
 
 - [GopherCon 2018: Go Says WAT - Jon Bodner](https://www.youtube.com/watch?v=zPd0Cxzsslk)
+
+- [Uber Go Style Guide](https://github.com/uber-go/guide/blob/master/style.md)
 
 Why Go? It helps avoiding premature optimization and abstractions.
 
 *"Hell is other people."* - Jean-Paul Sartre
 
-There have been quite a few attempts to fix Go in the following sense:
+There have been quite a few attempts to improve Go:
 
 - They add sum types, not nil...
 
