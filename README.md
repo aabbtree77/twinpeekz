@@ -20,9 +20,7 @@ Error handling, concurrency, gotchas with slices and maps:
 
 - [Uber Go Style Guide](https://github.com/uber-go/guide/blob/master/style.md)
 
-For recent languages which compile to Go, see [this issue](https://github.com/borgo-lang/borgo/issues/43). There is also [SGo](https://github.com/tcard/sgo) and two variants of Clojure: [Glojure](https://github.com/glojurelang/glojure) and [let-go](https://github.com/nooga/let-go). 
-
-I really like [Lisette](https://lisette.run/). It looks like "Go done right", a baby Rust.
+- [Lisette](https://lisette.run/)
 
 ## Introduction
 
