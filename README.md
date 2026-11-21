@@ -20,7 +20,15 @@ Essentials/survival:
 
 Why Go? It helps avoiding premature optimization and abstractions.
 
-*"Hell is other people"* - Jean-Paul Sartre
+*"Hell is other people."* - Jean-Paul Sartre
+
+We now have quite a few recent languages which fix Go in the following sense:
+
+- They add sum types, not nil...
+
+- Compile to and integrate with Go, some aim to be Go supersets.
+
+I would not use them yet, but see [this Borgo issue 43](https://github.com/borgo-lang/borgo/issues/43) for the links. [Lisette](https://news.ycombinator.com/item?id=47646843), [GALA](https://gala.fyi/), [Soppo](https://soppolang.dev/), [Dingo](https://github.com/MadAppGang/dingo), [GPP](https://gpp.telga.in/)...
 
 ## Introduction
 
@@ -395,7 +403,11 @@ The default GC setup does not consume more than 1ms every 8s or so. However, a s
 One interesting feature about Go was that inside main.go, there was no need to use unsafe pointers to pass user 
 data to the GLFW callbacks. By setting a struct method as a callback, the callback had access to the data of the structure.
 
-Pointers bring [bugs](https://github.com/g3n/engine/issues/163). [The billion dollar mistake](https://github.com/tcard/sgo)...
+Pointers bring [bugs.](https://github.com/g3n/engine/issues/163)
+
+[The billion dollar mistake.](https://github.com/tcard/sgo).
+
+[The two billion dollar mistake.](https://blog.habets.se/2025/07/Go-is-still-not-good.html)
 
 Go types and libs were plain/flat enough to reach anything with printf. I relied on go-vim and its :GoDef with ctrl+O to get back. These two commands helped to navigate 3rd party codes. However, I could start working with Quim Muntal's GLTF library with its virtually nonexisting docs only by reading [Issue #26](https://github.com/qmuntal/gltf/issues/26). Still, a huge plus for Golang in that 3rd party codes can often be grokked without too much suffering.
 
@@ -471,11 +483,11 @@ MetallicRoughnessTexture in Sponza.gltf. Fall back to pseudo-PBR. Warn/adjust un
 
     - [Rob Pike: Moving C++ to the Incinerator](https://www.youtube.com/watch?v=oV9rvDllKEg&ab_channel=gnbitcom)
 
-    - [A.A.A. Donovan and B.W. Kernighan: 9.7. Example: Concurrent Non-Blocking Cache](https://www.gopl.io/)
-
     - [Thang Chung: go-coffeeshop](https://github.com/thangchung/go-coffeeshop)
 
     - [Ken Hibino: asynq](https://github.com/hibiken/asynq)
+    
+    - [A.A.A. Donovan and B.W. Kernighan: 9.7. Example: Concurrent Non-Blocking Cache](https://www.gopl.io/)
        
 ## Credits, Rendering Frameworks I Have Tried, Many Thanks To:
 
