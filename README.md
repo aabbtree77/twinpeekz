@@ -12,15 +12,17 @@ There are now three options to use Go in 3D rendering:
 
 For Go in 2D: [ebiten](https://github.com/hajimehoshi/ebiten), [wails](https://github.com/wailsapp/wails), [fogleman](https://github.com/fogleman?tab=repositories)...
 
-Error handling, concurrency, gotchas with slices and maps:
+Error handling, concurrency, cancellation, gotchas with slices and maps:
 
 - [Chris Elder](https://www.youtube.com/@chriselderxyz/playlists)
+
+- [Kantan Coding](https://www.youtube.com/@kantancoding/playlists)
 
 - [GopherCon 2018: Go Says WAT - Jon Bodner](https://www.youtube.com/watch?v=zPd0Cxzsslk)
 
 - [Uber Go Style Guide](https://github.com/uber-go/guide/blob/master/style.md)
 
-- [Lisette](https://lisette.run/)
+- [Lisette and Go Safety](https://lisette.run/docs/intro/safety/)
 
 ## Introduction
 
