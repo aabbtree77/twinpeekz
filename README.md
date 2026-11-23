@@ -10,7 +10,7 @@ There are now three options to use Go in 3D rendering:
 
 - Vulkan, e.g. [kaiju](https://github.com/KaijuEngine/kaiju).
 
-For Go in 2D: [ebiten](https://github.com/hajimehoshi/ebiten), [wails](https://github.com/wailsapp/wails), [fogleman](https://github.com/fogleman?tab=repositories)...
+For Go in 2D: [ebiten](https://github.com/hajimehoshi/ebiten), [wails](https://github.com/wailsapp/wails), [fogleman](https://github.com/fogleman?tab=repositories), [raylib-go](https://github.com/gen2brain/raylib-go/)...
 
 Error handling, concurrency, cancellation, gotchas with slices and maps:
 
