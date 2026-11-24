@@ -10,7 +10,7 @@ There are now three options to use Go in 3D rendering:
 
 - Vulkan, e.g. [kaiju](https://github.com/KaijuEngine/kaiju).
 
-For Go in 2D: [ebiten](https://github.com/hajimehoshi/ebiten), [wails](https://github.com/wailsapp/wails), [fogleman](https://github.com/fogleman?tab=repositories), [raylib-go](https://github.com/gen2brain/raylib-go/)...
+For Go in 2D: [ebiten](https://github.com/hajimehoshi/ebiten), [wails](https://github.com/wailsapp/wails), [raylib-go](https://github.com/gen2brain/raylib-go/), [fogleman...](https://github.com/fogleman?tab=repositories)
 
 Error handling, concurrency, cancellation, gotchas with slices and maps:
 
@@ -19,6 +19,16 @@ Error handling, concurrency, cancellation, gotchas with slices and maps:
 - [Kantan Coding](https://www.youtube.com/@kantancoding/playlists)
 
 - [GopherCon 2018: Go Says WAT - Jon Bodner](https://www.youtube.com/watch?v=zPd0Cxzsslk)
+
+- [Go: Under the Hood](https://golang.design/under-the-hood/en/part2lang/ch05data/)
+
+- [go.dev/wiki/SliceTricks](https://go.dev/wiki/SliceTricks)
+
+- [Arrays, slices (and strings): The mechanics of 'append'](https://go.dev/blog/slices)
+
+- [Russ Cox](https://research.swtch.com/)
+
+- [The Go Blog](https://go.dev/blog/)
 
 - [Uber Go Style Guide](https://github.com/uber-go/guide/blob/master/style.md)
 
