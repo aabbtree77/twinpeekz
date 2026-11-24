@@ -2,7 +2,7 @@
 
 ## 2026 Update
 
-There are now a lot of options to use Go in 3D rendering:
+There are now a lot of options to use Go in 3D rendering, such as:
 
 - OpenGL/WebGL via [go-gl](https://github.com/go-gl), e.g. [g3n/gokoban](https://github.com/danaugrs/gokoban), [Minecraft (clone)](https://github.com/GianlucaP106/minecraft), [gopher3D](https://github.com/nicolas-maman/gopher3D), [Lacking Native](github.com/mokiat/lacking-native) (see Lacking below), [Gravity](https://github.com/thegtproject/gravity), [fly3d](https://github.com/sunqirui1987/fly3d), or **this code**. These evoke the `cgo` mechanism which makes Go harder to cross-compile. OpenGL/WebGL avoids Vulkan 1.2 vs Vulkan 1.3 issues for older cards such as GTX760, and is still the most reliable way to reach Android and browsers.
 
@@ -14,9 +14,9 @@ There are now a lot of options to use Go in 3D rendering:
 
 - Streaming server side OpenGL rendered H264 encoded videos to the browser (without WebGL/WebGPU): [webg3n](https://github.com/moethu/webg3n).
 
-- Vulkan, e.g. [kaiju](https://github.com/KaijuEngine/kaiju), [Ikemen GO](https://github.com/ikemen-engine/Ikemen-GO) which is [Mugen - Eichmann Go evolution](https://youtu.be/WRhIEiMxllw?t=203), [vu](https://github.com/gazed/vu), [goworld](https://github.com/johanhenriksson/goworld)... 
+- Vulkan: [kaiju](https://github.com/KaijuEngine/kaiju), [Ikemen GO](https://github.com/ikemen-engine/Ikemen-GO) which is [Mugen - Eichmann Go evolution](https://youtu.be/WRhIEiMxllw?t=203), [vu](https://github.com/gazed/vu), [goworld](https://github.com/johanhenriksson/goworld)... 
 
-- OpenGL via [ebitengine/purego](github.com/ebitengine/purego) instead of `cgo`: [ScottiCAD](https://github.com/scotticad/scotticad).
+- OpenGL with [ebitengine/purego](github.com/ebitengine/purego) instead of `cgo`: [ScottiCAD](https://github.com/scotticad/scotticad).
 
 - OpenGL via [raylib-go](https://github.com/gen2brain/raylib-go): [llm-game-engine](https://github.com/tomicz/llm-game-engine) which also integrates an LLM.
 
