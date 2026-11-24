@@ -4,7 +4,7 @@
 
 There are now a lot of options to use Go in 3D rendering, such as:
 
-- OpenGL/WebGL via [go-gl](https://github.com/go-gl), e.g. [g3n/gokoban](https://github.com/danaugrs/gokoban), [Minecraft (clone)](https://github.com/GianlucaP106/minecraft), [gopher3D](https://github.com/nicolas-maman/gopher3D), [Lacking Native](github.com/mokiat/lacking-native) (see Lacking below), [Gravity](https://github.com/thegtproject/gravity), [fly3d](https://github.com/sunqirui1987/fly3d), or **this code**. These evoke the `cgo` mechanism which makes Go harder to cross-compile. OpenGL/WebGL avoids Vulkan 1.2 vs Vulkan 1.3 issues for older cards such as GTX760, and is still the most reliable way to reach Android and browsers.
+- OpenGL/WebGL via [go-gl](https://github.com/go-gl), e.g. [g3n/gokoban](https://github.com/danaugrs/gokoban), [Minecraft (clone)](https://github.com/GianlucaP106/minecraft), [gopher3D](https://github.com/nicolas-maman/gopher3D), [Lacking Native](github.com/mokiat/lacking-native) (see Lacking below), [Gravity](https://github.com/thegtproject/gravity), [fly3d](https://github.com/sunqirui1987/fly3d), or **this code**. These evoke the `cgo` mechanism which makes Go somewhat harder to cross-compile. OpenGL/WebGL avoids Vulkan 1.2 vs Vulkan 1.3 issues for older cards such as GTX760. This is still the most reliable way to reach Android and browsers.
 
 - WebGPU via [gogpu](https://github.com/gogpu/). This implements WebGPU for all the graphics backends (Vulkan, DX12...). Instead of `cgo` it uses a more portable `goffi`. Very recent, but already in use by [ironwail-go](https://github.com/darkliquid/ironwail-go) (Quake in Go). 
 
