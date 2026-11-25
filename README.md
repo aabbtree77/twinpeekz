@@ -12,7 +12,7 @@ There are now a lot of options to use Go in 3D rendering, such as:
 
 - WebGL2 via wasmgl: [Lacking](https://github.com/mokiat/lacking/) engine and its browser 3D game [Rally MKA](https://github.com/mokiat/rally-mka/). The backend works with WebGL2, but it is written in the agnostic manner with pipelines for "WebGPU readiness".
 
-- Streaming server side OpenGL rendered H264 encoded videos to the browser (without WebGL/WebGPU): [webg3n](https://github.com/moethu/webg3n).
+- Server side streaming H264 to the browser (without WebGL/WebGPU): [webg3n](https://github.com/moethu/webg3n).
 
 - Vulkan: [kaiju](https://github.com/KaijuEngine/kaiju), [Ikemen GO](https://github.com/ikemen-engine/Ikemen-GO) which is [Mugen - Eichmann Go evolution](https://youtu.be/WRhIEiMxllw?t=203), [vu](https://github.com/gazed/vu), [goworld](https://github.com/johanhenriksson/goworld)... 
 
@@ -26,7 +26,7 @@ There are now a lot of options to use Go in 3D rendering, such as:
 
 A lot of activity with LLMs and "Scriptable CAD" to render meshes in 3D. [MakeMe](https://github.com/ThomasVuNguyen/MakeMe) uses OpenSCAD to run an agent to create a 3D model and render it inside a terminal. [openscad-skill](https://github.com/swh/openscad-skill) is a Claude Skill.md for building OpenSCAD models for 3D printers. [GhostSCAD](https://github.com/ljanyst/ghostscad), [2d-to-3d-voxelizer](https://github.com/GazPrash/2d-to-3d-voxelizer), [unixpickle/model3d](https://github.com/unixpickle/model3d), [Limoni](https://github.com/thebanri/limoni)...
 
-A few more links related to Go's error handling, concurrency, cancellation, gotchas with slices and maps:
+Links related to error handling, concurrency, cancellation, gotchas with slices and maps:
 
 - [Chris Elder](https://www.youtube.com/@chriselderxyz/playlists)
 
