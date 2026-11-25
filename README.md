@@ -4,7 +4,7 @@
 
 There are now a lot of options to use Go in 3D rendering, such as:
 
-- OpenGL/WebGL via [go-gl](https://github.com/go-gl), e.g. [g3n/gokoban](https://github.com/danaugrs/gokoban), [Minecraft (clone)](https://github.com/GianlucaP106/minecraft), [gopher3D](https://github.com/nicolas-maman/gopher3D), [Lacking Native](github.com/mokiat/lacking-native) (see Lacking below), [Gravity](https://github.com/thegtproject/gravity), [fly3d](https://github.com/sunqirui1987/fly3d), or **this code**. These evoke the `cgo` mechanism which makes Go somewhat harder to cross-compile. OpenGL/WebGL avoids Vulkan 1.2 vs Vulkan 1.3 issues for older cards such as GTX760. This is still the most reliable way to reach Android and browsers.
+- OpenGL/WebGL via [go-gl](https://github.com/go-gl): [g3n/gokoban](https://github.com/danaugrs/gokoban), [Minecraft](https://github.com/GianlucaP106/minecraft), [gopher3D](https://github.com/nicolas-maman/gopher3D), [Lacking Native](github.com/mokiat/lacking-native) (see Lacking below), [Gravity](https://github.com/thegtproject/gravity), [fly3d](https://github.com/sunqirui1987/fly3d), [Igor-Polischuk/3D-in-Golang](https://github.com/Igor-Polischuk/3D-in-Golang/tree/main), [42-Vox](https://github.com/myusernameisbetter/42-Vox), [hersle/gl3d](https://github.com/hersle/gl3d/), [GoHomeEngine](https://github.com/PucklaJ/GoHomeEngine), [rapidengine](https://github.com/rishabh-bector/rapidengine), or **this code**. These evoke the `cgo` mechanism which makes Go somewhat harder to cross-compile. OpenGL/WebGL avoids Vulkan 1.2 vs Vulkan 1.3 issues for older cards such as GTX760. This is still the most reliable way to reach Android and browsers.
 
 - WebGPU via [gogpu](https://github.com/gogpu/). This implements WebGPU for all the graphics backends (Vulkan, DX12...). Instead of `cgo` it uses a more portable `goffi`. Very recent, but already in use by [ironwail-go](https://github.com/darkliquid/ironwail-go) (Quake in Go). 
 
@@ -12,19 +12,19 @@ There are now a lot of options to use Go in 3D rendering, such as:
 
 - WebGL2 via wasmgl: [Lacking](https://github.com/mokiat/lacking/) engine and its browser 3D game [Rally MKA](https://github.com/mokiat/rally-mka/). The backend works with WebGL2, but it is written in the agnostic manner with pipelines for "WebGPU readiness".
 
-- Server side streaming H264 to the browser (without WebGL/WebGPU): [webg3n](https://github.com/moethu/webg3n).
+- Server side streaming H264 (without WebGL/WebGPU): [webg3n](https://github.com/moethu/webg3n).
 
-- Vulkan: [kaiju](https://github.com/KaijuEngine/kaiju), [Ikemen GO](https://github.com/ikemen-engine/Ikemen-GO) which is [Mugen - Eichmann Go evolution](https://youtu.be/WRhIEiMxllw?t=203), [vu](https://github.com/gazed/vu), [goworld](https://github.com/johanhenriksson/goworld)... 
+- Vulkan: [kaiju](https://github.com/KaijuEngine/kaiju), [Ikemen GO](https://github.com/ikemen-engine/Ikemen-GO) which is [Mugen - Eichmann Go evolution](https://youtu.be/WRhIEiMxllw?t=203), [vu](https://github.com/gazed/vu), [goworld](https://github.com/johanhenriksson/goworld), [overdrive](https://github.com/Zephyr75/overdrive)... 
 
-- OpenGL with [ebitengine/purego](github.com/ebitengine/purego) instead of `cgo`: [ScottiCAD](https://github.com/scotticad/scotticad).
+- OpenGL with [ebitengine/purego](github.com/ebitengine/purego) instead of `cgo`: [ScottiCAD](https://github.com/scotticad/scotticad), [thhar-3d](https://github.com/tomasz-brak/thhar-3d/).
 
 - OpenGL via [raylib-go](https://github.com/gen2brain/raylib-go): [llm-game-engine](https://github.com/tomicz/llm-game-engine) which also integrates an LLM.
 
 - Software rendering. Targeting .obj: [go-render](https://github.com/bchao1/go-render), terminal window: [Zont](https://github.com/k1ngmang/zont/tree/main), frame buffer/Ebitengine: [tetra3d](https://github.com/SolarLune/tetra3d/) by [SolarLune](https://youtu.be/jb315Ri1uAY?t=648), [ray_engine](https://github.com/Myu-Unix/ray_engine), [PixelMek 3D](https://github.com/pixelmek-3d/pixelmek-3d), SDL2: [goom3d](https://github.com/garstas/goom3d) ("3D-like first-person shooter written in go and hugely inspired by Wolfenstein 3D").
 
-[Kohi engine (C99)](https://github.com/travisvroman/kohi) contains nearly 200 episodes of Vulkan-based 3D development, each episode is around 2 hours, immense.
+[Kohi engine (C99)](https://github.com/travisvroman/kohi) contains nearly 200 episodes of Vulkan-based 3D development, each episode is around 3 hours! See also [TheCherno](https://www.youtube.com/@TheCherno/playlists). A 3D engine may not be monetizable, but developing it online could still be viable, if you can do it.
 
-A lot of activity with LLMs and "Scriptable CAD" to render meshes in 3D. [MakeMe](https://github.com/ThomasVuNguyen/MakeMe) uses OpenSCAD to run an agent to create a 3D model and render it inside a terminal. [openscad-skill](https://github.com/swh/openscad-skill) is a Claude Skill.md for building OpenSCAD models for 3D printers. [GhostSCAD](https://github.com/ljanyst/ghostscad), [2d-to-3d-voxelizer](https://github.com/GazPrash/2d-to-3d-voxelizer), [unixpickle/model3d](https://github.com/unixpickle/model3d), [Limoni](https://github.com/thebanri/limoni)...
+A lot of activity with LLMs and "Scriptable CAD" to render meshes in 3D. [MakeMe](https://github.com/ThomasVuNguyen/MakeMe) uses OpenSCAD to run an agent to create a 3D model and render it inside a terminal. [openscad-skill](https://github.com/swh/openscad-skill) is a Claude Skill.md for building OpenSCAD models for 3D printers. [GhostSCAD](https://github.com/ljanyst/ghostscad), [2d-to-3d-voxelizer](https://github.com/GazPrash/2d-to-3d-voxelizer), [unixpickle/model3d](https://github.com/unixpickle/model3d), [Limoni](https://github.com/thebanri/limoni), [Vortelio](https://github.com/metiutek/Vortelio), [SmartFactory](https://github.com/liliang-cn/smartfactory)...
 
 Links related to error handling, concurrency, cancellation, gotchas with slices and maps:
 
