@@ -24,9 +24,15 @@ There are now a lot of options to use Go in 3D rendering, such as:
 
 [Kohi engine (C99)](https://github.com/travisvroman/kohi) contains nearly 200 episodes of Vulkan-based 3D development, each episode is around 3 hours! See also [TheCherno](https://www.youtube.com/@TheCherno/playlists).
 
-A lot of activity with LLMs and "Scriptable CAD" to render meshes in 3D. [MakeMe](https://github.com/ThomasVuNguyen/MakeMe) uses OpenSCAD to run an agent to create a 3D model and render it inside a terminal. [openscad-skill](https://github.com/swh/openscad-skill) is a Claude Skill.md for building OpenSCAD models for 3D printers. [GhostSCAD](https://github.com/ljanyst/ghostscad), [2d-to-3d-voxelizer](https://github.com/GazPrash/2d-to-3d-voxelizer), [unixpickle/model3d](https://github.com/unixpickle/model3d), [Limoni](https://github.com/thebanri/limoni), [Vortelio](https://github.com/metiutek/Vortelio), [SmartFactory](https://github.com/liliang-cn/smartfactory)...
+LLMs are already in heavy use with "scriptable CAD" or Blender. [MakeMe](https://github.com/ThomasVuNguyen/MakeMe) uses OpenSCAD to run an agent to create a 3D model and render it inside a terminal. [openscad-skill](https://github.com/swh/openscad-skill) is a Claude Skill.md for building OpenSCAD models for 3D printers. [GhostSCAD](https://github.com/ljanyst/ghostscad), [2d-to-3d-voxelizer](https://github.com/GazPrash/2d-to-3d-voxelizer), [unixpickle/model3d](https://github.com/unixpickle/model3d), [Limoni](https://github.com/thebanri/limoni), [Vortelio](https://github.com/metiutek/Vortelio), [SmartFactory](https://github.com/liliang-cn/smartfactory)...
 
-Links related to error handling, concurrency, cancellation, gotchas with slices and maps:
+Going all the way with Go in 3D remains debatable. The main use of Go is the MMO:
+
+[Tristan Batchler: Godot 4 + Golang MMO Tutorial Series.](https://www.tbat.me/projects/godot-golang-mmo-tutorial-series)
+
+This tutorial includes 13 videos with a complete MMO server hosted on the GCP. The communication uses protobuf, websockets, and Godobuf plugin for Godot 4. Storage is achieved via SQLite and sqlc, which is the best way when you do not need humongous scaling.
+
+Finally, a few links related to error handling, concurrency, cancellation, gotchas with slices and maps:
 
 - [Chris Elder](https://www.youtube.com/@chriselderxyz/playlists)
 
@@ -34,19 +40,23 @@ Links related to error handling, concurrency, cancellation, gotchas with slices 
 
 - [GopherCon 2018: Go Says WAT - Jon Bodner](https://www.youtube.com/watch?v=zPd0Cxzsslk)
 
-- [Go: Under the Hood](https://golang.design/under-the-hood/en/part2lang/ch05data/)
-
 - [go.dev/wiki/SliceTricks](https://go.dev/wiki/SliceTricks)
 
-- [Arrays, slices (and strings): The mechanics of 'append'](https://go.dev/blog/slices)
-
 - [Russ Cox](https://research.swtch.com/)
-
-- [The Go Blog](https://go.dev/blog/)
 
 - [Uber Go Style Guide](https://github.com/uber-go/guide/blob/master/style.md)
 
 - [Lisette and Go Safety](https://lisette.run/docs/intro/safety/)
+
+Go has unnecessary shared mutation, but its big achievement is that 3rd party codes are readable. This is very rare in general. KISS, YAGNI in Go vs "being clever" in Nim, D, Rust, Clojure, and almost everywhere.
+
+Think twice whether you actually need generics, CTFE, any framework, ECS, design patterns, middleware, parameter locking, graceful shutdown... 
+
+• Theo: "You kill me. A hundred years from now, there won't be one sad fuck to look at any of this. What keeps you going?"
+
+• Nigel: "You know what it is, Theo? I just don't think about it."
+
+-  Children of Men, 2006
 
 ## Introduction
 
