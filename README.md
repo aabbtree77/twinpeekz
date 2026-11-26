@@ -32,9 +32,11 @@ Going all the way with Go in 3D remains debatable. The main use of Go is the MMO
 
 This tutorial includes 13 videos with a complete MMO server hosted on the GCP. The communication uses protobuf, websockets, and Godobuf plugin for Godot 4. Storage is achieved via SQLite and sqlc, which is the best way when you do not need humongous scaling.
 
-Finally, a few links related to error handling, concurrency, cancellation, gotchas with slices and maps:
+Finally, a few links related to Go backends, error handling, concurrency, cancellation, gotchas with slices and maps:
 
 - [Chris Elder](https://www.youtube.com/@chriselderxyz/playlists)
+
+- [Tiago](https://www.youtube.com/@TiagoTaquelim/playlists)
 
 - [Kantan Coding](https://www.youtube.com/@kantancoding/playlists)
 
@@ -48,7 +50,7 @@ Finally, a few links related to error handling, concurrency, cancellation, gotch
 
 - [Lisette and Go Safety](https://lisette.run/docs/intro/safety/)
 
-Go has unnecessary shared mutation, but its big achievement is that 3rd party codes are readable. This is very rare in general. KISS, YAGNI in Go vs "being clever" in Nim, D, Rust, Clojure, and almost everywhere.
+Go has unnecessary shared mutation, but its big achievement is that 3rd party codes are readable. This is very rare in general. KISS, YAGNI in Go vs "being clever" in Nim, D, Rust, Clojure, Julia, and almost everywhere.
 
 Think twice whether you actually need generics, CTFE, any framework, ECS, design patterns, middleware, parameter locking, graceful shutdown... 
 
