@@ -52,11 +52,11 @@ Go has unnecessary shared mutation, but its big achievement is that 3rd party co
 
 Think twice whether you actually need generics, CTFE, any framework, ECS, design patterns, middleware, parameter locking, graceful shutdown... 
 
-• Theo: "You kill me. A hundred years from now, there won't be one sad fuck to look at any of this. What keeps you going?"
-
-• Nigel: "You know what it is, Theo? I just don't think about it."
-
--  Children of Men, 2006
+> Theo: "You kill me. A hundred years from now, there won't be one sad fuck to look at any of this. What keeps you going?"<br>
+> <br>
+> Nigel: "You know what it is, Theo? I just don't think about it."<br>
+> <br>
+> &#8211; Children of Men, 2006
 
 ## Introduction
 
